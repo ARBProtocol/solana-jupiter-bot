@@ -4,7 +4,7 @@
 
 > ⚠️ EPILEPSY WARNING - CLI UI is constantly refreshed and may be disruptive for sensitive people
 
-# WTF is this?
+# What is this?
 
 It's a trading bot that can trade on Solana blockchain by utilizing Jupiter Agregator SDK.
 There are two parts:
