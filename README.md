@@ -18,7 +18,7 @@ With Config wizard You can easly setup your trading strategy.
 
 📊 Bot have CLI UI which helps You monitor your trading strategy.
 
-CLI UI have current simulated profit chart and latency chart. Latency chart shows You the time taken to computate routes with Jupiter SDK.
+CLI UI currently displays a simulated profit chart and latency chart. Latency chart shows you the time taken to compute routes with Jupiter SDK.
 
 All trades are stored in trades history and will be shown in the table. Table is limited to 5 entries, but history stores all trades.
 
