@@ -1,6 +1,6 @@
 # solana-jupiter-bot
 
-> CAUTION! Use at Your own risk! 
+> CAUTION! Use at Your own risk! This bot is currently being optimized 📊
 
 > ⚠️ EPILEPSY WARNING - CLI UI is constantly refreshed and may be disruptive for sensitive people
 
