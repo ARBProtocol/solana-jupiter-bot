@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/pmioduszewski/solana-jupiter-bot.git"
+		"url": "https://github.com/ARBProtocol/solana-jupiter-bot.git"
 	},
 	"bin": "./src/index.js",
 	"engines": {
