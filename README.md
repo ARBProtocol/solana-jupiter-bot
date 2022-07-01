@@ -1,4 +1,4 @@
-# solana-jupiter-bot
+# ARB-jupiter-bot
 
 > CAUTION! Use at Your own risk! This bot is currently being optimized 📊
 
