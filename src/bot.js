@@ -88,6 +88,10 @@ const cache = {
 	tradingMode: config.tradingMode,
 	tradeHistory: new Array(),
 	performanceOfTxStart: 0,
+	availableRoutes: {
+		buy: 0,
+		sell: 0,
+	},
 };
 
 const swap = async (jupiter, route) => {
@@ -234,6 +238,10 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 			slippage,
 			forceFeech: true,
 		});
+
+		// count available routes
+		cache.availableRoutes[cache.sideBuy ? "buy" : "sell"] =
+			routes.routesInfos.length;
 
 		// update status as OK
 		cache.queue[i] = 0;
