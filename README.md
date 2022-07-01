@@ -27,7 +27,7 @@ All trades are stored in trades history and will be shown in the table. Table is
 > THIS README IS NOT COMPLETED YET.
 
 ![](https://github.com/arbprotocol/solana-jupiter-bot/blob/main/gif1.gif)
-![](https://github.com/arbptocool/solana-jupiter-bot/blob/main/gif2.gif)
+![](https://github.com/arbprotocol/solana-jupiter-bot/blob/main/gif2.gif)
 
 ## Install
 
