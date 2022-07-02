@@ -108,8 +108,9 @@ const swap = async (jupiter, route) => {
 	}
 };
 
+// this needs some work
 const failedSwapHandler = (tx, tradeEntry, route) => {
-	const msg = tx.error.message;
+	// const msg = tx.error.message;
 
 	// update counter
 	cache.tradeCounter[cache.sideBuy ? "buy" : "sell"].fail++;
@@ -123,7 +124,7 @@ const failedSwapHandler = (tx, tradeEntry, route) => {
 	cache.tradeHistory = tempHistory;
 
 	// add AMM to blockedAMMs
-	const marketInfos = JSON.parse(JSON.stringify(route.marketInfos, null, 2));
+	// const marketInfos = JSON.parse(JSON.stringify(route.marketInfos, null, 2));
 	// TODO: add AMM to blockedAMMs if there is error called "Unknown"
 	// for (const market of marketInfos) {
 	// 	if (msg.toLowerCase().includes("unknown"))
