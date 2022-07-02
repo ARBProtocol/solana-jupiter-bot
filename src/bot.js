@@ -202,13 +202,10 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 	if (cache.firstSwap) cache.firstSwapInQueue = true;
 	try {
 		// calculate & update iteration per minute
-		const iterationTimer =
-			(performance.now() - cache.iterationPerMinute.start) / 1000;
+		const iterationTimer = (performance.now() - cache.iterationPerMinute.start) / 1000;
 
 		if (iterationTimer >= 60) {
-			cache.iterationPerMinute.value = Number(
-				cache.iterationPerMinute.counter.toFixed()
-			);
+			cache.iterationPerMinute.value = Number(cache.iterationPerMinute.counter.toFixed());
 			cache.iterationPerMinute.start = performance.now();
 			cache.iterationPerMinute.counter = 0;
 		} else cache.iterationPerMinute.counter++;
@@ -239,8 +236,7 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 		// update status as OK
 		cache.queue[i] = 0;
 
-		const performanceOfRouteComp =
-			performance.now() - performanceOfRouteCompStart;
+		const performanceOfRouteComp = performance.now() - performanceOfRouteCompStart;
 
 		// choose first route
 		const route = await routes.routesInfos[0];
@@ -254,14 +250,10 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 
 		// calculate profitability
 
-		let simulatedProfit = cache.firstSwap
-			? 0
-			: calculateProfit(baseAmount, await route.outAmount);
+		let simulatedProfit = cache.firstSwap ? 0 : calculateProfit(baseAmount, await route.outAmount);
 
 		// store max profit spotted
-		if (
-			simulatedProfit > cache.maxProfitSpotted[cache.sideBuy ? "buy" : "sell"]
-		) {
+		if (simulatedProfit > cache.maxProfitSpotted[cache.sideBuy ? "buy" : "sell"]) {
 			cache.maxProfitSpotted[cache.sideBuy ? "buy" : "sell"] = simulatedProfit;
 		}
 
@@ -462,8 +454,7 @@ const run = async () => {
 
 			// [L] - switch performance chart visibility
 			if (key && key.name === "l") {
-				cache.ui.showPerformanceOfRouteCompChart =
-					!cache.ui.showPerformanceOfRouteCompChart;
+				cache.ui.showPerformanceOfRouteCompChart = !cache.ui.showPerformanceOfRouteCompChart;
 			}
 
 			// [H] - switch trade history visibility
