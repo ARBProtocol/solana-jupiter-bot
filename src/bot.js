@@ -24,8 +24,6 @@ configSpinner.succeed("Config loaded!");
 // cache
 const cache = {
 	startTime: new Date(),
-	// firstSwap: true,
-	// firstSwapInQueue: false,
 	queue: {},
 	queueThrottle: 1,
 	sideBuy: true,
@@ -151,11 +149,6 @@ const successSwapHandler = (tx, tradeEntry, tokenA, tokenB) => {
 		cache.currentBalance.tokenA = tx.outputAmount;
 	}
 
-	// if (cache.firstSwap) {
-	// 	cache.lastBalance.tokenB = tx.outputAmount;
-	// 	cache.initialBalance.tokenB = tx.outputAmount;
-	// }
-
 	// update profit
 	if (cache.sideBuy) {
 		cache.currentProfit.tokenA = 0;
@@ -190,12 +183,6 @@ const successSwapHandler = (tx, tradeEntry, tokenA, tokenB) => {
 
 	tempHistory.push(tradeEntry);
 	cache.tradeHistory = tempHistory;
-
-	// first swap done
-	// if (cache.firstSwap) {
-	// 	cache.firstSwap = false;
-	// 	cache.firstSwapInQueue = false;
-	// }
 };
 
 const pingpongMode = async (jupiter, tokenA, tokenB) => {
@@ -203,7 +190,7 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 	const date = new Date();
 	const i = cache.iteration;
 	cache.queue[i] = -1;
-	// if (cache.firstSwap) cache.firstSwapInQueue = true;
+
 	try {
 		// calculate & update iteration per minute
 		const iterationTimer =
