@@ -15,9 +15,11 @@
         },
         "ecmaVersion": "latest"
     },
-    "plugins": [
-        "react"
-    ],
     "rules": {
-    }
+        "prettier/prettier": "error"
+    },
+    "plugins": [
+        "react",
+        "prettier"
+    ]
 }
