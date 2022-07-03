@@ -2,6 +2,7 @@ const { Jupiter } = require("@jup-ag/core");
 const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
 const bs58 = require("bs58");
 const fs = require("fs");
+const ora = require("ora-classic");
 
 const setup = async (config) => {
 	try {
@@ -48,6 +49,11 @@ const getInitialOutAmountWithSlippage = async (
 	amountToTrade
 ) => {
 	try {
+		const spinner = ora({
+			text: "Computing routes...",
+			discardStdin: false,
+		}).start();
+
 		// compute routes for the first time
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
@@ -56,6 +62,9 @@ const getInitialOutAmountWithSlippage = async (
 			slippage: 0,
 			forceFeech: true,
 		});
+
+		if (routes?.routesInfos?.length > 0) spinner.succeed("Routes computed!");
+		else spinner.fail("No routes found. Something is wrong!");
 
 		return routes.routesInfos[0].outAmountWithSlippage;
 	} catch (error) {
