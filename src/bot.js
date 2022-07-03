@@ -4,7 +4,7 @@ require("dotenv").config();
 const { PublicKey } = require("@solana/web3.js");
 
 const fs = require("fs");
-const { setup } = require("./setup");
+const { setup, getInitialOutAmountWithSlippage } = require("./setup");
 
 const { calculateProfit, toDecimal, toNumber } = require("./utils");
 const { handleExit } = require("./exit");
@@ -437,6 +437,16 @@ const run = async () => {
 		cache.initialBalance.tokenA = toNumber(config.tradeSize, tokenA.decimals);
 		cache.currentBalance.tokenA = cache.initialBalance.tokenA;
 		cache.lastBalance.tokenA = cache.initialBalance.tokenA;
+
+		// set initial & last balance for tokenB
+		cache.initialBalance.tokenB = await getInitialOutAmountWithSlippage(
+			jupiter,
+			tokenA,
+			tokenB,
+			cache.initialBalance.tokenA
+		);
+		cache.currentBalance.tokenB = cache.initialBalance.tokenB;
+		cache.lastBalance.tokenB = cache.initialBalance.tokenB;
 
 		setInterval(() => watcher(jupiter, tokenA, tokenB), config.minInterval);
 

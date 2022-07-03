@@ -1,5 +1,5 @@
 const { Jupiter } = require("@jup-ag/core");
-const { Connection, Keypair } = require("@solana/web3.js");
+const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
 const bs58 = require("bs58");
 const fs = require("fs");
 
@@ -40,4 +40,31 @@ const setup = async (config) => {
 		console.log(error);
 	}
 };
-exports.setup = setup;
+
+const getInitialOutAmountWithSlippage = async (
+	jupiter,
+	inputToken,
+	outputToken,
+	amountToTrade
+) => {
+	try {
+		// compute routes for the first time
+		const routes = await jupiter.computeRoutes({
+			inputMint: new PublicKey(inputToken.address),
+			outputMint: new PublicKey(outputToken.address),
+			inputAmount: amountToTrade,
+			slippage: 0,
+			forceFeech: true,
+		});
+
+		console.log(routes.routesInfos[0].outAmountWithSlippage);
+		return routes.routesInfos[0].outAmountWithSlippage;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+module.exports = {
+	setup,
+	getInitialOutAmountWithSlippage,
+};
