@@ -142,6 +142,9 @@ function printToConsole({
 			}: ${chalk.bold[cache.ui.defaultColor](
 				inputToken.symbol
 			)} -> ${chalk.bold[cache.ui.defaultColor](outputToken.symbol)}`,
+			`ROUTES: ${chalk.bold.yellowBright(
+				cache.availableRoutes[cache.sideBuy ? "buy" : "sell"]
+			)}`,
 			{
 				text: cache.swappingRightNow
 					? chalk.bold[
