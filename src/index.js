@@ -5,7 +5,7 @@ const importJsx = require("import-jsx");
 const { render } = require("ink");
 const meow = require("meow");
 
-const generator = importJsx("./generator");
+const wizard = importJsx("./wizard");
 
 const cli = meow(`
 	Usage
@@ -21,4 +21,4 @@ const cli = meow(`
 
 console.clear();
 
-render(React.createElement(generator, cli.flags)).waitUntilExit();
+render(React.createElement(wizard, cli.flags)).waitUntilExit();
