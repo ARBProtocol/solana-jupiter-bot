@@ -57,7 +57,6 @@ const getInitialOutAmountWithSlippage = async (
 			forceFeech: true,
 		});
 
-		console.log(routes.routesInfos[0].outAmountWithSlippage);
 		return routes.routesInfos[0].outAmountWithSlippage;
 	} catch (error) {
 		console.log(error);
