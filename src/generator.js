@@ -7,6 +7,10 @@ const { useState, useEffect } = require("react");
 const { default: SelectInput } = require("ink-select-input");
 const fs = require("fs");
 
+// create temp dir
+const { createTempDir } = require("./utils");
+createTempDir();
+
 // import components
 const importJsx = require("import-jsx");
 const { default: axios } = require("axios");
