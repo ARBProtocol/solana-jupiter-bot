@@ -24,8 +24,8 @@ configSpinner.succeed("Config loaded!");
 // cache
 const cache = {
 	startTime: new Date(),
-	firstSwap: true,
-	firstSwapInQueue: false,
+	// firstSwap: true,
+	// firstSwapInQueue: false,
 	queue: {},
 	queueThrottle: 1,
 	sideBuy: true,
@@ -151,10 +151,10 @@ const successSwapHandler = (tx, tradeEntry, tokenA, tokenB) => {
 		cache.currentBalance.tokenA = tx.outputAmount;
 	}
 
-	if (cache.firstSwap) {
-		cache.lastBalance.tokenB = tx.outputAmount;
-		cache.initialBalance.tokenB = tx.outputAmount;
-	}
+	// if (cache.firstSwap) {
+	// 	cache.lastBalance.tokenB = tx.outputAmount;
+	// 	cache.initialBalance.tokenB = tx.outputAmount;
+	// }
 
 	// update profit
 	if (cache.sideBuy) {
@@ -192,10 +192,10 @@ const successSwapHandler = (tx, tradeEntry, tokenA, tokenB) => {
 	cache.tradeHistory = tempHistory;
 
 	// first swap done
-	if (cache.firstSwap) {
-		cache.firstSwap = false;
-		cache.firstSwapInQueue = false;
-	}
+	// if (cache.firstSwap) {
+	// 	cache.firstSwap = false;
+	// 	cache.firstSwapInQueue = false;
+	// }
 };
 
 const pingpongMode = async (jupiter, tokenA, tokenB) => {
@@ -203,7 +203,7 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 	const date = new Date();
 	const i = cache.iteration;
 	cache.queue[i] = -1;
-	if (cache.firstSwap) cache.firstSwapInQueue = true;
+	// if (cache.firstSwap) cache.firstSwapInQueue = true;
 	try {
 		// calculate & update iteration per minute
 		const iterationTimer =
@@ -218,9 +218,8 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 		} else cache.iterationPerMinute.counter++;
 
 		// Calculate amount that will be used for trade
-		const amountToTrade = cache.firstSwap
-			? cache.initialBalance.tokenA
-			: cache.currentBalance[cache.sideBuy ? "tokenA" : "tokenB"];
+		const amountToTrade =
+			cache.currentBalance[cache.sideBuy ? "tokenA" : "tokenB"];
 		const baseAmount = cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
 
 		// default slippage
@@ -254,17 +253,14 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 		const route = await routes.routesInfos[0];
 
 		// update slippage with "profit or kill" slippage
-		const profitOrKillSlippage = cache.firstSwap
-			? route.outAmountWithSlippage
-			: cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
+		const profitOrKillSlippage =
+			cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
 
 		route.outAmountWithSlippage = profitOrKillSlippage;
 
 		// calculate profitability
 
-		let simulatedProfit = cache.firstSwap
-			? 0
-			: calculateProfit(baseAmount, await route.outAmount);
+		let simulatedProfit = calculateProfit(baseAmount, await route.outAmount);
 
 		// store max profit spotted
 		if (
@@ -291,8 +287,7 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 		let tx, performanceOfTx;
 		if (
 			!cache.swappingRightNow &&
-			(cache.firstSwap ||
-				cache.hotkeys.e ||
+			(cache.hotkeys.e ||
 				cache.hotkeys.r ||
 				simulatedProfit >= config.minPercProfit)
 		) {
@@ -342,12 +337,10 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 				// stop refreshing status
 				clearInterval(printTxStatus);
 
-				const profit = cache.firstSwap
-					? 0
-					: calculateProfit(
-							cache.currentBalance[cache.sideBuy ? "tokenB" : "tokenA"],
-							tx.outputAmount
-					  );
+				const profit = calculateProfit(
+					cache.currentBalance[cache.sideBuy ? "tokenB" : "tokenA"],
+					tx.outputAmount
+				);
 
 				tradeEntry = {
 					...tradeEntry,
@@ -402,11 +395,7 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 
 const watcher = async (jupiter, tokenA, tokenB) => {
 	if (!cache.swappingRightNow) {
-		if (cache.firstSwap && Object.keys(cache.queue).length === 0) {
-			await pingpongMode(jupiter, tokenA, tokenB);
-		} else if (
-			!cache.firstSwap &&
-			!cache.firstSwapInQueue &&
+		if (
 			Object.keys(cache.queue).length < cache.queueThrottle &&
 			cache.tradingMode === "pingpong"
 		) {
@@ -427,7 +416,7 @@ const run = async () => {
 		// load blocked AMMs to cache
 		cache.blockedAMMs = blockedAMMs;
 
-		// set initial & last balance for tokenA
+		// set initial & current & last balance for tokenA
 		cache.initialBalance.tokenA = toNumber(config.tradeSize, tokenA.decimals);
 		cache.currentBalance.tokenA = cache.initialBalance.tokenA;
 		cache.lastBalance.tokenA = cache.initialBalance.tokenA;
@@ -439,7 +428,6 @@ const run = async () => {
 			tokenB,
 			cache.initialBalance.tokenA
 		);
-		cache.currentBalance.tokenB = cache.initialBalance.tokenB;
 		cache.lastBalance.tokenB = cache.initialBalance.tokenB;
 
 		setInterval(() => watcher(jupiter, tokenA, tokenB), config.minInterval);
