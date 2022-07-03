@@ -7,10 +7,6 @@ const { useState, useEffect } = require("react");
 const { default: SelectInput } = require("ink-select-input");
 const fs = require("fs");
 
-// create temp dir
-const { createTempDir } = require("./utils");
-createTempDir();
-
 // import components
 const importJsx = require("import-jsx");
 const { default: axios } = require("axios");
@@ -99,7 +95,8 @@ const App = (props) => {
 	});
 
 	useEffect(() => {
-		network != "" && axios.get(TOKEN_LIST_URL[network]).then((res) => setTokens(res.data));
+		network != "" &&
+			axios.get(TOKEN_LIST_URL[network]).then((res) => setTokens(res.data));
 	}, [network]);
 
 	if (!network)
@@ -108,7 +105,10 @@ const App = (props) => {
 				<Text>
 					Select Solana <Text color="magenta">Network</Text>:
 				</Text>
-				<SelectInput items={networks} onSelect={(item) => setNetwork(item.value)} />
+				<SelectInput
+					items={networks}
+					onSelect={(item) => setNetwork(item.value)}
+				/>
 				<EscNotification />
 			</DefaultBox>
 		);
@@ -139,11 +139,14 @@ const App = (props) => {
 						dimColor={index === 0 ? false : true}
 						key={index}
 					>
-						<Text color="gray">{index === 0 ? "MAIN" : `${index + 1}. `}</Text> {url}
+						<Text color="gray">{index === 0 ? "MAIN" : `${index + 1}. `}</Text>{" "}
+						{url}
 					</Text>
 				))}
 				<Box justifyContent="space-between">
-					{process.env.DEFAULT_RPC && rpc.length === 0 && <TabNotification skip={true} />}
+					{process.env.DEFAULT_RPC && rpc.length === 0 && (
+						<TabNotification skip={true} />
+					)}
 					{rpc.length > 0 && <TabNotification />}
 
 					<EscNotification />
@@ -157,7 +160,10 @@ const App = (props) => {
 				<Text>
 					Choose <Text color="cyan">Trading Mode</Text>:
 				</Text>
-				<SelectInput items={tradingModes} onSelect={(item) => setTradingMode(item.value)} />
+				<SelectInput
+					items={tradingModes}
+					onSelect={(item) => setTradingMode(item.value)}
+				/>
 				<EscNotification />
 			</DefaultBox>
 		);
@@ -175,7 +181,8 @@ const App = (props) => {
 				{tokens?.length > 0 ? (
 					<>
 						<Text>
-							Available Tokens: <Text color="yellowBright">{tokens?.length || 0}</Text>
+							Available Tokens:{" "}
+							<Text color="yellowBright">{tokens?.length || 0}</Text>
 						</Text>
 
 						{/* SET TOKEN A */}
@@ -208,7 +215,8 @@ const App = (props) => {
 						)}
 						{tokenA?.address && (
 							<Text>
-								Token A Address: <Text color="yellowBright">{tokenA?.address}</Text>
+								Token A Address:{" "}
+								<Text color="yellowBright">{tokenA?.address}</Text>
 							</Text>
 						)}
 
@@ -221,7 +229,9 @@ const App = (props) => {
 										value={tokenB?.symbol || ""}
 										onChange={(value) => setTokenB({ symbol: value })}
 										placeholder="type token symbol & use arrow keys to select hint"
-										focus={tokenB?.address ? false : tokenA?.address ? true : false}
+										focus={
+											tokenB?.address ? false : tokenA?.address ? true : false
+										}
 										onSubmit={() => setTokenBisSet(true)}
 									/>
 									<Text color="gray"> Case Sensitive!</Text>
@@ -230,18 +240,21 @@ const App = (props) => {
 								<Text color="cyan">{tokenB?.symbol}</Text>
 							)}
 						</Text>
-						{tokenB?.symbol?.length > 1 && tokenA?.address && !tokenB?.address && (
-							<SelectInput
-								items={tokens
-									.map((t) => ({ label: t.symbol, value: t.address }))
-									.filter((t) => t.label.includes(tokenB.symbol))}
-								limit={4}
-								onSelect={(s) => setTokenB({ ...tokenB, address: s.value })}
-							/>
-						)}
+						{tokenB?.symbol?.length > 1 &&
+							tokenA?.address &&
+							!tokenB?.address && (
+								<SelectInput
+									items={tokens
+										.map((t) => ({ label: t.symbol, value: t.address }))
+										.filter((t) => t.label.includes(tokenB.symbol))}
+									limit={4}
+									onSelect={(s) => setTokenB({ ...tokenB, address: s.value })}
+								/>
+							)}
 						{tokenB?.address && (
 							<Text>
-								Token B Address: <Text color="yellowBright">{tokenB?.address}</Text>
+								Token B Address:{" "}
+								<Text color="yellowBright">{tokenB?.address}</Text>
 							</Text>
 						)}
 					</>
@@ -263,7 +276,9 @@ const App = (props) => {
 								]}
 								onSelect={(item) => setTradingEnabled(item.value)}
 								itemComponent={(item) => (
-									<Text color={tradingEnabled == item.value ? "cyan" : "gray"}>{item.label}</Text>
+									<Text color={tradingEnabled == item.value ? "cyan" : "gray"}>
+										{item.label}
+									</Text>
 								)}
 								onHighlight={(item) => (
 									<Text color={tradingEnabled == item.value ? "cyan" : "gray"}>
