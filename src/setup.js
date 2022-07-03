@@ -24,7 +24,10 @@ const setup = async (config) => {
 			spinner.fail(
 				chalk.bold.redBright("Set WALLET PRIVATE KEY in .env file!")
 			) && process.exit(1);
-		else if (process.env.SOLANA_WALLET_PUBLIC_KEY?.length !== 88)
+		else if (
+			process.env.SOLANA_WALLET_PUBLIC_KEY &&
+			process.env.SOLANA_WALLET_PUBLIC_KEY?.length !== 88
+		)
 			spinner.fail(chalk.bold.redBright("WRONG WALLET PRIVATE KEY!")) &&
 				process.exit(1);
 
