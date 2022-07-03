@@ -1,6 +1,7 @@
 const { Jupiter } = require("@jup-ag/core");
 const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
 const bs58 = require("bs58");
+const chalk = require("chalk");
 const fs = require("fs");
 const ora = require("ora-classic");
 
@@ -18,9 +19,14 @@ const setup = async (config) => {
 		const tokenA = tokens.find((t) => t.address === config.tokenA.address);
 		const tokenB = tokens.find((t) => t.address === config.tokenB.address);
 
-		// check wallet
+		// check wallet private key
 		if (!process.env.SOLANA_WALLET_PRIVATE_KEY)
-			console.log("Wallet is not set") && process.exit(1);
+			spinner.fail(
+				chalk.bold.redBright("Set WALLET PRIVATE KEY in .env file!")
+			) && process.exit(1);
+		else if (process.env.SOLANA_WALLET_PUBLIC_KEY?.length !== 88)
+			spinner.fail(chalk.bold.redBright("WRONG WALLET PRIVATE KEY!")) &&
+				process.exit(1);
 
 		const wallet = Keypair.fromSecretKey(
 			bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY)
