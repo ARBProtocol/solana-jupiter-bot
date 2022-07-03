@@ -13,12 +13,9 @@ const setup = async (config) => {
 		const tokenB = tokens.find((t) => t.address === config.tokenB.address);
 
 		// check wallet
-		if (!process.env.SOLANA_WALLET_PRIVATE_KEY)
-			console.log("Wallet is not set") && process.exit(1);
+		if (!process.env.SOLANA_WALLET_PRIVATE_KEY) console.log("Wallet is not set") && process.exit(1);
 
-		const wallet = Keypair.fromSecretKey(
-			bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY)
-		);
+		const wallet = Keypair.fromSecretKey(bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY));
 
 		// connect to RPC
 		const connection = new Connection(config.rpc[0]);
