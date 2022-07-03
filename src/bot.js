@@ -393,12 +393,8 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 
 const run = async () => {
 	try {
-		const setupSpinner = ora({
-			text: "Setting up...",
-			discardStdin: false,
-		}).start();
+		// set everything up
 		const { jupiter, tokenA, tokenB, blockedAMMs } = await setup(config);
-		setupSpinner.succeed("Setup done!");
 
 		// load blocked AMMs to cache
 		cache.blockedAMMs = blockedAMMs;

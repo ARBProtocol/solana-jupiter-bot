@@ -6,6 +6,11 @@ const ora = require("ora-classic");
 
 const setup = async (config) => {
 	try {
+		const spinner = ora({
+			text: "Setting up...",
+			discardStdin: false,
+		}).start();
+
 		// read tokens.json file
 		const tokens = JSON.parse(fs.readFileSync("./temp/tokens.json"));
 
@@ -35,6 +40,8 @@ const setup = async (config) => {
 		if (fs.existsSync("./blockedAMMs.json")) {
 			const blockedAMMs = JSON.parse(fs.readFileSync("./blockedAMMs.json"));
 		}
+
+		spinner.succeed("Setup done!");
 
 		return { jupiter, tokenA, tokenB, blockedAMMs };
 	} catch (error) {
