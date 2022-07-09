@@ -4,9 +4,14 @@ const bs58 = require("bs58");
 const chalk = require("chalk");
 const fs = require("fs");
 const ora = require("ora-classic");
+const cache = require("./cache");
+const { loadConfigFile } = require("./utils");
 
-const setup = async (config) => {
+const setup = async () => {
 	try {
+		// load config file and store it in cache
+		cache.config = loadConfigFile();
+
 		const spinner = ora({
 			text: "Setting up...",
 			discardStdin: false,
@@ -16,8 +21,12 @@ const setup = async (config) => {
 		const tokens = JSON.parse(fs.readFileSync("./temp/tokens.json"));
 
 		// find tokens full Object
-		const tokenA = tokens.find((t) => t.address === config.tokenA.address);
-		const tokenB = tokens.find((t) => t.address === config.tokenB.address);
+		const tokenA = tokens.find(
+			(t) => t.address === cache.config.tokenA.address
+		);
+		const tokenB = tokens.find(
+			(t) => t.address === cache.config.tokenB.address
+		);
 
 		// check wallet private key
 		if (!process.env.SOLANA_WALLET_PRIVATE_KEY)
@@ -36,11 +45,11 @@ const setup = async (config) => {
 		);
 
 		// connect to RPC
-		const connection = new Connection(config.rpc[0]);
+		const connection = new Connection(cache.config.rpc[0]);
 
 		const jupiter = await Jupiter.load({
 			connection,
-			cluster: config.network,
+			cluster: cache.config.network,
 			user: wallet,
 		});
 

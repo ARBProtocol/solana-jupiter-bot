@@ -3,7 +3,6 @@ require("dotenv").config();
 
 const { PublicKey } = require("@solana/web3.js");
 
-const fs = require("fs");
 const { setup, getInitialOutAmountWithSlippage } = require("./setup");
 
 const {
@@ -15,20 +14,10 @@ const {
 
 const { handleExit } = require("./exit");
 
-const ora = require("ora-classic");
 const { clearInterval } = require("timers");
 const printToConsole = require("./ui");
 const cache = require("./cache");
 const listenHotkeys = require("./hotkeys");
-
-// read config.json file
-const configSpinner = ora({
-	text: "Loading config...",
-	discardStdin: false,
-}).start();
-const config = JSON.parse(fs.readFileSync("./config.json"));
-exports.config = config;
-configSpinner.succeed("Config loaded!");
 
 const swap = async (jupiter, route) => {
 	try {
@@ -54,7 +43,7 @@ const failedSwapHandler = (tradeEntry) => {
 	cache.tradeCounter[cache.sideBuy ? "buy" : "sell"].fail++;
 
 	// update trade history
-	config.storeFailedTxInHistory;
+	cache.config.storeFailedTxInHistory;
 
 	// update trade history
 	let tempHistory = cache.tradeHistory || [];
@@ -186,7 +175,6 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 			route,
 			simulatedProfit,
 			cache,
-			config,
 		});
 
 		// check profitability and execute tx
@@ -195,7 +183,7 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 			!cache.swappingRightNow &&
 			(cache.hotkeys.e ||
 				cache.hotkeys.r ||
-				simulatedProfit >= config.minPercProfit)
+				simulatedProfit >= cache.config.minPercProfit)
 		) {
 			// hotkeys
 			if (cache.hotkeys.e) {
@@ -233,7 +221,6 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 							route,
 							simulatedProfit,
 							cache,
-							config,
 						});
 					}
 				}, 500);
@@ -289,7 +276,6 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 			route,
 			simulatedProfit,
 			cache,
-			config,
 		});
 	} catch (error) {
 		cache.queue[i] = 1;
@@ -313,10 +299,13 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 const run = async () => {
 	try {
 		// set everything up
-		const { jupiter, tokenA, tokenB } = await setup(config);
+		const { jupiter, tokenA, tokenB } = await setup();
 
 		// set initial & current & last balance for tokenA
-		cache.initialBalance.tokenA = toNumber(config.tradeSize, tokenA.decimals);
+		cache.initialBalance.tokenA = toNumber(
+			cache.config.tradeSize,
+			tokenA.decimals
+		);
 		cache.currentBalance.tokenA = cache.initialBalance.tokenA;
 		cache.lastBalance.tokenA = cache.initialBalance.tokenA;
 
@@ -329,14 +318,17 @@ const run = async () => {
 		);
 		cache.lastBalance.tokenB = cache.initialBalance.tokenB;
 
-		setInterval(() => watcher(jupiter, tokenA, tokenB), config.minInterval);
+		setInterval(
+			() => watcher(jupiter, tokenA, tokenB),
+			cache.config.minInterval
+		);
 
 		// listen for hotkeys
 		listenHotkeys();
 	} catch (error) {
 		console.log(error);
 	} finally {
-		handleExit(config, cache);
+		handleExit(cache);
 	}
 };
 

@@ -1,4 +1,5 @@
 const fs = require("fs");
+const ora = require("ora-classic");
 const cache = require("./cache");
 
 const calculateProfit = (oldVal, newVal) => ((newVal - oldVal) / oldVal) * 100;
@@ -13,6 +14,23 @@ const createTempDir = () => {
 	if (!fs.existsSync("./temp")) {
 		fs.mkdirSync("./temp");
 	}
+};
+
+/**
+ * It loads the config file and returns the config object
+ * @returns The config object
+ */
+const loadConfigFile = () => {
+	const configSpinner = ora({
+		text: "Loading config...",
+		discardStdin: false,
+	}).start();
+
+	const config = JSON.parse(fs.readFileSync("./config.json"));
+
+	configSpinner.succeed("Config loaded!");
+
+	return config;
 };
 
 /**
@@ -36,5 +54,6 @@ module.exports = {
 	toDecimal,
 	toNumber,
 	createTempDir,
+	loadConfigFile,
 	updateIterationsPerMin,
 };

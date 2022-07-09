@@ -15,7 +15,6 @@ function printToConsole({
 	route,
 	simulatedProfit,
 	cache,
-	config,
 }) {
 	try {
 		// update max profitability spotted chart
@@ -87,8 +86,10 @@ function printToConsole({
 			{
 				text: `RPC: ${chalk[cache.ui.defaultColor](
 					cache.ui.hideRpc
-						? `${config.rpc[0].slice(0, 5)}...${config.rpc[0].slice(-5)}`
-						: config.rpc[0]
+						? `${cache.config.rpc[0].slice(0, 5)}...${cache.config.rpc[0].slice(
+								-5
+						  )}`
+						: cache.config.rpc[0]
 				)}`,
 			}
 		);
@@ -106,7 +107,7 @@ function printToConsole({
 			},
 			{
 				text: `MIN INTERVAL: ${chalk[cache.ui.defaultColor](
-					config.minInterval
+					cache.config.minInterval
 				)} ms QUEUE: ${chalk[cache.ui.defaultColor](
 					Object.keys(cache.queue).length
 				)}/${chalk[cache.ui.defaultColor](cache.queueThrottle)}`,
@@ -209,7 +210,7 @@ function printToConsole({
 			},
 			{
 				text: `NOMINAL SIZE: ${chalk[cache.ui.defaultColor](
-					`${config.tradeSize} ${inputToken.symbol}`
+					`${cache.config.tradeSize} ${inputToken.symbol}`
 				)}`,
 			},
 			{
