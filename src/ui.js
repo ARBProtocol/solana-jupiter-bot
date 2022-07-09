@@ -341,8 +341,6 @@ function printToConsole({
 
 		// print UI
 		console.log(ui.toString());
-
-		delete swapStatus;
 	} catch (error) {
 		console.log(error);
 	}
