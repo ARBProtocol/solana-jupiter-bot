@@ -14,11 +14,12 @@ const {
 } = require("./utils");
 
 const { handleExit } = require("./exit");
-const keypress = require("keypress");
+
 const ora = require("ora-classic");
 const { clearInterval } = require("timers");
 const printToConsole = require("./ui");
 const cache = require("./cache");
+const listenHotkeys = require("./hotkeys");
 
 // read config.json file
 const configSpinner = ora({
@@ -330,63 +331,8 @@ const run = async () => {
 
 		setInterval(() => watcher(jupiter, tokenA, tokenB), config.minInterval);
 
-		// hotkeys
-		keypress(process.stdin);
-
-		process.stdin.on("keypress", function (ch, key) {
-			// console.log('got "keypress"', key);
-			if (key && key.ctrl && key.name == "c") {
-				cache.tradingEnabled = false; // stop all trades
-				console.log("[CTRL] + [C] PRESS AGAIN TO EXIT!");
-				process.stdin.pause();
-				process.stdin.setRawMode(false);
-				process.stdin.resume();
-			}
-
-			// [E] - forced execution
-			if (key && key.name === "e") {
-				cache.hotkeys.e = true;
-			}
-
-			// [R] - revert back swap
-			if (key && key.name === "r") {
-				cache.hotkeys.r = true;
-			}
-
-			// [P] - switch profit chart visibility
-			if (key && key.name === "p") {
-				cache.ui.showProfitChart = !cache.ui.showProfitChart;
-			}
-
-			// [L] - switch performance chart visibility
-			if (key && key.name === "l") {
-				cache.ui.showPerformanceOfRouteCompChart =
-					!cache.ui.showPerformanceOfRouteCompChart;
-			}
-
-			// [H] - switch trade history visibility
-			if (key && key.name === "t") {
-				cache.ui.showTradeHistory = !cache.ui.showTradeHistory;
-			}
-
-			// [I] - incognito mode (hide RPC)
-			if (key && key.name === "i") {
-				cache.ui.hideRpc = !cache.ui.hideRpc;
-			}
-
-			// [H] - switch help visibility
-			if (key && key.name === "h") {
-				cache.ui.showHelp = !cache.ui.showHelp;
-			}
-
-			// [S] - simulation mode switch
-			if (key && key.name === "s") {
-				cache.tradingEnabled = !cache.tradingEnabled;
-			}
-		});
-
-		process.stdin.setRawMode(true);
-		process.stdin.resume();
+		// listen for hotkeys
+		listenHotkeys();
 	} catch (error) {
 		console.log(error);
 	} finally {
