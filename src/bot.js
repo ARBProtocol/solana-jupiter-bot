@@ -18,7 +18,7 @@ const keypress = require("keypress");
 const ora = require("ora-classic");
 const { clearInterval } = require("timers");
 const printToConsole = require("./ui");
-const { cache } = require("./cache");
+const cache = require("./cache");
 
 // read config.json file
 const configSpinner = ora({

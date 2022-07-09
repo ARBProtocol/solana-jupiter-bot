@@ -1,4 +1,5 @@
 const fs = require("fs");
+const cache = require("./cache");
 
 const calculateProfit = (oldVal, newVal) => ((newVal - oldVal) / oldVal) * 100;
 

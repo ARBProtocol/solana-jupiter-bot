@@ -72,4 +72,4 @@ const cache = {
 	},
 };
 
-exports.cache = cache;
+module.exports = cache;
