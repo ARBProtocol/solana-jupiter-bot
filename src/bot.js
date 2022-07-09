@@ -6,7 +6,13 @@ const { PublicKey } = require("@solana/web3.js");
 const fs = require("fs");
 const { setup, getInitialOutAmountWithSlippage } = require("./setup");
 
-const { calculateProfit, toDecimal, toNumber } = require("./utils");
+const {
+	calculateProfit,
+	toDecimal,
+	toNumber,
+	updateIterationsPerMin,
+} = require("./utils");
+
 const { handleExit } = require("./exit");
 const keypress = require("keypress");
 const ora = require("ora-classic");
@@ -115,17 +121,8 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 	cache.queue[i] = -1;
 
 	try {
-		// calculate & update iteration per minute
-		const iterationTimer =
-			(performance.now() - cache.iterationPerMinute.start) / 1000;
-
-		if (iterationTimer >= 60) {
-			cache.iterationPerMinute.value = Number(
-				cache.iterationPerMinute.counter.toFixed()
-			);
-			cache.iterationPerMinute.start = performance.now();
-			cache.iterationPerMinute.counter = 0;
-		} else cache.iterationPerMinute.counter++;
+		// calculate & update iterations per minute
+		updateIterationsPerMin();
 
 		// Calculate amount that will be used for trade
 		const amountToTrade =

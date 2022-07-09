@@ -14,9 +14,26 @@ const createTempDir = () => {
 	}
 };
 
+/**
+ * It calculates the number of iterations per minute and updates the cache.
+ */
+const updateIterationsPerMin = () => {
+	const iterationTimer =
+		(performance.now() - cache.iterationPerMinute.start) / 1000;
+
+	if (iterationTimer >= 60) {
+		cache.iterationPerMinute.value = Number(
+			cache.iterationPerMinute.counter.toFixed()
+		);
+		cache.iterationPerMinute.start = performance.now();
+		cache.iterationPerMinute.counter = 0;
+	} else cache.iterationPerMinute.counter++;
+};
+
 module.exports = {
 	calculateProfit,
 	toDecimal,
 	toNumber,
 	createTempDir,
+	updateIterationsPerMin,
 };
