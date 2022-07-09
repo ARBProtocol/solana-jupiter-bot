@@ -12,7 +12,7 @@ const {
 	updateIterationsPerMin,
 } = require("./utils");
 
-const { handleExit } = require("./exit");
+const { handleExit, logError } = require("./exit");
 
 const { clearInterval } = require("timers");
 const printToConsole = require("./ui");
@@ -318,7 +318,7 @@ const run = async () => {
 		);
 		cache.lastBalance.tokenB = cache.initialBalance.tokenB;
 
-		setInterval(
+		global.botInterval = setInterval(
 			() => watcher(jupiter, tokenA, tokenB),
 			cache.config.minInterval
 		);
@@ -326,10 +326,12 @@ const run = async () => {
 		// listen for hotkeys
 		listenHotkeys();
 	} catch (error) {
-		console.log(error);
-	} finally {
-		handleExit();
+		logError(error);
+		process.exitCode = 1;
 	}
 };
 
 run();
+
+// handle exit
+process.on("exit", handleExit);

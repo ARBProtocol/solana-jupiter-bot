@@ -1,6 +1,7 @@
 const keypress = require("keypress");
 
 const cache = require("./cache");
+const { logError, handleExit } = require("./exit");
 
 const listenHotkeys = () => {
 	keypress(process.stdin);
@@ -8,11 +9,12 @@ const listenHotkeys = () => {
 	process.stdin.on("keypress", function (ch, key) {
 		// console.log('got "keypress"', key);
 		if (key && key.ctrl && key.name == "c") {
-			cache.tradingEnabled = false; // stop all trades
-			console.log("[CTRL] + [C] PRESS AGAIN TO EXIT!");
-			process.stdin.pause();
+			// eslint-disable-next-line no-undef
+			clearInterval(botInterval);
+			handleExit();
+			logError({ message: "Exited by user!" });
 			process.stdin.setRawMode(false);
-			process.stdin.resume();
+			process.exitCode = 0;
 		}
 
 		// [E] - forced execution

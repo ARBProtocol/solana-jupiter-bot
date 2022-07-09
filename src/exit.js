@@ -1,8 +1,28 @@
+const chalk = require("chalk");
 const fs = require("fs");
 const cache = require("./cache");
 
-exports.handleExit = () => {
+const logError = (error) => {
+	error?.message &&
+		console.log(
+			chalk.black.bgRedBright.black("ERROR: " + chalk.bold(error.message))
+		);
+	error?.stack && console.log(chalk.redBright(error.stack));
+
+	if (cache.isSetupDone) {
+		console.log(
+			chalk.black.bgYellowBright(
+				"Closing connections... ",
+				chalk.bold("WAIT! ")
+			)
+		);
+		console.log(chalk.yellowBright.bgBlack("Press [Ctrl]+[C] to force exit"));
+	}
+};
+
+const handleExit = () => {
 	try {
+		console.log("Exiting on time: ", new Date().toLocaleString());
 		// write cache to file
 		fs.writeFileSync("./temp/cache.json", JSON.stringify(cache, null, 2));
 
@@ -15,3 +35,5 @@ exports.handleExit = () => {
 		console.log(error);
 	}
 };
+
+module.exports = { logError, handleExit };
