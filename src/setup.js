@@ -13,8 +13,9 @@ const setup = async () => {
 		cache.config = loadConfigFile();
 
 		const spinner = ora({
-			text: "Setting up...",
+			text: "Loading tokens...",
 			discardStdin: false,
+			color: "magenta",
 		}).start();
 
 		// read tokens.json file
@@ -28,6 +29,7 @@ const setup = async () => {
 			(t) => t.address === cache.config.tokenB.address
 		);
 
+		spinner.text = "Checking wallet...";
 		// check wallet private key
 		if (!process.env.SOLANA_WALLET_PRIVATE_KEY)
 			spinner.fail(
@@ -44,8 +46,11 @@ const setup = async () => {
 			bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY)
 		);
 
+		spinner.text = "Setting up connection ...";
 		// connect to RPC
 		const connection = new Connection(cache.config.rpc[0]);
+
+		spinner.text = "Loading Jupiter SDK...";
 
 		const jupiter = await Jupiter.load({
 			connection,
@@ -72,6 +77,7 @@ const getInitialOutAmountWithSlippage = async (
 		const spinner = ora({
 			text: "Computing routes...",
 			discardStdin: false,
+			color: "magenta",
 		}).start();
 
 		// compute routes for the first time
