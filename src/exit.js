@@ -10,10 +10,6 @@ exports.handleExit = (config, cache) => {
 			"./temp/tradeHistory.json",
 			JSON.stringify(cache.tradeHistory, null, 2)
 		);
-
-		// write config to file
-		delete cache.tradeHistory;
-		fs.writeFileSync("./config.json", JSON.stringify(config, null, 2));
 	} catch (error) {
 		console.log(error);
 	}
