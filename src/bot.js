@@ -174,7 +174,6 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 			tokenB,
 			route,
 			simulatedProfit,
-			cache,
 		});
 
 		// check profitability and execute tx
@@ -220,7 +219,6 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 							tokenB,
 							route,
 							simulatedProfit,
-							cache,
 						});
 					}
 				}, 500);
@@ -275,7 +273,6 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 			tokenB,
 			route,
 			simulatedProfit,
-			cache,
 		});
 	} catch (error) {
 		cache.queue[i] = 1;

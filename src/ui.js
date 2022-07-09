@@ -3,6 +3,7 @@ const chart = require("asciichart");
 const moment = require("moment");
 const chalk = require("chalk");
 const { toDecimal } = require("./utils");
+const cache = require("./cache");
 
 function printToConsole({
 	date,
@@ -14,7 +15,6 @@ function printToConsole({
 	tokenB,
 	route,
 	simulatedProfit,
-	cache,
 }) {
 	try {
 		// update max profitability spotted chart
