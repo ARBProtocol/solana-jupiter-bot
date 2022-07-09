@@ -46,7 +46,7 @@ const failedSwapHandler = (tradeEntry) => {
 	cache.config.storeFailedTxInHistory;
 
 	// update trade history
-	let tempHistory = cache.tradeHistory || [];
+	let tempHistory = cache.tradeHistory;
 	tempHistory.push(tradeEntry);
 	cache.tradeHistory = tempHistory;
 };
@@ -82,7 +82,7 @@ const successSwapHandler = (tx, tradeEntry, tokenA, tokenB) => {
 	}
 
 	// update trade history
-	let tempHistory = cache.tradeHistory || [];
+	let tempHistory = cache.tradeHistory;
 
 	tradeEntry.inAmount = toDecimal(
 		tx.inputAmount,
