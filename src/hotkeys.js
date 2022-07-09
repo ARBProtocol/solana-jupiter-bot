@@ -9,6 +9,7 @@ const listenHotkeys = () => {
 	process.stdin.on("keypress", function (ch, key) {
 		// console.log('got "keypress"', key);
 		if (key && key.ctrl && key.name == "c") {
+			cache.ui.allowClear = false;
 			// eslint-disable-next-line no-undef
 			clearInterval(botInterval);
 			handleExit();
