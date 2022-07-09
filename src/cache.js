@@ -70,6 +70,7 @@ const cache = {
 		buy: 0,
 		sell: 0,
 	},
+	isSetupDone: false,
 };
 
 module.exports = cache;
