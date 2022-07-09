@@ -53,6 +53,7 @@ const setup = async () => {
 			user: wallet,
 		});
 
+		cache.isSetupDone = true;
 		spinner.succeed("Setup done!");
 
 		return { jupiter, tokenA, tokenB };
