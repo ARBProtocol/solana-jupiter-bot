@@ -328,7 +328,7 @@ const run = async () => {
 	} catch (error) {
 		console.log(error);
 	} finally {
-		handleExit(cache);
+		handleExit();
 	}
 };
 

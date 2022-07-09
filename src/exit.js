@@ -1,6 +1,7 @@
 const fs = require("fs");
+const cache = require("./cache");
 
-exports.handleExit = (cache) => {
+exports.handleExit = () => {
 	try {
 		// write cache to file
 		fs.writeFileSync("./temp/cache.json", JSON.stringify(cache, null, 2));
