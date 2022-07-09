@@ -124,14 +124,6 @@ const failedSwapHandler = (tx, tradeEntry, route) => {
 	let tempHistory = cache.tradeHistory || [];
 	tempHistory.push(tradeEntry);
 	cache.tradeHistory = tempHistory;
-
-	// add AMM to blockedAMMs
-	// const marketInfos = JSON.parse(JSON.stringify(route.marketInfos, null, 2));
-	// TODO: add AMM to blockedAMMs if there is error called "Unknown"
-	// for (const market of marketInfos) {
-	// 	if (msg.toLowerCase().includes("unknown"))
-	// 		cache.blockedAMMs[market.amm.id] = msg;
-	// }
 };
 
 const successSwapHandler = (tx, tradeEntry, tokenA, tokenB) => {
@@ -394,10 +386,7 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 const run = async () => {
 	try {
 		// set everything up
-		const { jupiter, tokenA, tokenB, blockedAMMs } = await setup(config);
-
-		// load blocked AMMs to cache
-		cache.blockedAMMs = blockedAMMs;
+		const { jupiter, tokenA, tokenB } = await setup(config);
 
 		// set initial & current & last balance for tokenA
 		cache.initialBalance.tokenA = toNumber(config.tradeSize, tokenA.decimals);

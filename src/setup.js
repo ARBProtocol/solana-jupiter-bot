@@ -44,15 +44,9 @@ const setup = async (config) => {
 			user: wallet,
 		});
 
-		// read blocked AMMs from blockedAMMs.json
-		const blockedAMMs = {};
-		if (fs.existsSync("./blockedAMMs.json")) {
-			const blockedAMMs = JSON.parse(fs.readFileSync("./blockedAMMs.json"));
-		}
-
 		spinner.succeed("Setup done!");
 
-		return { jupiter, tokenA, tokenB, blockedAMMs };
+		return { jupiter, tokenA, tokenB };
 	} catch (error) {
 		console.log(error);
 	}
