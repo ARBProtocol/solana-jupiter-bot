@@ -48,9 +48,7 @@ const swap = async (jupiter, route) => {
 };
 
 // this needs some work
-const failedSwapHandler = (tx, tradeEntry, route) => {
-	// const msg = tx.error.message;
-
+const failedSwapHandler = (tradeEntry) => {
 	// update counter
 	cache.tradeCounter[cache.sideBuy ? "buy" : "sell"].fail++;
 
@@ -258,7 +256,7 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 				};
 
 				// handle TX results
-				if (tx.error) failedSwapHandler(tx, tradeEntry, route);
+				if (tx.error) failedSwapHandler(tradeEntry);
 				else {
 					if (cache.hotkeys.r) {
 						console.log("[R] - REVERT BACK SWAP - SUCCESS!");
