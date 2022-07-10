@@ -5,7 +5,7 @@ const chalk = require("chalk");
 const fs = require("fs");
 const ora = require("ora-classic");
 const cache = require("./cache");
-const { logExit, handleExit } = require("./exit");
+const { logExit } = require("./exit");
 const { loadConfigFile } = require("./utils");
 
 const setup = async () => {
