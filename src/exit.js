@@ -26,15 +26,49 @@ const logExit = (code = 0, error) => {
 
 const handleExit = () => {
 	try {
-		console.log("Exiting on time: ", new Date().toLocaleString());
+		console.log(
+			chalk.black.bgMagentaBright(
+				`\n	Exit time:  ${chalk.bold(new Date().toLocaleString())} `
+			)
+		);
+
 		// write cache to file
-		fs.writeFileSync("./temp/cache.json", JSON.stringify(cache, null, 2));
+		try {
+			fs.writeFileSync("./temp/cache.json", JSON.stringify(cache, null, 2));
+			console.log(
+				chalk.black.bgGreenBright(
+					`		> Cache saved to ${chalk.bold("./temp/cache.json")} `
+				)
+			);
+		} catch (error) {
+			console.log(
+				chalk.black.bgRedBright(
+					`		X Error saving cache to ${chalk.bold("./temp/cache.json")} `
+				)
+			);
+		}
 
 		// write trade history to file
-		fs.writeFileSync(
-			"./temp/tradeHistory.json",
-			JSON.stringify(cache.tradeHistory, null, 2)
-		);
+		try {
+			fs.writeFileSync(
+				"./temp/tradeHistory.json",
+				JSON.stringify(cache.tradeHistory, null, 2)
+			);
+			console.log(
+				chalk.black.bgGreenBright(
+					`		> Trade history saved to ${chalk.bold("./temp/tradeHistory.json")} `
+				)
+			);
+		} catch (error) {
+			console.log(
+				chalk.black.bgRedBright(
+					`		X Error saving trade history to ${chalk.bold(
+						"./temp/tradeHistory.json"
+					)} `
+				)
+			);
+		}
+		console.log(chalk.black.bgMagentaBright.bold("	Exit Done! \n"));
 	} catch (error) {
 		console.log(error);
 	}
