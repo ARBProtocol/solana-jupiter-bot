@@ -1,7 +1,7 @@
 const keypress = require("keypress");
 
 const cache = require("./cache");
-const { logError, handleExit } = require("./exit");
+const { logExit, handleExit } = require("./exit");
 
 const listenHotkeys = () => {
 	keypress(process.stdin);
@@ -12,10 +12,10 @@ const listenHotkeys = () => {
 			cache.ui.allowClear = false;
 			// eslint-disable-next-line no-undef
 			clearInterval(botInterval);
-			handleExit();
-			logError({ message: "Exited by user!" });
-			process.stdin.setRawMode(false);
+			logExit(0, { message: "[CTRL]+[C] exiting by user " });
 			process.exitCode = 0;
+			process.stdin.setRawMode(false);
+			handleExit();
 		}
 
 		// [E] - forced execution

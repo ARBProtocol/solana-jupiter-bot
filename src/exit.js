@@ -2,21 +2,25 @@ const chalk = require("chalk");
 const fs = require("fs");
 const cache = require("./cache");
 
-const logError = (error) => {
-	error?.message &&
-		console.log(
-			chalk.black.bgRedBright.black("ERROR: " + chalk.bold(error.message))
-		);
-	error?.stack && console.log(chalk.redBright(error.stack));
+const logExit = (code = 0, error) => {
+	code === 0 && console.log(chalk.black.bgMagentaBright.bold(error.message));
 
-	if (cache.isSetupDone) {
-		console.log(
-			chalk.black.bgYellowBright(
-				"Closing connections... ",
-				chalk.bold("WAIT! ")
-			)
-		);
-		console.log(chalk.yellowBright.bgBlack("Press [Ctrl]+[C] to force exit"));
+	if (code === 1) {
+		error?.message &&
+			console.log(
+				chalk.black.bgRedBright.black("ERROR: " + chalk.bold(error.message))
+			);
+		error?.stack && console.log(chalk.redBright(error.stack));
+
+		if (cache.isSetupDone) {
+			console.log(
+				chalk.black.bgYellowBright(
+					"Closing connections... ",
+					chalk.bold("WAIT! ")
+				)
+			);
+			console.log(chalk.yellowBright.bgBlack("Press [Ctrl]+[C] to force exit"));
+		}
 	}
 };
 
@@ -36,4 +40,4 @@ const handleExit = () => {
 	}
 };
 
-module.exports = { logError, handleExit };
+module.exports = { logExit, handleExit };

@@ -12,7 +12,7 @@ const {
 	updateIterationsPerMin,
 } = require("./utils");
 
-const { handleExit, logError } = require("./exit");
+const { handleExit, logExit } = require("./exit");
 
 const { clearInterval } = require("timers");
 const printToConsole = require("./ui");
@@ -241,7 +241,7 @@ const run = async () => {
 		// listen for hotkeys
 		listenHotkeys();
 	} catch (error) {
-		logError(error);
+		logExit(error);
 		process.exitCode = 1;
 	}
 };
