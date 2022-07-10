@@ -5,46 +5,58 @@ const chalk = require("chalk");
 const fs = require("fs");
 const ora = require("ora-classic");
 const cache = require("./cache");
+const { logExit, handleExit } = require("./exit");
 const { loadConfigFile } = require("./utils");
 
 const setup = async () => {
+	let spinner, tokens, tokenA, tokenB, wallet;
 	try {
 		// load config file and store it in cache
 		cache.config = loadConfigFile();
 
-		const spinner = ora({
+		spinner = ora({
 			text: "Loading tokens...",
 			discardStdin: false,
 			color: "magenta",
 		}).start();
 
 		// read tokens.json file
-		const tokens = JSON.parse(fs.readFileSync("./temp/tokens.json"));
+		try {
+			tokens = JSON.parse(fs.readFileSync("./temp/tokens.json"));
+			// find tokens full Object
+			tokenA = tokens.find((t) => t.address === cache.config.tokenA.address);
+			tokenB = tokens.find((t) => t.address === cache.config.tokenB.address);
+		} catch (error) {
+			spinner.text = chalk.black.bgRedBright(
+				`\n	Loading tokens failed!\n	Please try to run the Wizard first using ${chalk.bold(
+					"`yarn start`"
+				)}\n`
+			);
+			throw error;
+		}
 
-		// find tokens full Object
-		const tokenA = tokens.find(
-			(t) => t.address === cache.config.tokenA.address
-		);
-		const tokenB = tokens.find(
-			(t) => t.address === cache.config.tokenB.address
-		);
-
-		spinner.text = "Checking wallet...";
 		// check wallet private key
-		if (!process.env.SOLANA_WALLET_PRIVATE_KEY)
-			spinner.fail(
-				chalk.bold.redBright("Set WALLET PRIVATE KEY in .env file!")
-			) && process.exit(1);
-		else if (
-			process.env.SOLANA_WALLET_PUBLIC_KEY &&
-			process.env.SOLANA_WALLET_PUBLIC_KEY?.length !== 88
-		)
-			spinner.fail(chalk.bold.redBright("WRONG WALLET PRIVATE KEY!")) &&
-				process.exit(1);
-
-		const wallet = Keypair.fromSecretKey(
-			bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY)
-		);
+		try {
+			spinner.text = "Checking wallet...";
+			if (
+				!process.env.SOLANA_WALLET_PRIVATE_KEY ||
+				(process.env.SOLANA_WALLET_PUBLIC_KEY &&
+					process.env.SOLANA_WALLET_PUBLIC_KEY?.length !== 88)
+			) {
+				throw new Error("Wallet check failed!");
+			} else {
+				wallet = Keypair.fromSecretKey(
+					bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY)
+				);
+			}
+		} catch (error) {
+			spinner.text = chalk.black.bgRedBright(
+				`\n	Wallet check failed! \n	Please make sure that ${chalk.bold(
+					"SOLANA_WALLET_PRIVATE_KEY "
+				)}\n	inside ${chalk.bold(".env")} file is correct \n`
+			);
+			throw error;
+		}
 
 		spinner.text = "Setting up connection ...";
 		// connect to RPC
@@ -63,7 +75,12 @@ const setup = async () => {
 
 		return { jupiter, tokenA, tokenB };
 	} catch (error) {
-		console.log(error);
+		if (spinner)
+			spinner.fail(
+				chalk.bold.redBright(`Setting up failed!\n 	${spinner.text}`)
+			);
+		logExit(1, error);
+		process.exitCode = 1;
 	}
 };
 
@@ -73,8 +90,9 @@ const getInitialOutAmountWithSlippage = async (
 	outputToken,
 	amountToTrade
 ) => {
+	let spinner;
 	try {
-		const spinner = ora({
+		spinner = ora({
 			text: "Computing routes...",
 			discardStdin: false,
 			color: "magenta",
@@ -94,7 +112,10 @@ const getInitialOutAmountWithSlippage = async (
 
 		return routes.routesInfos[0].outAmountWithSlippage;
 	} catch (error) {
-		console.log(error);
+		if (spinner)
+			spinner.fail(chalk.bold.redBright("Computing routes failed!\n"));
+		logExit(1, error);
+		process.exitCode = 1;
 	}
 };
 
