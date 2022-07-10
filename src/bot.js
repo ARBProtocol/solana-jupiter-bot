@@ -20,7 +20,7 @@ const cache = require("./cache");
 const listenHotkeys = require("./hotkeys");
 const { swap, failedSwapHandler, successSwapHandler } = require("./swap");
 
-const pingpongMode = async (jupiter, tokenA, tokenB) => {
+const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 	cache.iteration++;
 	const date = new Date();
 	const i = cache.iteration;
@@ -206,7 +206,7 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 			Object.keys(cache.queue).length < cache.queueThrottle &&
 			cache.tradingMode === "pingpong"
 		) {
-			await pingpongMode(jupiter, tokenA, tokenB);
+			await pingpongStrategy(jupiter, tokenA, tokenB);
 		}
 	}
 };
