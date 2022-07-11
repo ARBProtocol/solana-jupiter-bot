@@ -49,7 +49,7 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 			outputMint: new PublicKey(outputToken.address),
 			inputAmount: amountToTrade,
 			slippage,
-			forceFeech: true,
+			forceFetch: true,
 		});
 
 		// count available routes
