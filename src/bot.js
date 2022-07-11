@@ -28,7 +28,7 @@ const pingpongMode = async (jupiter, tokenA, tokenB) => {
 
 	try {
 		// calculate & update iterations per minute
-		updateIterationsPerMin();
+		updateIterationsPerMin(cache);
 
 		// Calculate amount that will be used for trade
 		const amountToTrade =

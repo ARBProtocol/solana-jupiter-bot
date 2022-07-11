@@ -1,6 +1,5 @@
 const fs = require("fs");
 const ora = require("ora-classic");
-const cache = require("./cache");
 
 const calculateProfit = (oldVal, newVal) => ((newVal - oldVal) / oldVal) * 100;
 
@@ -36,7 +35,7 @@ const loadConfigFile = () => {
 /**
  * It calculates the number of iterations per minute and updates the cache.
  */
-const updateIterationsPerMin = () => {
+const updateIterationsPerMin = (cache) => {
 	const iterationTimer =
 		(performance.now() - cache.iterationPerMinute.start) / 1000;
 
