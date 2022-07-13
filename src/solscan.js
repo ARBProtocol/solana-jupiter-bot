@@ -4,6 +4,9 @@ const cache = require("./cache");
 
 const getSwapResultFromSolscanParser = async (txid) => {
 	try {
+		// disable trading till swap result is ready
+		cache.tradingEnabled = false;
+
 		const fetcher = async (retry) => {
 			console.log(
 				new Date().toLocaleString(),
@@ -58,6 +61,8 @@ const getSwapResultFromSolscanParser = async (txid) => {
 		return [inputAmount, outputAmount];
 	} catch (error) {
 		console.log(error);
+	} finally {
+		cache.tradingEnabled = true;
 	}
 };
 
