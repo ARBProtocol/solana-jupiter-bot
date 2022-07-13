@@ -1147,16 +1147,16 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@jup-ag/core@^1.0.0-beta.27":
-  version "1.0.0-beta.27"
-  resolved "https://registry.yarnpkg.com/@jup-ag/core/-/core-1.0.0-beta.27.tgz#e5d8ca75ef827b5cb809384c139c371b579a29c5"
-  integrity sha512-AIGhvDkh16bfagE3IT/DDORAM7Fak+RWPMoHSdCfRE5tqFjyqnJM8c+zbEh3+lhOWIs7iEMi/buiGKamNzx9fA==
+"@jup-ag/core@^1.0.0-beta.28":
+  version "1.0.0-beta.28"
+  resolved "https://registry.yarnpkg.com/@jup-ag/core/-/core-1.0.0-beta.28.tgz#0c15f940c6049f8b8570d6667d716f1bb1010434"
+  integrity sha512-96gb77z34jAn0WSQDqdrS8qQdCBRVFFv4UP5/N0d+oyPbK0jpIpAL7TIGN8+RCuutJB3nLLAmiNNVWYf+aJaFg==
   dependencies:
     "@jup-ag/crema-sdk" "2.0.7"
     "@jup-ag/cykura-sdk" "0.1.25"
     "@jup-ag/cykura-sdk-core" "0.1.8"
     "@jup-ag/lifinity-sdk" "0.1.72"
-    "@jup-ag/math" "1.0.0-beta.27"
+    "@jup-ag/math" "1.0.0-beta.28"
     "@jup-ag/whirlpool-sdk" "0.1.1"
     "@mercurial-finance/optimist" "0.1.4"
     "@project-serum/anchor" "0.23.0"
@@ -1209,10 +1209,10 @@
     "@solana/web3.js" "1.31.0"
     decimal.js "^10.3.1"
 
-"@jup-ag/math@1.0.0-beta.27":
-  version "1.0.0-beta.27"
-  resolved "https://registry.yarnpkg.com/@jup-ag/math/-/math-1.0.0-beta.27.tgz#5d3f0f822586ee86b2c46bce392d3801bb3fda9b"
-  integrity sha512-jJaMRYjVG0oo9js/BkILVNPkBHnzUW9sQDtu9pH/JXis+VPz99Ud+wZV3mXYEo/kHinvJTsb5QuPAhtM32w+TA==
+"@jup-ag/math@1.0.0-beta.28":
+  version "1.0.0-beta.28"
+  resolved "https://registry.yarnpkg.com/@jup-ag/math/-/math-1.0.0-beta.28.tgz#52300d7470eee7c2cdac01b27b2f0c16062ad48a"
+  integrity sha512-GQkziJQ5kJwYgYNvK8ZFpW+d92R90ihwiQ2n1BunKakeTvPdwt7BQKAOj4KRgIb9/458zMCuYVZvdF1cAWFA/g==
   dependencies:
     decimal.js "10.3.1"
     jsbi "4.3.0"

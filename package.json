@@ -21,7 +21,7 @@
 		"./src/generator.js"
 	],
 	"dependencies": {
-		"@jup-ag/core": "^1.0.0-beta.27",
+		"@jup-ag/core": "^1.0.0-beta.28",
 		"@solana/web3.js": "^1.44.0",
 		"asciichart": "^1.5.25",
 		"axios": "^0.27.2",
@@ -38,6 +38,7 @@
 		"meow": "^9.0.0",
 		"moment": "^2.29.3",
 		"ora-classic": "^5.4.2",
+		"promise-retry": "^2.0.1",
 		"react": "^17.0.2",
 		"strip-ansi": "^7.0.1"
 	},

@@ -1,15 +1,32 @@
 const { calculateProfit, toDecimal } = require("./utils");
 const cache = require("./cache");
+const fs = require("fs");
+const { getSwapResultFromSolscanParser } = require("./solscan");
 
 const swap = async (jupiter, route) => {
 	try {
 		const performanceOfTxStart = performance.now();
 		cache.performanceOfTxStart = performanceOfTxStart;
 
+		// save route object to ./temp/routeInfoBeforeSwap.json
+		await fs.writeFile(
+			"./temp/routeInfoBeforeSwap.json",
+			JSON.stringify(route, null, 2),
+			() => {}
+		);
+
 		const { execute } = await jupiter.exchange({
 			routeInfo: route,
 		});
+
 		const result = await execute();
+
+		// save result object to ./temp/result.json
+		await fs.writeFile(
+			"./temp/result.json",
+			JSON.stringify(await result, null, 2),
+			() => {}
+		);
 
 		const performanceOfTx = performance.now() - performanceOfTxStart;
 
@@ -33,54 +50,91 @@ const failedSwapHandler = (tradeEntry) => {
 	cache.tradeHistory = tempHistory;
 };
 exports.failedSwapHandler = failedSwapHandler;
-const successSwapHandler = (tx, tradeEntry, tokenA, tokenB) => {
+const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 	// update counter
 	cache.tradeCounter[cache.sideBuy ? "buy" : "sell"].success++;
 
-	// update balance
-	if (cache.sideBuy) {
-		cache.lastBalance.tokenA = cache.currentBalance.tokenA;
-		cache.currentBalance.tokenA = 0;
-		cache.currentBalance.tokenB = tx.outputAmount;
-	} else {
-		cache.lastBalance.tokenB = cache.currentBalance.tokenB;
-		cache.currentBalance.tokenB = 0;
-		cache.currentBalance.tokenA = tx.outputAmount;
-	}
+	if (cache.config.tradingMode === "pingpong") {
+		// update balance
+		if (cache.sideBuy) {
+			cache.lastBalance.tokenA = cache.currentBalance.tokenA;
+			cache.currentBalance.tokenA = 0;
+			cache.currentBalance.tokenB = tx.outputAmount;
+		} else {
+			cache.lastBalance.tokenB = cache.currentBalance.tokenB;
+			cache.currentBalance.tokenB = 0;
+			cache.currentBalance.tokenA = tx.outputAmount;
+		}
 
-	// update profit
-	if (cache.sideBuy) {
-		cache.currentProfit.tokenA = 0;
-		cache.currentProfit.tokenB = calculateProfit(
-			cache.initialBalance.tokenB,
-			cache.currentBalance.tokenB
+		// update profit
+		if (cache.sideBuy) {
+			cache.currentProfit.tokenA = 0;
+			cache.currentProfit.tokenB = calculateProfit(
+				cache.initialBalance.tokenB,
+				cache.currentBalance.tokenB
+			);
+		} else {
+			cache.currentProfit.tokenB = 0;
+			cache.currentProfit.tokenA = calculateProfit(
+				cache.initialBalance.tokenA,
+				cache.currentBalance.tokenA
+			);
+		}
+
+		// update trade history
+		let tempHistory = cache.tradeHistory;
+
+		tradeEntry.inAmount = toDecimal(
+			tx.inputAmount,
+			cache.sideBuy ? tokenA.decimals : tokenB.decimals
 		);
-	} else {
-		cache.currentProfit.tokenB = 0;
+		tradeEntry.outAmount = toDecimal(
+			tx.outputAmount,
+			cache.sideBuy ? tokenB.decimals : tokenA.decimals
+		);
+
+		tradeEntry.profit = calculateProfit(
+			cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"],
+			tx.outputAmount
+		);
+		tempHistory.push(tradeEntry);
+		cache.tradeHistory = tempHistory;
+	}
+	if (cache.config.tradingMode === "arbitrage") {
+		/** check real amounts on solscan because Jupiter SDK returns wrong amounts
+		 *  when we trading TokenA <> TokenA (arbitrage)
+		 */
+		const [inAmountFromSolscanParser, outAmountFromSolscanParser] =
+			await getSwapResultFromSolscanParser(tx?.txid);
+
+		if (inAmountFromSolscanParser === -1)
+			throw new Error("Solscan inputAmount error");
+		if (outAmountFromSolscanParser === -1)
+			throw new Error("Solscan outputAmount error");
+
+		cache.lastBalance.tokenA = cache.currentBalance.tokenA;
+		cache.currentBalance.tokenA = outAmountFromSolscanParser;
+
 		cache.currentProfit.tokenA = calculateProfit(
 			cache.initialBalance.tokenA,
 			cache.currentBalance.tokenA
 		);
+
+		// update trade history
+		let tempHistory = cache.tradeHistory;
+
+		tradeEntry.inAmount = toDecimal(inAmountFromSolscanParser, tokenA.decimals);
+		tradeEntry.outAmount = toDecimal(
+			outAmountFromSolscanParser,
+			tokenA.decimals
+		);
+
+		tradeEntry.profit = calculateProfit(
+			cache.lastBalance["tokenA"],
+			outAmountFromSolscanParser
+		);
+		tempHistory.push(tradeEntry);
+		cache.tradeHistory = tempHistory;
 	}
-
-	// update trade history
-	let tempHistory = cache.tradeHistory;
-
-	tradeEntry.inAmount = toDecimal(
-		tx.inputAmount,
-		cache.sideBuy ? tokenA.decimals : tokenB.decimals
-	);
-	tradeEntry.outAmount = toDecimal(
-		tx.outputAmount,
-		cache.sideBuy ? tokenB.decimals : tokenA.decimals
-	);
-
-	tradeEntry.profit = calculateProfit(
-		cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"],
-		tx.outputAmount
-	);
-
-	tempHistory.push(tradeEntry);
-	cache.tradeHistory = tempHistory;
 };
 exports.successSwapHandler = successSwapHandler;
