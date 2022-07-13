@@ -54,7 +54,7 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 	// update counter
 	cache.tradeCounter[cache.sideBuy ? "buy" : "sell"].success++;
 
-	if (cache.config.tradingMode === "pingpong") {
+	if (cache.config.tradingStrategy === "pingpong") {
 		// update balance
 		if (cache.sideBuy) {
 			cache.lastBalance.tokenA = cache.currentBalance.tokenA;
@@ -100,7 +100,7 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 		tempHistory.push(tradeEntry);
 		cache.tradeHistory = tempHistory;
 	}
-	if (cache.config.tradingMode === "arbitrage") {
+	if (cache.config.tradingStrategy === "arbitrage") {
 		/** check real amounts on solscan because Jupiter SDK returns wrong amounts
 		 *  when we trading TokenA <> TokenA (arbitrage)
 		 */

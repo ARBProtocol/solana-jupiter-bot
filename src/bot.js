@@ -375,10 +375,10 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 		!cache.swappingRightNow &&
 		Object.keys(cache.queue).length < cache.queueThrottle
 	) {
-		if (cache.tradingMode === "pingpong") {
+		if (cache.tradingStrategy === "pingpong") {
 			await pingpongStrategy(jupiter, tokenA, tokenB);
 		}
-		if (cache.tradingMode === "arbitrage") {
+		if (cache.tradingStrategy === "arbitrage") {
 			await arbitrageStrategy(jupiter, tokenA, tokenB);
 		}
 	}
@@ -389,7 +389,7 @@ const run = async () => {
 		// set everything up
 		const { jupiter, tokenA, tokenB } = await setup();
 
-		if (cache.tradingMode === "pingpong") {
+		if (cache.tradingStrategy === "pingpong") {
 			// set initial & current & last balance for tokenA
 			cache.initialBalance.tokenA = toNumber(
 				cache.config.tradeSize,
@@ -406,7 +406,7 @@ const run = async () => {
 				cache.initialBalance.tokenA
 			);
 			cache.lastBalance.tokenB = cache.initialBalance.tokenB;
-		} else if (cache.tradingMode === "arbitrage") {
+		} else if (cache.tradingStrategy === "arbitrage") {
 			// cache.ui.allowClear = false;
 			// set initial & current & last balance for tokenA
 			cache.initialBalance.tokenA = toNumber(

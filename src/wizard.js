@@ -30,9 +30,9 @@ const networks = [
 	{ label: "devnet", value: "devnet" },
 ];
 
-const tradingModes = [
+const tradingStrategies = [
 	{ label: "pingpong", value: "pingpong" },
-	{ label: "arbitrage (coming soon)", value: "arbitrage" },
+	{ label: "arbitrage (beta)", value: "arbitrage" },
 ];
 
 const App = (props) => {
@@ -40,7 +40,7 @@ const App = (props) => {
 	const [rpcURL, setRpcURL] = useState(props.rpc);
 	const [rpc, setRpc] = useState([]);
 	const [isRpcsSet, setIsRpcsSet] = useState(false);
-	const [tradingMode, setTradingMode] = useState("");
+	const [tradingStrategy, setTradingStrategy] = useState("");
 	const [tokens, setTokens] = useState([]);
 	const [tokenA, setTokenA] = useState({});
 	const [tokenB, setTokenB] = useState({});
@@ -66,7 +66,7 @@ const App = (props) => {
 			const config = {
 				tokenA,
 				tokenB,
-				tradingMode,
+				tradingStrategy,
 				tradeSize: parseFloat(tradeSize),
 				network,
 				rpc,
@@ -158,15 +158,15 @@ const App = (props) => {
 			</DefaultBox>
 		);
 
-	if (!tradingMode)
+	if (!tradingStrategy)
 		return (
 			<DefaultBox>
 				<Text>
 					Choose <Text color="cyan">Trading Mode</Text>:
 				</Text>
 				<SelectInput
-					items={tradingModes}
-					onSelect={(item) => setTradingMode(item.value)}
+					items={tradingStrategies}
+					onSelect={(item) => setTradingStrategy(item.value)}
 				/>
 				<EscNotification />
 			</DefaultBox>
@@ -180,7 +180,7 @@ const App = (props) => {
 					Network: <Text color="magenta">{network}</Text>
 				</Text>
 				<Text>
-					Trading Mode: <Text color="cyan">{tradingMode}</Text>
+					Trading Mode: <Text color="cyan">{tradingStrategy}</Text>
 				</Text>
 				{tokens?.length > 0 ? (
 					<>

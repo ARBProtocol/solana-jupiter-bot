@@ -4,6 +4,9 @@ const cache = require("./cache");
 
 const getSwapResultFromSolscanParser = async (txid) => {
 	try {
+		// disable trading till swap result is ready
+		cache.tradingEnabled = false;
+
 		const fetcher = async (retry) => {
 			console.log(
 				new Date().toLocaleString(),
@@ -31,14 +34,20 @@ const getSwapResultFromSolscanParser = async (txid) => {
 			maxTimeout: 1000,
 		});
 
-		const ownerAddress = "AGpEqxiKA6MGR4ZM8eQG2ycHscgjk7jtJxHktxKisTda";
+		// find signer wallet address
+		const signerAccount = data.inputAccount.filter(
+			(account) => account?.signer === true
+		);
+
+		const ownerAddress = signerAccount?.address;
 		const tokenAddress = cache?.config?.tokenA.address;
 
 		const mainActions = data.mainActions;
 
 		let [inputAmount, outputAmount] = [-1, -1];
 		mainActions.filter((action) => {
-			const events = action.data.event;
+			const events = action?.data?.event;
+			if (events) {
 			const inputEvent = events.find(
 				(event) =>
 					event?.sourceOwner === ownerAddress &&
@@ -53,11 +62,14 @@ const getSwapResultFromSolscanParser = async (txid) => {
 			if (inputEvent) inputAmount = inputEvent?.amount;
 
 			if (outputEvent) outputAmount = outputEvent?.amount;
+			}
 		});
 
 		return [inputAmount, outputAmount];
 	} catch (error) {
 		console.log(error);
+	} finally {
+		cache.tradingEnabled = true;
 	}
 };
 
