@@ -65,7 +65,6 @@ const App = (props) => {
 		if (readyToStart && key.return) {
 			const config = {
 				tokenA,
-				tokenB,
 				tradingStrategy,
 				tradeSize: parseFloat(tradeSize),
 				network,
@@ -78,6 +77,10 @@ const App = (props) => {
 					defaultColor: "cyan",
 				},
 			};
+
+			if (tradingStrategy !== "arbitrage") {
+				config.tokenB = tokenB;
+			}
 
 			// save config to config.json file
 			fs.writeFileSync("./config.json", JSON.stringify(config, null, 2));
