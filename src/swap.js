@@ -1,6 +1,7 @@
 const { calculateProfit, toDecimal } = require("./utils");
 const cache = require("./cache");
 const fs = require("fs");
+const { getSwapResultFromSolscanParser } = require("./solscan");
 
 const swap = async (jupiter, route) => {
 	try {
@@ -49,7 +50,7 @@ const failedSwapHandler = (tradeEntry) => {
 	cache.tradeHistory = tempHistory;
 };
 exports.failedSwapHandler = failedSwapHandler;
-const successSwapHandler = (tx, tradeEntry, tokenA, tokenB) => {
+const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 	// update counter
 	cache.tradeCounter[cache.sideBuy ? "buy" : "sell"].success++;
 
@@ -100,8 +101,19 @@ const successSwapHandler = (tx, tradeEntry, tokenA, tokenB) => {
 		cache.tradeHistory = tempHistory;
 	}
 	if (cache.config.tradingMode === "arbitrage") {
+		/** check real amounts on solscan because Jupiter SDK returns wrong amounts
+		 *  when we trading TokenA <> TokenA (arbitrage)
+		 */
+		const [inAmountFromSolscanParser, outAmountFromSolscanParser] =
+			await getSwapResultFromSolscanParser(tx?.txid);
+
+		if (inAmountFromSolscanParser === -1)
+			throw new Error("Solscan inputAmount error");
+		if (outAmountFromSolscanParser === -1)
+			throw new Error("Solscan outputAmount error");
+
 		cache.lastBalance.tokenA = cache.currentBalance.tokenA;
-		cache.currentBalance.tokenA = tx.outputAmount;
+		cache.currentBalance.tokenA = outAmountFromSolscanParser;
 
 		cache.currentProfit.tokenA = calculateProfit(
 			cache.initialBalance.tokenA,
@@ -111,12 +123,15 @@ const successSwapHandler = (tx, tradeEntry, tokenA, tokenB) => {
 		// update trade history
 		let tempHistory = cache.tradeHistory;
 
-		tradeEntry.inAmount = toDecimal(tx.inputAmount, tokenA.decimals);
-		tradeEntry.outAmount = toDecimal(tx.inputAmount, tokenA.decimals);
+		tradeEntry.inAmount = toDecimal(inAmountFromSolscanParser, tokenA.decimals);
+		tradeEntry.outAmount = toDecimal(
+			outAmountFromSolscanParser,
+			tokenA.decimals
+		);
 
 		tradeEntry.profit = calculateProfit(
 			cache.lastBalance["tokenA"],
-			tx.outputAmount
+			outAmountFromSolscanParser
 		);
 		tempHistory.push(tradeEntry);
 		cache.tradeHistory = tempHistory;
