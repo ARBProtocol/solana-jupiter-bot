@@ -46,7 +46,8 @@ const getSwapResultFromSolscanParser = async (txid) => {
 
 		let [inputAmount, outputAmount] = [-1, -1];
 		mainActions.filter((action) => {
-			const events = action.data.event;
+			const events = action?.data?.event;
+			if (events) {
 			const inputEvent = events.find(
 				(event) =>
 					event?.sourceOwner === ownerAddress &&
@@ -61,6 +62,7 @@ const getSwapResultFromSolscanParser = async (txid) => {
 			if (inputEvent) inputAmount = inputEvent?.amount;
 
 			if (outputEvent) outputAmount = outputEvent?.amount;
+			}
 		});
 
 		return [inputAmount, outputAmount];
