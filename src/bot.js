@@ -201,7 +201,6 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 };
 
 const arbitrageStrategy = async (jupiter, tokenA) => {
-	console.log("[ARBITRAGE] - STARTED");
 	cache.iteration++;
 	const date = new Date();
 	const i = cache.iteration;
@@ -222,7 +221,6 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 		const outputToken = tokenA;
 
 		// check current routes
-		console.log("[ARBITRAGE] - CHECKING ROUTES");
 		const performanceOfRouteCompStart = performance.now();
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
@@ -231,7 +229,6 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			slippage,
 			forceFeech: true,
 		});
-		console.log("[ARBITRAGE] - ROUTES CHECKED");
 
 		// count available routes
 		cache.availableRoutes[cache.sideBuy ? "buy" : "sell"] =
@@ -430,8 +427,6 @@ const run = async () => {
 	} catch (error) {
 		logExit(error);
 		process.exitCode = 1;
-	} finally {
-		console.log("RUN DONE");
 	}
 };
 
