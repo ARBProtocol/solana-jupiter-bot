@@ -25,7 +25,9 @@ const setup = async () => {
 			tokens = JSON.parse(fs.readFileSync("./temp/tokens.json"));
 			// find tokens full Object
 			tokenA = tokens.find((t) => t.address === cache.config.tokenA.address);
-			tokenB = tokens.find((t) => t.address === cache.config.tokenB.address);
+
+			if (cache.config.tradingStrategy !== "arbitrage")
+				tokenB = tokens.find((t) => t.address === cache.config.tokenB.address);
 		} catch (error) {
 			spinner.text = chalk.black.bgRedBright(
 				`\n	Loading tokens failed!\n	Please try to run the Wizard first using ${chalk.bold(
