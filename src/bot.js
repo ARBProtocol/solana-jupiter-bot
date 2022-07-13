@@ -227,7 +227,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			outputMint: new PublicKey(outputToken.address),
 			inputAmount: amountToTrade,
 			slippage,
-			forceFeech: true,
+			forceFetch: true,
 		});
 
 		// count available routes
