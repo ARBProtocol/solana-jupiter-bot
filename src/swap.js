@@ -108,9 +108,13 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 			await getSwapResultFromSolscanParser(tx?.txid);
 
 		if (inAmountFromSolscanParser === -1)
-			throw new Error("Solscan inputAmount error");
+			throw new Error(
+				`Solscan inputAmount error\n	https://solscan.io/tx/${tx.txid}`
+			);
 		if (outAmountFromSolscanParser === -1)
-			throw new Error("Solscan outputAmount error");
+			throw new Error(
+				`Solscan outputAmount error\n	https://solscan.io/tx/${tx.txid}`
+			);
 
 		cache.lastBalance.tokenA = cache.currentBalance.tokenA;
 		cache.currentBalance.tokenA = outAmountFromSolscanParser;
