@@ -32,7 +32,7 @@ const networks = [
 
 const tradingModes = [
 	{ label: "pingpong", value: "pingpong" },
-	{ label: "arbitrage (coming soon)", value: "arbitrage" },
+	{ label: "arbitrage (beta)", value: "arbitrage" },
 ];
 
 const App = (props) => {
