@@ -1,6 +1,7 @@
 const { default: axios } = require("axios");
 const promiseRetry = require("promise-retry");
 const cache = require("./cache");
+const { storeItInTempAsJSON } = require("./utils");
 
 const getSwapResultFromSolscanParser = async (txid) => {
 	try {
@@ -8,16 +9,14 @@ const getSwapResultFromSolscanParser = async (txid) => {
 		cache.tradingEnabled = false;
 
 		const fetcher = async (retry) => {
-			console.log(
-				new Date().toLocaleString(),
-				"Waiting for results of: ",
-				`https://solscan.io/tx/${txid}`
-			);
 			const response = await axios.get(`https://api.solscan.io/transaction`, {
 				params: {
 					tx: txid,
 				},
 			});
+
+			if (process.env.DEBUG)
+				storeItInTempAsJSON(`solscan_${txid}`, response.data);
 
 			if (response.status === 200) {
 				if (response?.data?.mainActions) {
@@ -48,20 +47,20 @@ const getSwapResultFromSolscanParser = async (txid) => {
 		mainActions.filter((action) => {
 			const events = action?.data?.event;
 			if (events) {
-			const inputEvent = events.find(
-				(event) =>
-					event?.sourceOwner === ownerAddress &&
-					event?.tokenAddress === tokenAddress
-			);
-			const outputEvent = events.find(
-				(event) =>
-					event?.destinationOwner === ownerAddress &&
-					event?.tokenAddress === tokenAddress
-			);
+				const inputEvent = events.find(
+					(event) =>
+						event?.sourceOwner === ownerAddress &&
+						event?.tokenAddress === tokenAddress
+				);
+				const outputEvent = events.find(
+					(event) =>
+						event?.destinationOwner === ownerAddress &&
+						event?.tokenAddress === tokenAddress
+				);
 
-			if (inputEvent) inputAmount = inputEvent?.amount;
+				if (inputEvent) inputAmount = inputEvent?.amount;
 
-			if (outputEvent) outputAmount = outputEvent?.amount;
+				if (outputEvent) outputAmount = outputEvent?.amount;
 			}
 		});
 

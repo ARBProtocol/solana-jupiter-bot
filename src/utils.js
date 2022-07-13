@@ -48,6 +48,10 @@ const updateIterationsPerMin = (cache) => {
 	} else cache.iterationPerMinute.counter++;
 };
 
+const storeItInTempAsJSON = (filename, data) => {
+	fs.writeFileSync(`./temp/${filename}.json`, JSON.stringify(data, null, 2));
+};
+
 module.exports = {
 	calculateProfit,
 	toDecimal,
@@ -55,4 +59,5 @@ module.exports = {
 	createTempDir,
 	loadConfigFile,
 	updateIterationsPerMin,
+	storeItInTempAsJSON,
 };
