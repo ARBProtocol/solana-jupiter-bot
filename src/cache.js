@@ -64,7 +64,7 @@ const cache = {
 	},
 	tradingEnabled: config.tradingEnabled,
 	swappingRightNow: false,
-	tradingMode: config.tradingMode,
+	tradingStrategy: config.tradingStrategy,
 	tradeHistory: [],
 	performanceOfTxStart: 0,
 	availableRoutes: {
