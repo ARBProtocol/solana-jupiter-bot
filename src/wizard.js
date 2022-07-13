@@ -199,7 +199,10 @@ const App = (props) => {
 										onChange={(value) => setTokenA({ symbol: value })}
 										placeholder="type token symbol & use arrow keys to select hint"
 										focus={!tokenAisSet}
-										onSubmit={() => setTokenAisSet(true)}
+										onSubmit={() => {
+											if (tradingStrategy === "arbitrage") setTokenBisSet(true);
+											setTokenAisSet(true);
+										}}
 									/>
 									<Text color="gray"> Case Sensitive!</Text>
 								</>
@@ -225,25 +228,27 @@ const App = (props) => {
 						)}
 
 						{/* SET TOKEN B */}
-						<Text>
-							Token B:{" "}
-							{!tokenBisSet ? (
-								<>
-									<TextInput
-										value={tokenB?.symbol || ""}
-										onChange={(value) => setTokenB({ symbol: value })}
-										placeholder="type token symbol & use arrow keys to select hint"
-										focus={
-											tokenB?.address ? false : tokenA?.address ? true : false
-										}
-										onSubmit={() => setTokenBisSet(true)}
-									/>
-									<Text color="gray"> Case Sensitive!</Text>
-								</>
-							) : (
-								<Text color="cyan">{tokenB?.symbol}</Text>
-							)}
-						</Text>
+						{tradingStrategy !== "arbitrage" && (
+							<Text>
+								Token B:{" "}
+								{!tokenBisSet ? (
+									<>
+										<TextInput
+											value={tokenB?.symbol || ""}
+											onChange={(value) => setTokenB({ symbol: value })}
+											placeholder="type token symbol & use arrow keys to select hint"
+											focus={
+												tokenB?.address ? false : tokenA?.address ? true : false
+											}
+											onSubmit={() => setTokenBisSet(true)}
+										/>
+										<Text color="gray"> Case Sensitive!</Text>
+									</>
+								) : (
+									<Text color="cyan">{tokenB?.symbol}</Text>
+								)}
+							</Text>
+						)}
 						{tokenB?.symbol?.length > 1 &&
 							tokenA?.address &&
 							!tokenB?.address && (
