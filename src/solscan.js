@@ -34,7 +34,12 @@ const getSwapResultFromSolscanParser = async (txid) => {
 			maxTimeout: 1000,
 		});
 
-		const ownerAddress = "AGpEqxiKA6MGR4ZM8eQG2ycHscgjk7jtJxHktxKisTda";
+		// find signer wallet address
+		const signerAccount = data.inputAccount.filter(
+			(account) => account?.signer === true
+		);
+
+		const ownerAddress = signerAccount?.address;
 		const tokenAddress = cache?.config?.tokenA.address;
 
 		const mainActions = data.mainActions;
