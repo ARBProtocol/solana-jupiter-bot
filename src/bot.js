@@ -207,7 +207,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 	cache.queue[i] = -1;
 	try {
 		// calculate & update iterations per minute
-		updateIterationsPerMin();
+		updateIterationsPerMin(cache);
 
 		// Calculate amount that will be used for trade
 		const amountToTrade = cache.initialBalance["tokenA"];
