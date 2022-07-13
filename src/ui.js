@@ -142,11 +142,16 @@ function printToConsole({
 					cache.tradingEnabled
 						? "TRADING"
 						: chalk.bold.magentaBright("SIMULATION")
-				}: ${chalk.bold[cache.ui.defaultColor](
-					inputToken.symbol
-				)} -> ${chalk.bold[cache.ui.defaultColor](outputToken.symbol)}`,
+				}: ${chalk.bold[cache.ui.defaultColor](inputToken.symbol)} ${
+					cache.config.tradingStrategy === "arbitrage"
+						? ""
+						: `-> ${chalk.bold[cache.ui.defaultColor](outputToken.symbol)}`
+				}`,
 				`ROUTES: ${chalk.bold.yellowBright(
 					cache.availableRoutes[cache.sideBuy ? "buy" : "sell"]
+				)}`,
+				`STRATEGY: ${chalk.bold[cache.ui.defaultColor](
+					cache.config.tradingStrategy
 				)}`,
 				{
 					text: cache.swappingRightNow
