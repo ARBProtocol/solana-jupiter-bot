@@ -244,8 +244,8 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 		const route = await routes.routesInfos[1];
 
 		// update slippage with "profit or kill" slippage
-		// const profitOrKillSlippage = cache.lastBalance["tokenA"];
-		// route.outAmountWithSlippage = profitOrKillSlippage;
+		const profitOrKillSlippage = cache.lastBalance["tokenA"];
+		route.outAmountWithSlippage = profitOrKillSlippage;
 
 		// calculate profitability
 
