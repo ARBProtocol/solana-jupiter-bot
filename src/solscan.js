@@ -9,6 +9,9 @@ const getSwapResultFromSolscanParser = async (txid) => {
 		// disable trading till swap result is ready
 		cache.tradingEnabled = false;
 
+		cache.fetchingResultsFromSolscan = true;
+		cache.fetchingResultsFromSolscanStart = performance.now();
+
 		const fetcher = async (retry) => {
 			const response = await axios.get(`https://api.solscan.io/transaction`, {
 				params: {
@@ -69,6 +72,7 @@ const getSwapResultFromSolscanParser = async (txid) => {
 		logExit(1, error);
 		handleExit();
 	} finally {
+		cache.fetchingResultsFromSolscan = false;
 		cache.tradingEnabled = true;
 	}
 };

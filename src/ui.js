@@ -39,10 +39,28 @@ function printToConsole({
 				cache.chart.performanceOfRouteComp = performanceTemp;
 			}
 
-			// check swap status
-			let swapStatus;
+			// check swap / fetch result status
+			let statusMessage = " ";
+			let statusPerformance;
 			if (cache.swappingRightNow) {
-				swapStatus = performance.now() - cache.performanceOfTxStart;
+				statusPerformance = performance.now() - cache.performanceOfTxStart;
+				statusMessage = chalk.bold[
+					statusPerformance < 45000
+						? "greenBright"
+						: statusPerformance < 60000
+						? "yellowBright"
+						: "redBright"
+				](`SWAPPING ... ${(statusPerformance / 1000).toFixed(2)} s`);
+			} else if (cache.fetchingResultsFromSolscan) {
+				statusPerformance =
+					performance.now() - cache.fetchingResultsFromSolscanStart;
+				statusMessage = chalk.bold[
+					statusPerformance < 45000
+						? "greenBright"
+						: statusPerformance < 90000
+						? "yellowBright"
+						: "redBright"
+				](`FETCHING RESULT ... ${(statusPerformance / 1000).toFixed(2)} s`);
 			}
 
 			// refresh console before print
@@ -154,15 +172,7 @@ function printToConsole({
 					cache.config.tradingStrategy
 				)}`,
 				{
-					text: cache.swappingRightNow
-						? chalk.bold[
-								swapStatus < 45000
-									? "greenBright"
-									: swapStatus < 60000
-									? "yellowBright"
-									: "redBright"
-						  ](`SWAPPING ... ${swapStatus.toFixed()} ms`)
-						: " ",
+					text: statusMessage,
 				}
 			);
 			ui.div("");

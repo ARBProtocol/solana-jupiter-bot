@@ -64,6 +64,8 @@ const cache = {
 	},
 	tradingEnabled: config.tradingEnabled,
 	swappingRightNow: false,
+	fetchingResultsFromSolscan: false,
+	fetchingResultsFromSolscanStart: 0,
 	tradingStrategy: config.tradingStrategy,
 	tradeHistory: [],
 	performanceOfTxStart: 0,
