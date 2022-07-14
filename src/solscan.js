@@ -29,8 +29,9 @@ const getSwapResultFromSolscanParser = async (txid) => {
 
 		const data = await promiseRetry(fetcher, {
 			retries: 40,
-			minTimeout: 500,
-			maxTimeout: 1000,
+			minTimeout: 2000,
+			maxTimeout: 5000,
+			randomize: true,
 		});
 
 		const ownerAddress = data?.signer[0];
