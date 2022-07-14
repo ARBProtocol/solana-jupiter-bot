@@ -407,7 +407,6 @@ const run = async () => {
 			);
 			cache.lastBalance.tokenB = cache.initialBalance.tokenB;
 		} else if (cache.tradingStrategy === "arbitrage") {
-			// cache.ui.allowClear = false;
 			// set initial & current & last balance for tokenA
 			cache.initialBalance.tokenA = toNumber(
 				cache.config.tradeSize,
