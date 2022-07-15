@@ -1,5 +1,9 @@
 const fs = require("fs");
-const config = JSON.parse(fs.readFileSync("./config.json"));
+let config = {};
+
+if (fs.existsSync("./config.json")) {
+	config = JSON.parse(fs.readFileSync("./config.json"));
+}
 
 // global cache
 const cache = {
@@ -43,7 +47,7 @@ const cache = {
 		sell: { success: 0, fail: 0 },
 	},
 	ui: {
-		defaultColor: config.ui.defaultColor,
+		defaultColor: config?.ui?.defaultColor || "cyan",
 		showPerformanceOfRouteCompChart: false,
 		showProfitChart: true,
 		showTradeHistory: true,
@@ -62,11 +66,11 @@ const cache = {
 		e: false,
 		r: false,
 	},
-	tradingEnabled: config.tradingEnabled,
+	tradingEnabled: config?.tradingEnabled || false,
 	swappingRightNow: false,
 	fetchingResultsFromSolscan: false,
 	fetchingResultsFromSolscanStart: 0,
-	tradingStrategy: config.tradingStrategy,
+	tradingStrategy: config?.tradingStrategy || "arbitrage",
 	tradeHistory: [],
 	performanceOfTxStart: 0,
 	availableRoutes: {
