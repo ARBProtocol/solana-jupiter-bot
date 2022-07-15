@@ -10,6 +10,7 @@ const {
 	toDecimal,
 	toNumber,
 	updateIterationsPerMin,
+	checkRoutesResponse,
 } = require("./utils");
 
 const { handleExit, logExit } = require("./exit");
@@ -51,6 +52,8 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			slippage,
 			forceFetch: true,
 		});
+
+		checkRoutesResponse(routes);
 
 		// count available routes
 		cache.availableRoutes[cache.sideBuy ? "buy" : "sell"] =
@@ -229,6 +232,8 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			slippage,
 			forceFetch: true,
 		});
+
+		checkRoutesResponse(routes);
 
 		// count available routes
 		cache.availableRoutes[cache.sideBuy ? "buy" : "sell"] =

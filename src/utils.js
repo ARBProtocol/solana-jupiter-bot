@@ -1,5 +1,6 @@
 const fs = require("fs");
 const ora = require("ora-classic");
+const { logExit } = require("./exit");
 
 const calculateProfit = (oldVal, newVal) => ((newVal - oldVal) / oldVal) * 100;
 
@@ -52,6 +53,22 @@ const storeItInTempAsJSON = (filename, data) => {
 	fs.writeFileSync(`./temp/${filename}.json`, JSON.stringify(data, null, 2));
 };
 
+const checkRoutesResponse = (routes) => {
+	if (Object.hasOwn(routes, "routesInfos")) {
+		if (routes.routesInfos.length === 0) {
+			logExit(1, {
+				message: "No routes found or something is wrong with RPC / Jupiter! ",
+			});
+			process.exit(1);
+		}
+	} else {
+		logExit(1, {
+			message: "Something is wrong with RPC / Jupiter! ",
+		});
+		process.exit(1);
+	}
+};
+
 module.exports = {
 	calculateProfit,
 	toDecimal,
@@ -60,4 +77,5 @@ module.exports = {
 	loadConfigFile,
 	updateIterationsPerMin,
 	storeItInTempAsJSON,
+	checkRoutesResponse,
 };
