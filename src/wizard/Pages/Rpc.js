@@ -21,9 +21,13 @@ const Indicator = ({ label: selectedLabel, value: selectedValue }) => {
 
 	return (
 		<Text>
-			{chalk[value?.includes(selectedValue) ? "greenBright" : "white"](
-				`${isSelected ? "⦿" : "○"} ${selectedLabel}`
-			)}
+			{chalk[
+				value?.includes(selectedValue)
+					? "greenBright"
+					: isSelected
+					? "white"
+					: "gray"
+			](`${isSelected ? "⦿" : "○"} ${selectedLabel}`)}
 		</Text>
 	);
 };
