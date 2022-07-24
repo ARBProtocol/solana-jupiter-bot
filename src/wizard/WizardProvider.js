@@ -18,9 +18,14 @@ const WizardProvider = ({ children }) => {
 		dispatch({ type: "NEXT_STEP" });
 	};
 
+	const configSwitchState = (key, value) => {
+		dispatch({ type: "CONFIG_SWITCH_STATE", key, value });
+	};
+
 	const providerValue = {
 		...state,
 		configSetValue,
+		configSwitchState,
 	};
 	return (
 		<WizardContext.Provider value={providerValue}>
