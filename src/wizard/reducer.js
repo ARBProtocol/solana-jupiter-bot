@@ -22,6 +22,7 @@ const reducer = (prevState, action) => {
 				config: {
 					...prevState.config,
 					[action.key]: {
+						...prevState.config[action.key],
 						value: action.value,
 						isSet: true,
 					},
