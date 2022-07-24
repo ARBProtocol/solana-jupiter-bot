@@ -5,47 +5,6 @@ const { useContext, useState, useEffect } = require("react");
 const { default: SelectInput } = require("ink-select-input");
 const chalk = require("chalk");
 
-// const items = [
-// 	{
-// 		label: "First",
-// 		value: {
-// 			slug: "first",
-// 			isSelected: false,
-// 		},
-// 	},
-// 	{
-// 		label: "Second",
-// 		value: {
-// 			slug: "second",
-// 			isSelected: false,
-// 		},
-// 	},
-// 	{
-// 		label: "Third",
-// 		value: {
-// 			slug: "third",
-// 			isSelected: true,
-// 		},
-// 	},
-// ];
-const items = [
-	{
-		label: "First",
-		value: "first",
-		isSelected: false,
-	},
-	{
-		label: "Second",
-		value: "second",
-		isSelected: false,
-	},
-	{
-		label: "Third",
-		value: "third",
-		isSelected: false,
-	},
-];
-
 const Indicator = ({ label: selectedLabel, value: selectedValue }) => {
 	const {
 		config: {
