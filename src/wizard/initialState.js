@@ -28,6 +28,10 @@ const initialState = {
 				],
 			},
 		},
+		strategy: {
+			value: "",
+			isSet: false,
+		},
 	},
 };
 

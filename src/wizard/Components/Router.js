@@ -6,10 +6,12 @@ const { useContext } = require("react");
 
 const Network = importJsx("../Pages/Network");
 const Rpc = importJsx("../Pages/Rpc");
+const Strategy = importJsx("../Pages/Strategy");
 
 const ROUTES = {
 	network: <Network />,
 	rpc: <Rpc />,
+	strategy: <Strategy />,
 };
 
 const Router = () => {
