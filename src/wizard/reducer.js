@@ -2,25 +2,25 @@ const reducer = (prevState, action) => {
 	switch (action.type) {
 		case "NEXT_STEP":
 			return {
-				...state,
+				...prevState,
 				nav: {
-					...state.nav,
-					currentStep: state.nav.currentStep + 1,
+					...prevState.nav,
+					currentStep: prevState.nav.currentStep + 1,
 				},
 			};
 		case "PREV_STEP":
 			return {
-				...state,
+				...prevState,
 				nav: {
-					...state.nav,
-					currentStep: state.nav.currentStep - 1,
+					...prevState.nav,
+					currentStep: prevState.nav.currentStep - 1,
 				},
 			};
 		case "CONFIG_SET":
 			return {
-				...state,
+				...prevState,
 				config: {
-					...state.config,
+					...prevState.config,
 					[action.key]: {
 						value: action.value,
 						isSet: true,
