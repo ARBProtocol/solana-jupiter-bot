@@ -14,20 +14,17 @@ const initialState = {
 			state: {
 				items: [
 					{
-						label: "First",
-						value: "first",
-						isSelected: false,
+						label: process.env.DEFAULT_RPC,
+						value: process.env.DEFAULT_RPC,
+						isSelected: true,
 					},
-					{
-						label: "Second",
-						value: "second",
-						isSelected: false,
-					},
-					{
-						label: "Third",
-						value: "third",
-						isSelected: false,
-					},
+					...String(process.env.ALT_RPC_LIST)
+						.split(",")
+						.map((item) => ({
+							label: item,
+							value: item,
+							isSelected: false,
+						})),
 				],
 			},
 		},
