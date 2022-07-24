@@ -26,6 +26,15 @@ const reducer = (state, action) => {
 					currentStep: state.nav.currentStep - 1,
 				},
 			};
+		case "CONFIG_SET":
+			return {
+				...state,
+				config: {
+					...state.config,
+					[action.key]: action.value,
+				},
+			};
+
 		default:
 			return state;
 	}
