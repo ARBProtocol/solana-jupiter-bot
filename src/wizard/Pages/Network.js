@@ -11,7 +11,7 @@ const NETWORKS = [
 ];
 
 function Network() {
-	const { config, configSetValue } = useContext(WizardContext);
+	const { configSetValue } = useContext(WizardContext);
 	return (
 		<Box flexDirection="column">
 			<Text>
