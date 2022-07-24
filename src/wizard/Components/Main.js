@@ -11,8 +11,9 @@ function Main() {
 	return (
 		<Box flexDirection="column">
 			<Divider title={nav.steps[nav.currentStep]} />
-			<Box borderStyle="round" borderColor={"greenBright"} marginY={1}></Box>
-			<Router />
+			<Box marginY={1}>
+				<Router />
+			</Box>
 		</Box>
 	);
 }
