@@ -3059,6 +3059,14 @@ ink-big-text@^1.2.0:
     cfonts "^2.8.6"
     prop-types "^15.7.2"
 
+ink-divider@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/ink-divider/-/ink-divider-3.0.0.tgz#00d11123a790d1d66ec599bf4636e1acb7a674e2"
+  integrity sha512-Mqb9WArtEZCtXw622aHhJqPK157QNc+8ssl9/RvAZlS6nZRCKyW4mYOYCudQh6dSuFGt9eG5yaqT1mJaGmwu+w==
+  dependencies:
+    prop-types "^15.7.2"
+    string-width "^4.0.0"
+
 ink-gradient@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ink-gradient/-/ink-gradient-2.0.0.tgz#2e2b040ab41f96f61b397d87cd56fd6ce9ef59cc"

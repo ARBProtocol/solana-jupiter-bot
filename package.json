@@ -11,7 +11,7 @@
 		"node": ">=16"
 	},
 	"scripts": {
-		"config": "node ./src/cli.js",
+		"wizard": "node ./src/index.js",
 		"start": "node ./src/index.js && node ./src/bot.js",
 		"trade": "node ./src/bot.js",
 		"test": "xo && ava"
@@ -30,6 +30,7 @@
 		"import-jsx": "^4.0.1",
 		"ink": "^3.2.0",
 		"ink-big-text": "^1.2.0",
+		"ink-divider": "^3.0.0",
 		"ink-gradient": "^2.0.0",
 		"ink-select-input": "^4.2.1",
 		"ink-spinner": "^4.0.3",
