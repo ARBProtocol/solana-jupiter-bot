@@ -3,7 +3,9 @@ const initialState = {
 		currentStep: 0,
 		steps: ["network", "rpc", "strategy", "tokens"],
 	},
-	test: 0,
+	config: {
+		network: "",
+	},
 };
 
 const reducer = (state, action) => {
