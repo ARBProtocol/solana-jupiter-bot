@@ -3,7 +3,7 @@ const { useContext } = require("react");
 const React = require("react");
 const WizardContext = require("../WizardContext");
 const Menu = () => {
-	const { nav } = useContext(WizardContext);
+	const { nav, config } = useContext(WizardContext);
 	return (
 		<Box
 			width="10%"
@@ -14,8 +14,10 @@ const Menu = () => {
 		>
 			{nav.steps.map((step, index) => {
 				const isActive = index === nav.currentStep;
+
 				return (
 					<Text
+						color={config[nav.steps[index]]?.isSet ? "green" : ""}
 						dimColor={!isActive}
 						bold={isActive}
 						underline={isActive}
