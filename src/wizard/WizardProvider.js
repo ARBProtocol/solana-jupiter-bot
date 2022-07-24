@@ -1,7 +1,8 @@
 const { useInput } = require("ink");
 const React = require("react");
 const { useReducer } = require("react");
-const { initialState, reducer } = require("./reducer");
+const initialState = require("./initialState");
+const reducer = require("./reducer");
 const WizardContext = require("./WizardContext");
 
 const WizardProvider = ({ children }) => {

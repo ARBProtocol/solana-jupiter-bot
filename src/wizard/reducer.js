@@ -1,17 +1,4 @@
-const initialState = {
-	nav: {
-		currentStep: 0,
-		steps: ["network", "rpc", "strategy", "tokens"],
-	},
-	config: {
-		network: {
-			value: "",
-			isSet: false,
-		},
-	},
-};
-
-const reducer = (state, action) => {
+const reducer = (prevState, action) => {
 	switch (action.type) {
 		case "NEXT_STEP":
 			return {
