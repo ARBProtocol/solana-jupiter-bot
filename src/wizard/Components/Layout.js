@@ -21,7 +21,7 @@ const Layout = () => {
 				flexDirection="column"
 			>
 				<IntroTitle />
-				<Main></Main>
+				<Main />
 			</Box>
 		</Box>
 	);
