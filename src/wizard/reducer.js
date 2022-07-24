@@ -4,7 +4,10 @@ const initialState = {
 		steps: ["network", "rpc", "strategy", "tokens"],
 	},
 	config: {
-		network: "",
+		network: {
+			value: "",
+			isSet: false,
+		},
 	},
 };
 
@@ -31,7 +34,10 @@ const reducer = (state, action) => {
 				...state,
 				config: {
 					...state.config,
-					[action.key]: action.value,
+					[action.key]: {
+						value: action.value,
+						isSet: true,
+					},
 				},
 			};
 
