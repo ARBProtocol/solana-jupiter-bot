@@ -15,9 +15,7 @@ function Strategy() {
 	const { configSetValue } = useContext(WizardContext);
 	return (
 		<Box flexDirection="column">
-			<Text>
-				Select Solana <Text color="magenta">Network</Text>:
-			</Text>
+			<Text>Select Trading Strategy:</Text>
 			<Box margin={1}>
 				<SelectInput
 					items={TRADING_STRATEGIES}
