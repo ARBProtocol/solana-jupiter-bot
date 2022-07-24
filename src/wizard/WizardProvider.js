@@ -12,8 +12,14 @@ const WizardProvider = ({ children }) => {
 		if (input === "[") dispatch({ type: "PREV_STEP" });
 	});
 
+	const configSetValue = (key, value) => {
+		dispatch({ type: "CONFIG_SET", key, value });
+		dispatch({ type: "NEXT_STEP" });
+	};
+
 	const providerValue = {
 		...state,
+		configSetValue,
 	};
 	return (
 		<WizardContext.Provider value={providerValue}>
