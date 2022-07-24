@@ -33,7 +33,4 @@ const reducer = (prevState, action) => {
 	}
 };
 
-module.exports = {
-	initialState,
-	reducer,
-};
+module.exports = reducer;
