@@ -1,5 +1,5 @@
 const React = require("react");
-const { Box, Text, useInput } = require("ink");
+const { Box, Text, useInput, Newline } = require("ink");
 const WizardContext = require("../WizardContext");
 const { useContext, useState, useEffect } = require("react");
 const { default: SelectInput } = require("ink-select-input");
@@ -61,7 +61,12 @@ function Rpc() {
 	const onHighlight = (item) => setHighlightedItem(item);
 	return (
 		<Box flexDirection="column">
-			<Text>RPC COMPONENT</Text>
+			<Text>Please select at least one RPC.</Text>
+			<Text>
+				If You choose more, You can switch between them while the bot is
+				running.
+			</Text>
+			<Newline />
 			<SelectInput
 				items={items}
 				onHighlight={onHighlight}
