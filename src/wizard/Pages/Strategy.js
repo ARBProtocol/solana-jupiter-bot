@@ -11,7 +11,7 @@ const TRADING_STRATEGIES = [
 	{ label: chalk.gray("coming soon..."), value: "null" },
 ];
 
-function strategy() {
+function Strategy() {
 	const { configSetValue } = useContext(WizardContext);
 	return (
 		<Box flexDirection="column">
@@ -27,4 +27,4 @@ function strategy() {
 		</Box>
 	);
 }
-module.exports = strategy;
+module.exports = Strategy;
