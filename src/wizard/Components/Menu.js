@@ -13,11 +13,19 @@ const Menu = () => {
 			alignItems="flex-end"
 		>
 			{nav.steps.map((step, index) => {
+				{
+					/* console.log(step, config[nav.steps[index]]?.isSet instanceof Object); */
+				}
 				const isActive = index === nav.currentStep;
+				const isSet = config[nav.steps[index]]?.isSet;
+				const isSectionSet =
+					isSet instanceof Object
+						? Object.values(isSet).every((value) => value === true)
+						: isSet;
 
 				return (
 					<Text
-						color={config[nav.steps[index]]?.isSet ? "green" : ""}
+						color={isSectionSet ? "green" : ""}
 						dimColor={!isActive}
 						bold={isActive}
 						underline={isActive}
