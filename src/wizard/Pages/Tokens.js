@@ -27,10 +27,11 @@ function Tokens() {
 	const [tempTokenA, setTempTokenA] = useState();
 	// const [tempTokenB, setTempTokenB] = useState();
 
-	const handleSubmit = (tokenId, tokenValue) => {
+	const handleSubmit = (tokenId, selectedToken) => {
 		tokensIsSet[tokenId] = true;
 		tokensValue[tokenId] = {
-			symbol: tokenValue,
+			symbol: selectedToken.label,
+			address: selectedToken.value,
 		};
 		configSetValue("tokens", {
 			value: tokensValue,
@@ -57,18 +58,34 @@ function Tokens() {
 					{!tokensIsSet.tokenA ? (
 						<>
 							<TextInput
-								value={tempTokenA ? tempTokenA : tokensValue.tokenA.symbol}
+								value={
+									tempTokenA ? tempTokenA.symbol : tokensValue.tokenA.symbol
+								}
 								// value={tokensValue?.tokenA?.symbol || "0"}
-								onChange={(tokenSymbol) => setTempTokenA(tokenSymbol)}
+								onChange={(tokenSymbol) =>
+									setTempTokenA({ ...tempTokenA, symbol: tokenSymbol })
+								}
 								placeholder="type token symbol & use arrow keys to select hint"
-								onSubmit={(tokenSymbol) => handleSubmit("tokenA", tokenSymbol)}
+								// onSubmit={(tokenSymbol) => handleSubmit("tokenA", tokenSymbol)}
 							/>
 							<Text color="gray"> Case Sensitive!</Text>
 						</>
 					) : (
-						<Text color="cyan">{tempTokenA}</Text>
+						<Text color="cyan">{tokensValue.tokenA.symbol}</Text>
 					)}
 				</Text>
+
+				<Box>
+					{!tokensIsSet.tokenA && tempTokenA?.symbol?.length > 1 && (
+						<SelectInput
+							items={tokens
+								.map((t) => ({ label: t.symbol, value: t.address }))
+								.filter((t) => t.label.includes(tempTokenA.symbol))}
+							limit={4}
+							onSelect={(tokenSymbol) => handleSubmit("tokenA", tokenSymbol)}
+						/>
+					)}
+				</Box>
 			</Box>
 		</Box>
 	);
