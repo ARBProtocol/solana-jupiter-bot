@@ -25,7 +25,7 @@ function Tokens() {
 	} = useContext(WizardContext);
 	const [tokens, setTokens] = useState([]);
 	const [tempTokenA, setTempTokenA] = useState();
-	// const [tempTokenB, setTempTokenB] = useState();
+	const [tempTokenB, setTempTokenB] = useState();
 
 	const handleSubmit = (tokenId, selectedToken) => {
 		tokensIsSet[tokenId] = true;
@@ -52,7 +52,7 @@ function Tokens() {
 					: chalk.yellowBright("loading...")}{" "}
 				tokens available
 			</Text>
-			<Box margin={1}>
+			<Box margin={1} flexDirection="column">
 				<Text>
 					Token A:{" "}
 					{!tokensIsSet.tokenA ? (
@@ -61,12 +61,10 @@ function Tokens() {
 								value={
 									tempTokenA ? tempTokenA.symbol : tokensValue.tokenA.symbol
 								}
-								// value={tokensValue?.tokenA?.symbol || "0"}
 								onChange={(tokenSymbol) =>
 									setTempTokenA({ ...tempTokenA, symbol: tokenSymbol })
 								}
 								placeholder="type token symbol & use arrow keys to select hint"
-								// onSubmit={(tokenSymbol) => handleSubmit("tokenA", tokenSymbol)}
 							/>
 							<Text color="gray"> Case Sensitive!</Text>
 						</>
@@ -83,6 +81,37 @@ function Tokens() {
 								.filter((t) => t.label.includes(tempTokenA.symbol))}
 							limit={4}
 							onSelect={(tokenSymbol) => handleSubmit("tokenA", tokenSymbol)}
+						/>
+					)}
+				</Box>
+
+				<Text>
+					Token B:{" "}
+					{tokensIsSet.tokenA && !tokensIsSet.tokenB ? (
+						<>
+							<TextInput
+								value={
+									tempTokenB ? tempTokenB.symbol : tokensValue.tokenB.symbol
+								}
+								onChange={(tokenSymbol) =>
+									setTempTokenB({ ...tempTokenB, symbol: tokenSymbol })
+								}
+								placeholder="type token symbol & use arrow keys to select hint"
+							/>
+							<Text color="gray"> Case Sensitive!</Text>
+						</>
+					) : (
+						<Text color="cyan">{tokensValue.tokenB.symbol}</Text>
+					)}
+				</Text>
+				<Box>
+					{!tokensIsSet.tokenB && tempTokenB?.symbol?.length > 1 && (
+						<SelectInput
+							items={tokens
+								.map((t) => ({ label: t.symbol, value: t.address }))
+								.filter((t) => t.label.includes(tempTokenB.symbol))}
+							limit={4}
+							onSelect={(tokenSymbol) => handleSubmit("tokenB", tokenSymbol)}
 						/>
 					)}
 				</Box>
