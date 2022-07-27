@@ -1,6 +1,7 @@
 const reducer = (prevState, action) => {
 	const isSet =
 		action.value?.isSet instanceof Object ? action.value?.isSet : true;
+	const value = action.value?.value || action.value;
 	switch (action.type) {
 		case "NEXT_STEP":
 			return {
@@ -25,7 +26,7 @@ const reducer = (prevState, action) => {
 					...prevState.config,
 					[action.key]: {
 						...prevState.config[action.key],
-						value: action.value,
+						value: value,
 						isSet: isSet,
 					},
 				},
