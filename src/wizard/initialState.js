@@ -1,7 +1,7 @@
 const initialState = {
 	nav: {
 		currentStep: 0,
-		steps: ["network", "rpc", "strategy", "tokens"],
+		steps: ["network", "rpc", "strategy", "tokens", "tokens2"],
 	},
 	config: {
 		network: {
@@ -31,6 +31,16 @@ const initialState = {
 		strategy: {
 			value: "",
 			isSet: false,
+		},
+		tokens: {
+			value: {
+				tokenA: { symbol: "", address: "" },
+				tokenB: { symbol: "", address: "" },
+			},
+			isSet: {
+				tokenA: false,
+				tokenB: false,
+			},
 		},
 	},
 };
