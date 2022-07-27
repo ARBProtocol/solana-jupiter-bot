@@ -43,7 +43,7 @@ function Rpc() {
 
 	const items = state?.items || [];
 
-	const handleSubmit = () => {
+	const handleSelect = () => {
 		const valueToSet = items
 			.filter((item) => item.isSelected)
 			.map((item) => item.value);
@@ -58,7 +58,7 @@ function Rpc() {
 		}
 	});
 
-	const onHighlight = (item) => setHighlightedItem(item);
+	const handleHighlight = (item) => setHighlightedItem(item);
 	return (
 		<Box flexDirection="column">
 			<Text>Please select at least one RPC.</Text>
@@ -69,8 +69,8 @@ function Rpc() {
 			<Newline />
 			<SelectInput
 				items={items}
-				onHighlight={onHighlight}
-				onSelect={handleSubmit}
+				onHighlight={handleHighlight}
+				onSelect={handleSelect}
 				itemComponent={Indicator}
 			/>
 		</Box>
