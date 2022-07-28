@@ -18,6 +18,7 @@ const TRADING_STRATEGIES = [
 function Tokens() {
 	const {
 		config: {
+			strategy: { value: strategy },
 			network: { value: network },
 			tokens: { value: tokensValue, isSet: tokensIsSet },
 		},
@@ -85,36 +86,42 @@ function Tokens() {
 					)}
 				</Box>
 
-				<Text>
-					Token B:{" "}
-					{tokensIsSet.tokenA && !tokensIsSet.tokenB ? (
-						<>
-							<TextInput
-								value={
-									tempTokenB ? tempTokenB.symbol : tokensValue.tokenB.symbol
-								}
-								onChange={(tokenSymbol) =>
-									setTempTokenB({ ...tempTokenB, symbol: tokenSymbol })
-								}
-								placeholder="type token symbol & use arrow keys to select hint"
-							/>
-							<Text color="gray"> Case Sensitive!</Text>
-						</>
-					) : (
-						<Text color="cyan">{tokensValue.tokenB.symbol}</Text>
-					)}
-				</Text>
-				<Box>
-					{!tokensIsSet.tokenB && tempTokenB?.symbol?.length > 1 && (
-						<SelectInput
-							items={tokens
-								.map((t) => ({ label: t.symbol, value: t.address }))
-								.filter((t) => t.label.includes(tempTokenB.symbol))}
-							limit={4}
-							onSelect={(tokenSymbol) => handleSubmit("tokenB", tokenSymbol)}
-						/>
-					)}
-				</Box>
+				{strategy === "pingpong" && (
+					<>
+						<Text>
+							Token B:{" "}
+							{tokensIsSet.tokenA && !tokensIsSet.tokenB ? (
+								<>
+									<TextInput
+										value={
+											tempTokenB ? tempTokenB.symbol : tokensValue.tokenB.symbol
+										}
+										onChange={(tokenSymbol) =>
+											setTempTokenB({ ...tempTokenB, symbol: tokenSymbol })
+										}
+										placeholder="type token symbol & use arrow keys to select hint"
+									/>
+									<Text color="gray"> Case Sensitive!</Text>
+								</>
+							) : (
+								<Text color="cyan">{tokensValue.tokenB.symbol}</Text>
+							)}
+						</Text>
+						<Box>
+							{!tokensIsSet.tokenB && tempTokenB?.symbol?.length > 1 && (
+								<SelectInput
+									items={tokens
+										.map((t) => ({ label: t.symbol, value: t.address }))
+										.filter((t) => t.label.includes(tempTokenB.symbol))}
+									limit={4}
+									onSelect={(tokenSymbol) =>
+										handleSubmit("tokenB", tokenSymbol)
+									}
+								/>
+							)}
+						</Box>
+					</>
+				)}
 			</Box>
 		</Box>
 	);
