@@ -1,0 +1,83 @@
+const ui = require("cliui")({ width: 140 });
+const chalk = require("chalk");
+const package = require("../package.json");
+const gradient = require("gradient-string");
+
+const universeSize = 15;
+const color = "white";
+const startWarp = 30;
+let colorsSet = [
+	"#cf4884",
+	"#8832b3",
+	"#b5b4fa",
+	"#cdadff",
+	"#6d29c5",
+	"#4e21d9",
+	"#481ede",
+];
+
+const random = (h = 100, l = 1) => Math.floor(Math.random() * (h - l + 1)) + l;
+
+async function intro() {
+	try {
+		const showIntro = true;
+
+		if (showIntro) {
+			ui.div(" ");
+			for (let i = 0; i < 200; i++) {
+				const speed = i > 50 ? 100 - i : i;
+				const a = colorsSet.shift();
+				colorsSet.push(a);
+				const g = gradient(colorsSet);
+
+				const char =
+					i > startWarp
+						? i > 180
+							? g("/").repeat(random(i / 10, i / 10 - 2))
+							: "-".repeat(random(i / 10, i / 10 - 2))
+						: "•";
+				await new Promise((resolve) => setTimeout(resolve, speed));
+
+				console.clear();
+				ui.resetOutput();
+
+				for (let ii = 0; ii < universeSize; ii++) {
+					ui.div({
+						text: `${chalk[color](char)}`,
+						padding: [0, 0, 0, random()],
+					});
+				}
+
+				ui.div(
+					{
+						text: g(`ARB SOLANA BOT - ${package.version}`),
+						width: 50,
+						align: "center",
+						padding: [1, 0, 1, 0],
+					},
+					{
+						text: `Discord: ${chalk.magenta("https://discord.gg/wcxYzfKNaE")}`,
+						width: 50,
+						align: "center",
+						padding: [1, 0, 1, 0],
+					}
+				);
+
+				for (let ii = 0; ii < universeSize; ii++) {
+					ui.div({
+						text: `${chalk[color](char)}`,
+						padding: [0, 0, 0, random()],
+					});
+				}
+
+				console.log(ui.toString());
+			}
+			ui.div("");
+			console.clear();
+		}
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+module.exports = intro;
