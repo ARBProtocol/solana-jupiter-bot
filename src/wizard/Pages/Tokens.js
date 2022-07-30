@@ -29,15 +29,23 @@ function Tokens() {
 	const [tempTokenB, setTempTokenB] = useState();
 
 	const handleSubmit = (tokenId, selectedToken) => {
+		// go to the next step only if all tokens are set
+		const goToNextStep =
+			strategy === "pingpong" && tokenId === "tokenA" ? false : true;
+
 		tokensIsSet[tokenId] = true;
 		tokensValue[tokenId] = {
 			symbol: selectedToken.label,
 			address: selectedToken.value,
 		};
-		configSetValue("tokens", {
+		configSetValue(
+			"tokens",
+			{
 			value: tokensValue,
 			isSet: tokensIsSet,
-		});
+			},
+			goToNextStep
+		);
 	};
 
 	useEffect(() => {

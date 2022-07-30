@@ -13,9 +13,9 @@ const WizardProvider = ({ children }) => {
 		if (input === "[") dispatch({ type: "PREV_STEP" });
 	});
 
-	const configSetValue = (key, value) => {
+	const configSetValue = (key, value, goToNextStep = true) => {
 		dispatch({ type: "CONFIG_SET", key, value });
-		dispatch({ type: "NEXT_STEP" });
+		goToNextStep && dispatch({ type: "NEXT_STEP" });
 	};
 
 	const configSwitchState = (key, value) => {
