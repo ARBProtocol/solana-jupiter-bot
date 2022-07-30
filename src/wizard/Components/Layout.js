@@ -12,8 +12,7 @@ const Layout = () => {
 		<Box padding={1} justifyContent="flex-start" flexDirection="row">
 			<Menu />
 			<Box
-				width="50%"
-				minWidth={100}
+				width={80}
 				minHeight={20}
 				borderColor="#481fde"
 				borderStyle="bold"
