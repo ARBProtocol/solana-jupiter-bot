@@ -9,6 +9,7 @@ const Rpc = importJsx("../Pages/Rpc");
 const Strategy = importJsx("../Pages/Strategy");
 const Tokens = importJsx("../Pages/Tokens");
 const Slippage = importJsx("../Pages/Slippage");
+const Confirm = importJsx("../Pages/Confirm");
 
 const ROUTES = {
 	network: <Network />,
@@ -16,6 +17,7 @@ const ROUTES = {
 	strategy: <Strategy />,
 	tokens: <Tokens />,
 	slippage: <Slippage />,
+	confirm: <Confirm />,
 };
 
 const Router = () => {
