@@ -4,8 +4,6 @@ const package = require("../package.json");
 const gradient = require("gradient-string");
 const { DISCORD_INVITE_URL } = require("./constants");
 
-// TODO: open discord invite link on key press
-
 const universeSize = 15;
 const color = "white";
 const startWarp = 30;
