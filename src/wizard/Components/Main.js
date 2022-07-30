@@ -1,5 +1,5 @@
 const React = require("react");
-const { Box, Text } = require("ink");
+const { Box } = require("ink");
 const WizardContext = require("../WizardContext");
 const { useContext } = require("react");
 const importJsx = require("import-jsx");
