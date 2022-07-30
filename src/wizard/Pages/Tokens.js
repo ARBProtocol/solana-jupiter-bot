@@ -56,7 +56,6 @@ function Tokens() {
 				t.label.toLowerCase().includes(sanitizedValue.toLowerCase())
 			);
 		setAutocompleteTokens(filteredTokens);
-		console.log(filteredTokens);
 		setTempTokensValue({
 			...tempTokensValue,
 			[tokenId]: {
