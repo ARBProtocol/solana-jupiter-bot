@@ -1,7 +1,7 @@
 const initialState = {
 	nav: {
 		currentStep: 0,
-		steps: ["network", "rpc", "strategy", "tokens", "tokens2"],
+		steps: ["network", "rpc", "strategy", "tokens", "slippage"],
 	},
 	config: {
 		network: {
@@ -41,6 +41,10 @@ const initialState = {
 				tokenA: false,
 				tokenB: false,
 			},
+		},
+		slippage: {
+			value: "ProfitOrKill",
+			isSet: false,
 		},
 	},
 };
