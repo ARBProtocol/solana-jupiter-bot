@@ -1,4 +1,5 @@
 const reducer = (prevState, action) => {
+	const nav = prevState.nav;
 	const isSet =
 		action.value?.isSet instanceof Object ? action.value?.isSet : true;
 	const value = action.value?.value || action.value;
@@ -8,7 +9,8 @@ const reducer = (prevState, action) => {
 				...prevState,
 				nav: {
 					...prevState.nav,
-					currentStep: prevState.nav.currentStep + 1,
+					currentStep:
+						nav.currentStep === nav.steps.length - 1 ? 0 : nav.currentStep + 1,
 				},
 			};
 		case "PREV_STEP":
@@ -16,7 +18,8 @@ const reducer = (prevState, action) => {
 				...prevState,
 				nav: {
 					...prevState.nav,
-					currentStep: prevState.nav.currentStep - 1,
+					currentStep:
+						nav.currentStep === 0 ? nav.steps.length - 1 : nav.currentStep - 1,
 				},
 			};
 		case "CONFIG_SET":
