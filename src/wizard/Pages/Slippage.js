@@ -27,6 +27,30 @@ function Slippage() {
 	const [customSlippage, setCustomSlippage] = useState("1");
 	const [inputBorderColor, setInputBorderColor] = useState("gray");
 
+	const handleSlippageStrattegySelect = (slippage) => {
+		const value = slippage.value;
+		setTempSlippageStrategy(value);
+		if (value !== "custom")
+			configSetValue(
+				"slippage",
+				value === "profitOrKill" ? value : parseInt(value)
+			);
+	};
+
+	const handleCustomSlippageChange = (value) => {
+		const badChars = /[^0-9]/g;
+		badChars.test(value)
+			? setInputBorderColor("red")
+			: setInputBorderColor("gray");
+		const sanitizedValue = value.replace(badChars, "");
+		setCustomSlippage(sanitizedValue);
+		setTimeout(() => setInputBorderColor("gray"), 100);
+	};
+
+	const handleCUstomSlippageSubmit = () => {
+		configSetValue("slippage", parseInt(customSlippage));
+	};
+
 	return (
 		<Box flexDirection="column">
 			<Text>
@@ -35,10 +59,7 @@ function Slippage() {
 			<Box margin={1}>
 				<SelectInput
 					items={SLIPPAGE_STRATEGIES}
-					onSelect={(slippage) => {
-						setTempSlippageStrategy(slippage.value);
-					}}
-					// onSelect={(item) => configSetValue("slippage", item.value)}
+					onSelect={handleSlippageStrattegySelect}
 				/>
 			</Box>
 			{tempSlippageStrategy === "custom" && (
@@ -51,15 +72,8 @@ function Slippage() {
 					>
 						<TextInput
 							value={customSlippage}
-							onChange={(value) => {
-								const badChars = /[^0-9]/g;
-								badChars.test(value)
-									? setInputBorderColor("red")
-									: setInputBorderColor("gray");
-								const sanitizedValue = value.replace(badChars, "");
-								setCustomSlippage(sanitizedValue);
-								setTimeout(() => setInputBorderColor("gray"), 100);
-							}}
+							onChange={handleCustomSlippageChange}
+							onSubmit={handleCUstomSlippageSubmit}
 						/>
 					</Box>
 					<Text>%</Text>
