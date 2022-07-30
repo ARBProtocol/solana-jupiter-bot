@@ -42,8 +42,8 @@ function Tokens() {
 		configSetValue(
 			"tokens",
 			{
-			value: tokensValue,
-			isSet: tokensIsSet,
+				value: tokensValue,
+				isSet: tokensIsSet,
 			},
 			goToNextStep
 		);
