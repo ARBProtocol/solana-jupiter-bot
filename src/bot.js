@@ -18,7 +18,7 @@ const { handleExit, logExit } = require("./exit");
 const { clearInterval } = require("timers");
 const printToConsole = require("./ui");
 const cache = require("./cache");
-const listenHotkeys = require("./hotkeys");
+
 const { swap, failedSwapHandler, successSwapHandler } = require("./swap");
 
 const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
