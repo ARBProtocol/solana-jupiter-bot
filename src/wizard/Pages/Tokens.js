@@ -19,8 +19,11 @@ function Tokens() {
 		configSetValue,
 	} = useContext(WizardContext);
 	const [tokens, setTokens] = useState([]);
-	const [tempTokenA, setTempTokenA] = useState();
-	const [tempTokenB, setTempTokenB] = useState();
+	const [autocompleteTokens, setAutocompleteTokens] = useState([]);
+	const [tempTokensValue, setTempTokensValue] = useState({
+		tokenA: undefined,
+		tokenB: undefined,
+	});
 
 	const handleSubmit = (tokenId, selectedToken) => {
 		// go to the next step only if all tokens are set
@@ -40,6 +43,26 @@ function Tokens() {
 			},
 			goToNextStep
 		);
+	};
+
+	const handleTokenChange = (tokenId, value) => {
+		const sanitizedValue = value.replace(/[^a-zA-Z0-9]/g, "");
+		const filteredTokens = tokens
+			.map((t) => ({
+				label: t.symbol,
+				value: t.address,
+			}))
+			.filter((t) =>
+				t.label.toLowerCase().includes(sanitizedValue.toLowerCase())
+			);
+		setAutocompleteTokens(filteredTokens);
+		console.log(filteredTokens);
+		setTempTokensValue({
+			...tempTokensValue,
+			[tokenId]: {
+				symbol: sanitizedValue,
+			},
+		});
 	};
 
 	useEffect(() => {
@@ -75,14 +98,15 @@ function Tokens() {
 						<>
 							<TextInput
 								value={
-									tempTokenA ? tempTokenA.symbol : tokensValue.tokenA.symbol
+									tempTokensValue.tokenA
+										? tempTokensValue.tokenA.symbol
+										: tokensValue.tokenA.symbol
 								}
 								onChange={(tokenSymbol) =>
-									setTempTokenA({ ...tempTokenA, symbol: tokenSymbol })
+									handleTokenChange("tokenA", tokenSymbol)
 								}
 								placeholder="type token symbol & use arrow keys to select hint"
 							/>
-							<Text color="gray"> Case Sensitive!</Text>
 						</>
 					) : (
 						<Text color="cyan">{tokensValue.tokenA.symbol}</Text>
@@ -90,15 +114,14 @@ function Tokens() {
 				</Text>
 
 				<Box>
-					{!tokensIsSet.tokenA && tempTokenA?.symbol?.length > 1 && (
-						<SelectInput
-							items={tokens
-								.map((t) => ({ label: t.symbol, value: t.address }))
-								.filter((t) => t.label.includes(tempTokenA.symbol))}
-							limit={4}
-							onSelect={(tokenSymbol) => handleSubmit("tokenA", tokenSymbol)}
-						/>
-					)}
+					{!tokensIsSet.tokenA &&
+						tempTokensValue?.tokenA?.symbol?.length > 1 && (
+							<SelectInput
+								items={autocompleteTokens}
+								limit={4}
+								onSelect={(tokenSymbol) => handleSubmit("tokenA", tokenSymbol)}
+							/>
+						)}
 				</Box>
 
 				{strategy === "pingpong" && (
@@ -109,31 +132,31 @@ function Tokens() {
 								<>
 									<TextInput
 										value={
-											tempTokenB ? tempTokenB.symbol : tokensValue.tokenB.symbol
+											tempTokensValue.tokenB
+												? tempTokensValue.tokenB.symbol
+												: tokensValue.tokenB.symbol
 										}
 										onChange={(tokenSymbol) =>
-											setTempTokenB({ ...tempTokenB, symbol: tokenSymbol })
+											handleTokenChange("tokenB", tokenSymbol)
 										}
 										placeholder="type token symbol & use arrow keys to select hint"
 									/>
-									<Text color="gray"> Case Sensitive!</Text>
 								</>
 							) : (
 								<Text color="cyan">{tokensValue.tokenB.symbol}</Text>
 							)}
 						</Text>
 						<Box>
-							{!tokensIsSet.tokenB && tempTokenB?.symbol?.length > 1 && (
-								<SelectInput
-									items={tokens
-										.map((t) => ({ label: t.symbol, value: t.address }))
-										.filter((t) => t.label.includes(tempTokenB.symbol))}
-									limit={4}
-									onSelect={(tokenSymbol) =>
-										handleSubmit("tokenB", tokenSymbol)
-									}
-								/>
-							)}
+							{!tokensIsSet.tokenB &&
+								tempTokensValue.tokenB?.symbol?.length > 1 && (
+									<SelectInput
+										items={autocompleteTokens}
+										limit={4}
+										onSelect={(tokenSymbol) =>
+											handleSubmit("tokenB", tokenSymbol)
+										}
+									/>
+								)}
 						</Box>
 					</>
 				)}
