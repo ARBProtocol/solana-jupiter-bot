@@ -3,7 +3,7 @@ const { Box } = require("ink");
 
 const importJsx = require("import-jsx");
 
-const IntroTitle = importJsx("./IntroTitle");
+const WizardHeader = importJsx("./WizardHeader");
 const Menu = importJsx("./Menu");
 const Main = importJsx("./Main");
 
@@ -20,7 +20,7 @@ const Layout = () => {
 				padding={1}
 				flexDirection="column"
 			>
-				<IntroTitle />
+				<WizardHeader />
 				<Main />
 			</Box>
 		</Box>
