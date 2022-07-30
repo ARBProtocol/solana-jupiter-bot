@@ -22,6 +22,11 @@ const reducer = (prevState, action) => {
 						nav.currentStep === 0 ? nav.steps.length - 1 : nav.currentStep - 1,
 				},
 			};
+		case "TOGGLE_HELP":
+			return {
+				...prevState,
+				showHelp: !prevState.showHelp,
+			};
 		case "CONFIG_SET":
 			return {
 				...prevState,

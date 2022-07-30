@@ -1,4 +1,5 @@
 const CONFIG_INITIAL_STATE = {
+	showHelp: true,
 	nav: {
 		currentStep: 0,
 		steps: ["network", "rpc", "strategy", "tokens", "slippage", "confirm"],

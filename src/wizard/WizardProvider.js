@@ -11,6 +11,8 @@ const WizardProvider = ({ children }) => {
 	useInput((input, key) => {
 		if (input === "]") dispatch({ type: "NEXT_STEP" });
 		if (input === "[") dispatch({ type: "PREV_STEP" });
+		if (input === "h") dispatch({ type: "TOGGLE_HELP" });
+		if (key.escape) process.exit();
 	});
 
 	const configSetValue = (key, value, goToNextStep = true) => {
