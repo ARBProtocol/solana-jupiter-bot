@@ -23,9 +23,10 @@ const random = (h = 100, l = 1) => Math.floor(Math.random() * (h - l + 1)) + l;
 
 async function intro() {
 	try {
-		const showIntro = true;
+		const skipIntro =
+			process.env.SKIP_INTRO?.toString().toLowerCase() === "true" || false;
 
-		if (showIntro) {
+		if (!skipIntro) {
 			ui.div(" ");
 			for (let i = 0; i < 200; i++) {
 				const speed = i > 50 ? 100 - i : i;
