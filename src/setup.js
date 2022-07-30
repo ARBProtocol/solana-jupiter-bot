@@ -6,12 +6,15 @@ const fs = require("fs");
 const ora = require("ora-classic");
 const cache = require("./cache");
 const { logExit } = require("./exit");
+const listenHotkeys = require("./hotkeys");
 const intro = require("./intro");
 const { loadConfigFile } = require("./utils");
 
 const setup = async () => {
 	let spinner, tokens, tokenA, tokenB, wallet;
 	try {
+		// listen for hotkeys
+		listenHotkeys();
 		await intro();
 
 		// load config file and store it in cache

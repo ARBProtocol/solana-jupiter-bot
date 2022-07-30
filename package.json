@@ -39,6 +39,7 @@
 		"keypress": "^0.2.1",
 		"meow": "^9.0.0",
 		"moment": "^2.29.3",
+		"open": "^8.4.0",
 		"ora-classic": "^5.4.2",
 		"promise-retry": "^2.0.1",
 		"react": "^17.0.2",

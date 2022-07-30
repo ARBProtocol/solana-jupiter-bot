@@ -2,6 +2,9 @@ const ui = require("cliui")({ width: 140 });
 const chalk = require("chalk");
 const package = require("../package.json");
 const gradient = require("gradient-string");
+const { DISCORD_INVITE_URL } = require("./constants");
+
+// TODO: open discord invite link on key press
 
 const universeSize = 15;
 const color = "white";
@@ -56,7 +59,7 @@ async function intro() {
 						padding: [1, 0, 1, 0],
 					},
 					{
-						text: `Discord: ${chalk.magenta("https://discord.gg/wcxYzfKNaE")}`,
+						text: `Discord: ${chalk.magenta(DISCORD_INVITE_URL)}`,
 						width: 50,
 						align: "center",
 						padding: [1, 0, 1, 0],

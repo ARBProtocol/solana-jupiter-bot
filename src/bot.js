@@ -425,9 +425,6 @@ const run = async () => {
 			() => watcher(jupiter, tokenA, tokenB),
 			cache.config.minInterval
 		);
-
-		// listen for hotkeys
-		listenHotkeys();
 	} catch (error) {
 		logExit(error);
 		process.exitCode = 1;
