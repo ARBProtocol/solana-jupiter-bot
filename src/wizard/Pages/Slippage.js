@@ -47,7 +47,7 @@ function Slippage() {
 		setTimeout(() => setInputBorderColor("gray"), 100);
 	};
 
-	const handleCUstomSlippageSubmit = () => {
+	const handleCustomSlippageSubmit = () => {
 		configSetValue("slippage", parseInt(customSlippage));
 	};
 
@@ -73,7 +73,7 @@ function Slippage() {
 						<TextInput
 							value={customSlippage}
 							onChange={handleCustomSlippageChange}
-							onSubmit={handleCUstomSlippageSubmit}
+							onSubmit={handleCustomSlippageSubmit}
 						/>
 					</Box>
 					<Text>%</Text>
