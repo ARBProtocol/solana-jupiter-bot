@@ -9,8 +9,9 @@ const { createConfigFile } = require("../../utils");
 const Confirm = () => {
 	const {
 		config: {
-			strategy: { value: strategy },
 			network: { value: network },
+			rpc: { value: rpc },
+			strategy: { value: strategy },
 			tokens: { value: tokens },
 			slippage: { value: slippage },
 		},
@@ -21,18 +22,19 @@ const Confirm = () => {
 		<Box flexDirection="column">
 			<Text>Confirm your settings:</Text>
 			<Box margin={1} flexDirection="column">
-				<Text>Strategy: {strategy}</Text>
-				<Text>Network: {network}</Text>
+				<Text>Network: {chalk.greenBright(network)}</Text>
+				<Text>RPC: {chalk.greenBright(rpc)}</Text>
+				<Text>Strategy: {chalk.bold.greenBright(strategy)}</Text>
 				<Text>
-					Tokens: {tokens.tokenA.symbol} / {tokens.tokenB.symbol}
+					Tokens: {chalk.bold.blueBright(tokens.tokenA.symbol)} /{" "}
+					{chalk.bold.blueBright(tokens.tokenB.symbol)}
 				</Text>
-				<Text>Slippage: {slippage}</Text>
+				<Text>Slippage: {chalk.bold.greenBright(slippage)}</Text>
 			</Box>
 			<TextInput
 				value={`${chalk.bold.greenBright("[ CONFIRM ]")}`}
 				showCursor={false}
 				onSubmit={() => {
-					console.log("LFG!");
 					createConfigFile(config);
 				}}
 			/>
