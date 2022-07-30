@@ -6,7 +6,6 @@ const { default: SelectInput } = require("ink-select-input");
 
 const NETWORKS = [
 	{ label: "mainnet-beta", value: "mainnet-beta" },
-	{ label: "testnet", value: "testnet" },
 	{ label: "devnet", value: "devnet" },
 ];
 
