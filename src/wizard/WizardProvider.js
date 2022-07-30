@@ -1,12 +1,12 @@
 const { useInput } = require("ink");
 const React = require("react");
 const { useReducer } = require("react");
-const initialState = require("./initialState");
 const reducer = require("./reducer");
 const WizardContext = require("./WizardContext");
+const { CONFIG_INITIAL_STATE } = require("../constants");
 
 const WizardProvider = ({ children }) => {
-	const [state, dispatch] = useReducer(reducer, initialState);
+	const [state, dispatch] = useReducer(reducer, CONFIG_INITIAL_STATE);
 
 	useInput((input, key) => {
 		if (input === "]") dispatch({ type: "NEXT_STEP" });
