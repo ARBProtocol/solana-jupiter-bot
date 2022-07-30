@@ -9,7 +9,6 @@ const { TOKEN_LIST_URL } = require("@jup-ag/core");
 const { default: TextInput } = require("ink-text-input");
 const fs = require("fs");
 
-// TODO
 function Tokens() {
 	const {
 		config: {
