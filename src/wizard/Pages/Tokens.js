@@ -64,6 +64,16 @@ function Tokens() {
 		});
 	};
 
+	if (network === "") {
+		return (
+			<Box>
+				<Text>
+					Plese select <Text color="magenta">network</Text> first!
+				</Text>
+			</Box>
+		);
+	}
+
 	useEffect(() => {
 		// check if tokens.json exist
 		if (fs.existsSync("./tokens.json")) {
