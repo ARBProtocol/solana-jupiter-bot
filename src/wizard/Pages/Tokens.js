@@ -9,12 +9,6 @@ const { TOKEN_LIST_URL } = require("@jup-ag/core");
 const { default: TextInput } = require("ink-text-input");
 const fs = require("fs");
 
-const TRADING_STRATEGIES = [
-	{ label: "Ping Pong", value: "pingpong" },
-	{ label: "Arbitrage", value: "arbitrage" },
-	{ label: chalk.gray("coming soon..."), value: "null" },
-];
-
 // TODO
 function Tokens() {
 	const {
