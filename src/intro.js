@@ -59,7 +59,9 @@ async function intro() {
 						padding: [1, 0, 1, 0],
 					},
 					{
-						text: `Discord: ${chalk.magenta(DISCORD_INVITE_URL)}`,
+						text: `Discord: ${chalk.magenta(DISCORD_INVITE_URL)}\n ${chalk.gray(
+							"- PRESS [D] TO OPEN -"
+						)}`,
 						width: 50,
 						align: "center",
 						padding: [1, 0, 1, 0],
