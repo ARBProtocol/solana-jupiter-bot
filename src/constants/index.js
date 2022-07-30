@@ -1,7 +1,7 @@
 const CONFIG_INITIAL_STATE = {
 	nav: {
 		currentStep: 0,
-		steps: ["network", "rpc", "strategy", "tokens", "slippage"],
+		steps: ["network", "rpc", "strategy", "tokens", "slippage", "confirm"],
 	},
 	config: {
 		network: {
