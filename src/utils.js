@@ -33,6 +33,28 @@ const loadConfigFile = () => {
 	return config;
 };
 
+const createConfigFile = (config) => {
+	const configSpinner = ora({
+		text: "Creating config...",
+		discardStdin: false,
+	}).start();
+
+	const configValues = {
+		network: config.network.value,
+		rpc: config.rpc.value,
+		tradingStrategy: config.strategy.value,
+		tokenA: config.tokens.tokenA,
+		tokenB: config.tokens.tokenB,
+		slippage: config.slippage.value,
+		// minPercProfit: config.minPercProfit.value,
+		// minInterval: config.minInterval.value,
+		// tradingEnabled: config.tradingEnabled.value,
+	};
+
+	fs.writeFileSync("./config.json", JSON.stringify(configValues, null, 2));
+	configSpinner.succeed("Config created!");
+};
+
 /**
  * It calculates the number of iterations per minute and updates the cache.
  */
@@ -78,4 +100,5 @@ module.exports = {
 	updateIterationsPerMin,
 	storeItInTempAsJSON,
 	checkRoutesResponse,
+	createConfigFile,
 };
