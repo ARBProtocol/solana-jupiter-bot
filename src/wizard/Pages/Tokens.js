@@ -1,3 +1,4 @@
+"use strict";
 const React = require("react");
 const { Box, Text } = require("ink");
 const WizardContext = require("../WizardContext");
@@ -20,10 +21,7 @@ function Tokens() {
 	} = useContext(WizardContext);
 	const [tokens, setTokens] = useState([]);
 	const [autocompleteTokens, setAutocompleteTokens] = useState([]);
-	const [tempTokensValue, setTempTokensValue] = useState({
-		tokenA: undefined,
-		tokenB: undefined,
-	});
+	const [tempTokensValue, setTempTokensValue] = useState(tokensValue);
 
 	const handleSubmit = (tokenId, selectedToken) => {
 		// go to the next step only if all tokens are set
@@ -113,21 +111,15 @@ function Tokens() {
 				<Text>
 					Token A:{" "}
 					{!tokensIsSet.tokenA ? (
-						<>
-							<Text color="yellowBright">
-								<TextInput
-									value={
-										tempTokensValue.tokenA
-											? tempTokensValue.tokenA.symbol
-											: tokensValue.tokenA.symbol
-									}
-									onChange={(tokenSymbol) =>
-										handleTokenChange("tokenA", tokenSymbol)
-									}
-									placeholder="USDC"
-								/>
-							</Text>
-						</>
+						<Text color="yellowBright">
+							<TextInput
+								value={tempTokensValue.tokenA.symbol.toString() || ""}
+								onChange={(tokenSymbol) =>
+									handleTokenChange("tokenA", tokenSymbol)
+								}
+								placeholder="USDC"
+							/>
+						</Text>
 					) : (
 						<Text color="greenBright" bold>
 							{tokensValue.tokenA.symbol}
@@ -151,21 +143,15 @@ function Tokens() {
 						<Text>
 							Token B:{" "}
 							{tokensIsSet.tokenA && !tokensIsSet.tokenB ? (
-								<>
-									<Text color="yellowBright">
-										<TextInput
-											value={
-												tempTokensValue.tokenB
-													? tempTokensValue.tokenB.symbol
-													: tokensValue.tokenB.symbol
-											}
-											onChange={(tokenSymbol) =>
-												handleTokenChange("tokenB", tokenSymbol)
-											}
-											placeholder="ARB"
-										/>
-									</Text>
-								</>
+								<Text color="yellowBright">
+									<TextInput
+										value={tempTokensValue.tokenB.symbol.toString() || ""}
+										onChange={(tokenSymbol) =>
+											handleTokenChange("tokenB", tokenSymbol)
+										}
+										placeholder="ARB"
+									/>
+								</Text>
 							) : (
 								<Text color="greenBright" bold>
 									{tokensValue.tokenB.symbol}
