@@ -20,6 +20,10 @@ function Advanced() {
 				...advancedValue,
 				[key]: value,
 			},
+			isSet: {
+				...advancedIsSet,
+				[key]: true,
+			},
 		});
 	};
 
