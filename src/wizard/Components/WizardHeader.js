@@ -29,7 +29,11 @@ const IntroTitle = () => {
 		}, 200);
 
 		return () => {
-			clearInterval(changeColorInterval);
+			try {
+				clearInterval(changeColorInterval);
+			} catch (error) {
+				console.log("changeColorInterval error: ", error);
+			}
 		};
 	}, [colorsSet]);
 
