@@ -14,6 +14,7 @@ const Confirm = () => {
 			strategy: { value: strategy },
 			tokens: { value: tokens },
 			slippage: { value: slippage },
+			advanced: { value: advanced },
 		},
 		config,
 	} = useContext(WizardContext);
@@ -30,6 +31,10 @@ const Confirm = () => {
 					{chalk.bold.blueBright(tokens.tokenB.symbol)}
 				</Text>
 				<Text>Slippage: {chalk.bold.greenBright(slippage)}</Text>
+				<Text color="gray"></Text>
+				<Text>
+					Min Interval: {chalk.bold.greenBright(advanced.minInterval)}
+				</Text>
 			</Box>
 			<TextInput
 				value={`${chalk.bold.greenBright("[ CONFIRM ]")}`}

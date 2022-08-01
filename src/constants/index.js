@@ -2,7 +2,15 @@ const CONFIG_INITIAL_STATE = {
 	showHelp: true,
 	nav: {
 		currentStep: 0,
-		steps: ["network", "rpc", "strategy", "tokens", "slippage", "confirm"],
+		steps: [
+			"network",
+			"rpc",
+			"strategy",
+			"tokens",
+			"slippage",
+			"advanced",
+			"confirm",
+		],
 	},
 	config: {
 		network: {
@@ -46,6 +54,14 @@ const CONFIG_INITIAL_STATE = {
 		slippage: {
 			value: "ProfitOrKill",
 			isSet: false,
+		},
+		advanced: {
+			value: {
+				minInterval: 30,
+			},
+			isSet: {
+				minInterval: false,
+			},
 		},
 	},
 };
