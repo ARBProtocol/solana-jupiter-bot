@@ -1,7 +1,7 @@
 const React = require("react");
 const { Box, Text, useInput, Newline } = require("ink");
 const WizardContext = require("../WizardContext");
-const { useContext, useState, useEffect } = require("react");
+const { useContext, useState } = require("react");
 const { default: SelectInput } = require("ink-select-input");
 const chalk = require("chalk");
 
