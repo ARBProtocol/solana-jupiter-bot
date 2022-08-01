@@ -106,27 +106,32 @@ function Tokens() {
 				{tokens
 					? chalk.magenta(tokens.length)
 					: chalk.yellowBright("loading...")}{" "}
-				tokens available
+				tokens available.
 			</Text>
+			<Text color="gray">Type token symbol and use arrows to select</Text>
 			<Box margin={1} flexDirection="column">
 				<Text>
 					Token A:{" "}
 					{!tokensIsSet.tokenA ? (
 						<>
-							<TextInput
-								value={
-									tempTokensValue.tokenA
-										? tempTokensValue.tokenA.symbol
-										: tokensValue.tokenA.symbol
-								}
-								onChange={(tokenSymbol) =>
-									handleTokenChange("tokenA", tokenSymbol)
-								}
-								placeholder="type token symbol & use arrow keys to select hint"
-							/>
+							<Text color="yellowBright">
+								<TextInput
+									value={
+										tempTokensValue.tokenA
+											? tempTokensValue.tokenA.symbol
+											: tokensValue.tokenA.symbol
+									}
+									onChange={(tokenSymbol) =>
+										handleTokenChange("tokenA", tokenSymbol)
+									}
+									placeholder="USDC"
+								/>
+							</Text>
 						</>
 					) : (
-						<Text color="cyan">{tokensValue.tokenA.symbol}</Text>
+						<Text color="greenBright" bold>
+							{tokensValue.tokenA.symbol}
+						</Text>
 					)}
 				</Text>
 
@@ -147,27 +152,33 @@ function Tokens() {
 							Token B:{" "}
 							{tokensIsSet.tokenA && !tokensIsSet.tokenB ? (
 								<>
-									<TextInput
-										value={
-											tempTokensValue.tokenB
-												? tempTokensValue.tokenB.symbol
-												: tokensValue.tokenB.symbol
-										}
-										onChange={(tokenSymbol) =>
-											handleTokenChange("tokenB", tokenSymbol)
-										}
-										placeholder="type token symbol & use arrow keys to select hint"
-									/>
+									<Text color="yellowBright">
+										<TextInput
+											value={
+												tempTokensValue.tokenB
+													? tempTokensValue.tokenB.symbol
+													: tokensValue.tokenB.symbol
+											}
+											onChange={(tokenSymbol) =>
+												handleTokenChange("tokenB", tokenSymbol)
+											}
+											placeholder="ARB"
+										/>
+									</Text>
 								</>
 							) : (
-								<Text color="cyan">{tokensValue.tokenB.symbol}</Text>
+								<Text color="greenBright" bold>
+									{tokensValue.tokenB.symbol}
+								</Text>
 							)}
 						</Text>
 						<Box>
 							{!tokensIsSet.tokenB &&
 								tempTokensValue.tokenB?.symbol?.length > 1 && (
 									<SelectInput
-										items={autocompleteTokens}
+										items={autocompleteTokens.filter(
+											(t) => t.label !== tokensValue.tokenA.symbol
+										)}
 										limit={4}
 										onSelect={(tokenSymbol) =>
 											handleSubmit("tokenB", tokenSymbol)
