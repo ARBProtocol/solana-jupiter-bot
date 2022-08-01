@@ -7,6 +7,7 @@ const CONFIG_INITIAL_STATE = {
 			"rpc",
 			"strategy",
 			"tokens",
+			"trading size",
 			"slippage",
 			"advanced",
 			"confirm",
@@ -50,6 +51,10 @@ const CONFIG_INITIAL_STATE = {
 				tokenA: false,
 				tokenB: false,
 			},
+		},
+		"trading size": {
+			value: "",
+			isSet: false,
 		},
 		slippage: {
 			value: "ProfitOrKill",
