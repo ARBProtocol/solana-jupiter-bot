@@ -9,17 +9,14 @@ const { default: TextInput } = require("ink-text-input");
 
 const SLIPPAGE_STRATEGIES = [
 	{ label: "Profit Or Kill 🗡", value: "profitOrKill" },
+	{ label: "0.5%", value: 0.5 },
 	{ label: "1%", value: 1 },
-	{ label: "Custom", value: "custom" },
+	{ label: "1.5%", value: 1.5 },
+	{ label: "Custom %", value: "custom" },
 ];
 
 function Slippage() {
-	const {
-		config: {
-			slippage: { value: slippage, isSet: slippageIsSet },
-		},
-		configSetValue,
-	} = useContext(WizardContext);
+	const { configSetValue } = useContext(WizardContext);
 
 	const [tempSlippageStrategy, setTempSlippageStrategy] = useState(
 		SLIPPAGE_STRATEGIES[0]

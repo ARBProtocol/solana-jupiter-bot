@@ -1,9 +1,10 @@
 const ui = require("cliui")({ width: 140 });
-const chart = require("asciichart");
-const moment = require("moment");
 const chalk = require("chalk");
-const { toDecimal } = require("./utils");
-const cache = require("./cache");
+const moment = require("moment");
+const chart = require("asciichart");
+
+const { toDecimal } = require("../../utils");
+const cache = require("../cache");
 
 function printToConsole({
 	date,

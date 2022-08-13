@@ -1,5 +1,6 @@
-const chalk = require("chalk");
 const fs = require("fs");
+const chalk = require("chalk");
+
 const cache = require("./cache");
 
 const logExit = (code = 0, error) => {

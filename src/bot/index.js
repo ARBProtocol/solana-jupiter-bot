@@ -1,9 +1,8 @@
 console.clear();
+
 require("dotenv").config();
-
+const { clearInterval } = require("timers");
 const { PublicKey } = require("@solana/web3.js");
-
-const { setup, getInitialOutAmountWithSlippage } = require("./setup");
 
 const {
 	calculateProfit,
@@ -11,14 +10,11 @@ const {
 	toNumber,
 	updateIterationsPerMin,
 	checkRoutesResponse,
-} = require("./utils");
-
+} = require("../utils");
 const { handleExit, logExit } = require("./exit");
-
-const { clearInterval } = require("timers");
-const printToConsole = require("./ui");
 const cache = require("./cache");
-
+const { setup, getInitialOutAmountWithSlippage } = require("./setup");
+const { printToConsole } = require("./ui/");
 const { swap, failedSwapHandler, successSwapHandler } = require("./swap");
 
 const pingpongStrategy = async (jupiter, tokenA, tokenB) => {

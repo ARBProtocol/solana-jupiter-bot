@@ -1,8 +1,9 @@
 const { default: axios } = require("axios");
 const promiseRetry = require("promise-retry");
-const cache = require("./cache");
-const { logExit, handleExit } = require("./exit");
-const { storeItInTempAsJSON } = require("./utils");
+
+const { logExit, handleExit } = require("../bot/exit");
+const { storeItInTempAsJSON } = require("../utils");
+const cache = require("../bot/cache");
 
 const getSwapResultFromSolscanParser = async (txid) => {
 	try {

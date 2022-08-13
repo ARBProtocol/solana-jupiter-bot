@@ -1,8 +1,9 @@
 const fs = require("fs");
-let config = {};
 
-if (fs.existsSync("./config.json")) {
-	config = JSON.parse(fs.readFileSync("./config.json"));
+// load config file
+let config = {};
+if (fs.existsSync("../config.json")) {
+	config = JSON.parse(fs.readFileSync("../config.json"));
 }
 
 // global cache

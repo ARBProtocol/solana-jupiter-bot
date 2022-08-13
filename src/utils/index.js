@@ -1,37 +1,11 @@
 const fs = require("fs");
 const ora = require("ora-classic");
-const { logExit } = require("./exit");
+const { logExit } = require("../bot/exit");
 
-const calculateProfit = (oldVal, newVal) => ((newVal - oldVal) / oldVal) * 100;
+const createTempDir = () => !fs.existsSync("./temp") && fs.mkdirSync("./temp");
 
-const toDecimal = (number, decimals) =>
-	parseFloat(number / 10 ** decimals).toFixed(decimals);
-
-const toNumber = (number, decimals) => number * 10 ** decimals;
-
-const createTempDir = () => {
-	// create a 'temp' directory if not exists
-	if (!fs.existsSync("./temp")) {
-		fs.mkdirSync("./temp");
-	}
-};
-
-/**
- * It loads the config file and returns the config object
- * @returns The config object
- */
-const loadConfigFile = () => {
-	const configSpinner = ora({
-		text: "Loading config...",
-		discardStdin: false,
-	}).start();
-
-	const config = JSON.parse(fs.readFileSync("./config.json"));
-
-	configSpinner.succeed("Config loaded!");
-
-	return config;
-};
+const storeItInTempAsJSON = (filename, data) =>
+	fs.writeFileSync(`./temp/${filename}.json`, JSON.stringify(data, null, 2));
 
 const createConfigFile = (config) => {
 	const configSpinner = ora({
@@ -63,6 +37,36 @@ const createConfigFile = (config) => {
 };
 
 /**
+ * It loads the config file and returns the config object
+ * @returns The config object
+ */
+const loadConfigFile = ({ showSpinner = false }) => {
+	let config = {};
+	let spinner;
+	if (showSpinner) {
+		spinner = ora({
+			text: "Loading config...",
+			discardStdin: false,
+		}).start();
+	}
+
+	if (fs.existsSync("./config.json")) {
+		config = JSON.parse(fs.readFileSync("./config.json"));
+	}
+
+	spinner?.succeed("Config loaded!");
+
+	return config;
+};
+
+const calculateProfit = (oldVal, newVal) => ((newVal - oldVal) / oldVal) * 100;
+
+const toDecimal = (number, decimals) =>
+	parseFloat(number / 10 ** decimals).toFixed(decimals);
+
+const toNumber = (number, decimals) => number * 10 ** decimals;
+
+/**
  * It calculates the number of iterations per minute and updates the cache.
  */
 const updateIterationsPerMin = (cache) => {
@@ -76,10 +80,6 @@ const updateIterationsPerMin = (cache) => {
 		cache.iterationPerMinute.start = performance.now();
 		cache.iterationPerMinute.counter = 0;
 	} else cache.iterationPerMinute.counter++;
-};
-
-const storeItInTempAsJSON = (filename, data) => {
-	fs.writeFileSync(`./temp/${filename}.json`, JSON.stringify(data, null, 2));
 };
 
 const checkRoutesResponse = (routes) => {
@@ -99,13 +99,13 @@ const checkRoutesResponse = (routes) => {
 };
 
 module.exports = {
+	createTempDir,
+	storeItInTempAsJSON,
+	createConfigFile,
+	loadConfigFile,
 	calculateProfit,
 	toDecimal,
 	toNumber,
-	createTempDir,
-	loadConfigFile,
 	updateIterationsPerMin,
-	storeItInTempAsJSON,
 	checkRoutesResponse,
-	createConfigFile,
 };

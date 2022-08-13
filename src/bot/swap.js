@@ -1,7 +1,6 @@
-const { calculateProfit, toDecimal, storeItInTempAsJSON } = require("./utils");
+const { calculateProfit, toDecimal, storeItInTempAsJSON } = require("../utils");
 const cache = require("./cache");
-const fs = require("fs");
-const { getSwapResultFromSolscanParser } = require("./solscan");
+const { getSwapResultFromSolscanParser } = require("../services/solscan");
 
 const swap = async (jupiter, route) => {
 	try {
@@ -13,15 +12,9 @@ const swap = async (jupiter, route) => {
 		const { execute } = await jupiter.exchange({
 			routeInfo: route,
 		});
-
 		const result = await execute();
 
-		// save result object to ./temp/result.json
-		await fs.writeFile(
-			"./temp/result.json",
-			JSON.stringify(await result, null, 2),
-			() => {}
-		);
+		if (process.env.DEBUG) storeItInTempAsJSON("result", result);
 
 		const performanceOfTx = performance.now() - performanceOfTxStart;
 
@@ -31,7 +24,7 @@ const swap = async (jupiter, route) => {
 	}
 };
 exports.swap = swap;
-// this needs some work
+
 const failedSwapHandler = (tradeEntry) => {
 	// update counter
 	cache.tradeCounter[cache.sideBuy ? "buy" : "sell"].fail++;

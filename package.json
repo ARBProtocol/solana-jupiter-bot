@@ -12,8 +12,8 @@
 	},
 	"scripts": {
 		"wizard": "node ./src/index.js",
-		"start": "node ./src/index.js && node ./src/bot.js",
-		"trade": "node ./src/bot.js",
+		"start": "node ./src/index.js && node ./src/bot/index.js",
+		"trade": "node ./src/bot/index.js",
 		"test": "xo && ava"
 	},
 	"files": [

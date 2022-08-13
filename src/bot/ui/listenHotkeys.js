@@ -1,9 +1,9 @@
 const keypress = require("keypress");
 const open = require("open");
 
-const cache = require("./cache");
-const { DISCORD_INVITE_URL } = require("./constants");
-const { logExit, handleExit } = require("./exit");
+const { DISCORD_INVITE_URL } = require("../../constants");
+const { logExit, handleExit } = require("../exit");
+const cache = require("../cache");
 
 const listenHotkeys = () => {
 	keypress(process.stdin);
