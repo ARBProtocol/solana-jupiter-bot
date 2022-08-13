@@ -1,5 +1,5 @@
 const React = require("react");
-const { Box, Text } = require("ink");
+const { Box, Text, useApp } = require("ink");
 const WizardContext = require("../WizardContext");
 const { useContext } = require("react");
 const { default: TextInput } = require("ink-text-input");
@@ -7,6 +7,7 @@ const chalk = require("chalk");
 const { createConfigFile } = require("../../utils");
 
 const Confirm = () => {
+	const { exit } = useApp();
 	const {
 		config: {
 			network: { value: network },
@@ -39,8 +40,9 @@ const Confirm = () => {
 			<TextInput
 				value={`${chalk.bold.greenBright("[ CONFIRM ]")}`}
 				showCursor={false}
-				onSubmit={() => {
+				onSubmit={async () => {
 					createConfigFile(config);
+					exit();
 				}}
 			/>
 		</Box>
