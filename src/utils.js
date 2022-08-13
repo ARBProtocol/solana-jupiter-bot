@@ -43,15 +43,22 @@ const createConfigFile = (config) => {
 		network: config.network.value,
 		rpc: config.rpc.value,
 		tradingStrategy: config.strategy.value,
-		tokenA: config.tokens.tokenA,
-		tokenB: config.tokens.tokenB,
+		tokenA: config.tokens.value.tokenA,
+		tokenB: config.tokens.value.tokenB,
 		slippage: config.slippage.value,
 		// minPercProfit: config.minPercProfit.value,
-		// minInterval: config.minInterval.value,
+		minPercProfit: 1,
+		minInterval: parseInt(config.advanced.value.minInterval),
 		// tradingEnabled: config.tradingEnabled.value,
+		tradingEnabled: true,
+		tradeSize: parseFloat(config["trading size"].value),
+		ui: {
+			defaultColor: "cyan",
+		},
+		storeFailedTxInHistory: true,
 	};
 
-	fs.writeFileSync("./config.json", JSON.stringify(configValues, null, 2));
+	fs.writeFileSync("./config.json", JSON.stringify(configValues, null, 2), {});
 	configSpinner.succeed("Config created!");
 };
 
