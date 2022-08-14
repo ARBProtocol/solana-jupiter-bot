@@ -71,7 +71,6 @@ const cache = {
 	swappingRightNow: false,
 	fetchingResultsFromSolscan: false,
 	fetchingResultsFromSolscanStart: 0,
-	tradingStrategy: config?.tradingStrategy || "arbitrage",
 	tradeHistory: [],
 	performanceOfTxStart: 0,
 	availableRoutes: {
