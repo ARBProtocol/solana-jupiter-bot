@@ -25,6 +25,11 @@ const Indicator = ({ label, value }) => {
 
 function Strategy() {
 	const { configSetValue } = useContext(WizardContext);
+
+	const handleTradingStrategySelect = (strategy) => {
+		configSetValue("strategy", strategy.value);
+	};
+
 	return (
 		<Box flexDirection="column">
 			<Text>Select Trading Strategy:</Text>
@@ -32,6 +37,7 @@ function Strategy() {
 				<SelectInput
 					items={TRADING_STRATEGIES}
 					itemComponent={Indicator}
+					onSelect={handleTradingStrategySelect}
 				/>
 			</Box>
 		</Box>
