@@ -5,6 +5,7 @@ const { useContext, useState } = require("react");
 const WizardContext = require("../WizardContext");
 
 const { default: TextInput } = require("ink-text-input");
+const chalk = require("chalk");
 
 const SLIPPAGE_STRATEGIES = [
 	{ label: "Profit Or Kill 🗡", value: "profitOrKill" },
@@ -13,6 +14,18 @@ const SLIPPAGE_STRATEGIES = [
 	{ label: "1.5%", value: 1.5 },
 	{ label: "Custom %", value: "custom" },
 ];
+
+const Indicator = ({ label, value }) => {
+	const {
+		config: {
+			slippage: { value: selectedValue },
+		},
+	} = useContext(WizardContext);
+
+	const isSelected = value == selectedValue;
+
+	return <Text>{chalk[isSelected ? "greenBright" : "white"](`${label}`)}</Text>;
+};
 
 function Slippage() {
 	const { configSetValue } = useContext(WizardContext);
@@ -55,7 +68,7 @@ function Slippage() {
 			<Box margin={1}>
 				<SelectInput
 					items={SLIPPAGE_STRATEGIES}
-					onSelect={handleSlippageStrattegySelect}
+					itemComponent={Indicator}
 				/>
 			</Box>
 			{tempSlippageStrategy === "custom" && (

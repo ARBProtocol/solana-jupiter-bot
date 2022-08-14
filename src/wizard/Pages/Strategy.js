@@ -11,6 +11,18 @@ const TRADING_STRATEGIES = [
 	{ label: chalk.gray("coming soon..."), value: "null" },
 ];
 
+const Indicator = ({ label, value }) => {
+	const {
+		config: {
+			strategy: { value: selectedValue },
+		},
+	} = useContext(WizardContext);
+
+	const isSelected = value === selectedValue;
+
+	return <Text>{chalk[isSelected ? "greenBright" : "white"](`${label}`)}</Text>;
+};
+
 function Strategy() {
 	const { configSetValue } = useContext(WizardContext);
 	return (
@@ -19,7 +31,7 @@ function Strategy() {
 			<Box margin={1}>
 				<SelectInput
 					items={TRADING_STRATEGIES}
-					onSelect={(item) => configSetValue("strategy", item.value)}
+					itemComponent={Indicator}
 				/>
 			</Box>
 		</Box>

@@ -3,6 +3,26 @@ const { Box, Text } = require("ink");
 const { useContext, useState } = require("react");
 const WizardContext = require("../WizardContext");
 const { default: TextInput } = require("ink-text-input");
+const chalk = require("chalk");
+const { default: SelectInput } = require("ink-select-input");
+
+const TRADING_SIZE_STRATEGIES = [
+	{ label: "cumulative", value: "cumulative" },
+	{ label: "fixed", value: "fixed" },
+];
+
+const Indicator = ({ label, value }) => {
+	const {
+		config: {
+			"trading size": { value: selectedValue },
+		},
+	} = useContext(WizardContext);
+
+	const isSelected = value === selectedValue.strategy;
+
+	return <Text>{chalk[isSelected ? "greenBright" : "white"](`${label}`)}</Text>;
+};
+
 function TradingSize() {
 	const {
 		config: {
