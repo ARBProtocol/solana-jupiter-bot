@@ -42,7 +42,7 @@ function Slippage() {
 		if (value !== "custom")
 			configSetValue(
 				"slippage",
-				value === "profitOrKill" ? value : parseInt(value)
+				value === "profitOrKill" ? value : Number(value)
 			);
 	};
 
