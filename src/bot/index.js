@@ -29,7 +29,10 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// Calculate amount that will be used for trade
 		const amountToTrade =
-			cache.currentBalance[cache.sideBuy ? "tokenA" : "tokenB"];
+			cache.config.tradeSize.strategy === "cumulative"
+				? cache.currentBalance[cache.sideBuy ? "tokenA" : "tokenB"]
+				: cache.initialBalance[cache.sideBuy ? "tokenA" : "tokenB"];
+
 		const baseAmount = cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
 
 		// default slippage
@@ -377,10 +380,10 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 		!cache.swappingRightNow &&
 		Object.keys(cache.queue).length < cache.queueThrottle
 	) {
-		if (cache.tradingStrategy === "pingpong") {
+		if (cache.config.tradingStrategy === "pingpong") {
 			await pingpongStrategy(jupiter, tokenA, tokenB);
 		}
-		if (cache.tradingStrategy === "arbitrage") {
+		if (cache.config.tradingStrategy === "arbitrage") {
 			await arbitrageStrategy(jupiter, tokenA, tokenB);
 		}
 	}
@@ -391,10 +394,10 @@ const run = async () => {
 		// set everything up
 		const { jupiter, tokenA, tokenB } = await setup();
 
-		if (cache.tradingStrategy === "pingpong") {
+		if (cache.config.tradingStrategy === "pingpong") {
 			// set initial & current & last balance for tokenA
 			cache.initialBalance.tokenA = toNumber(
-				cache.config.tradeSize,
+				cache.config.tradeSize.value,
 				tokenA.decimals
 			);
 			cache.currentBalance.tokenA = cache.initialBalance.tokenA;
@@ -408,10 +411,10 @@ const run = async () => {
 				cache.initialBalance.tokenA
 			);
 			cache.lastBalance.tokenB = cache.initialBalance.tokenB;
-		} else if (cache.tradingStrategy === "arbitrage") {
+		} else if (cache.config.tradingStrategy === "arbitrage") {
 			// set initial & current & last balance for tokenA
 			cache.initialBalance.tokenA = toNumber(
-				cache.config.tradeSize,
+				cache.config.tradeSize.value,
 				tokenA.decimals
 			);
 			cache.currentBalance.tokenA = cache.initialBalance.tokenA;
