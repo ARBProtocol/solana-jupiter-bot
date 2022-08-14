@@ -1,10 +1,10 @@
 const React = require("react");
 const { Box, Text, useApp } = require("ink");
 const WizardContext = require("../WizardContext");
-const { useContext } = require("react");
+const { useContext, useEffect, useState } = require("react");
 const { default: TextInput } = require("ink-text-input");
 const chalk = require("chalk");
-const { createConfigFile } = require("../../utils");
+const { createConfigFile, verifyConfig } = require("../../utils");
 
 const Confirm = () => {
 	const { exit } = useApp();
@@ -19,6 +19,14 @@ const Confirm = () => {
 		},
 		config,
 	} = useContext(WizardContext);
+	const [isConfigOk, setIsConfigOk] = useState({
+		result: false,
+		badConfig: [],
+	});
+
+	useEffect(() => {
+		setIsConfigOk(verifyConfig(config));
+	}, []);
 
 	return (
 		<Box flexDirection="column">
@@ -37,14 +45,21 @@ const Confirm = () => {
 					Min Interval: {chalk.bold.greenBright(advanced.minInterval)}
 				</Text>
 			</Box>
-			<TextInput
-				value={`${chalk.bold.greenBright("[ CONFIRM ]")}`}
-				showCursor={false}
-				onSubmit={async () => {
-					createConfigFile(config);
-					exit();
-				}}
-			/>
+			{isConfigOk.result ? (
+				<TextInput
+					value={`${chalk.bold.greenBright("[ CONFIRM ]")}`}
+					showCursor={false}
+					onSubmit={async () => {
+						createConfigFile(config);
+						exit();
+					}}
+				/>
+			) : (
+				<Text>
+					Error on step:{" "}
+					{<Text color="red">{isConfigOk.badConfig.join(", ")}</Text>}
+				</Text>
+			)}
 		</Box>
 	);
 };

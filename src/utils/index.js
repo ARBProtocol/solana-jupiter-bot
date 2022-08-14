@@ -38,6 +38,24 @@ const createConfigFile = (config) => {
 	configSpinner.succeed("Config created!");
 };
 
+const verifyConfig = (config) => {
+	let result = true;
+	const badConfig = [];
+	Object.entries(config).forEach(([key, value]) => {
+		const isSet = value.isSet;
+		const isSectionSet =
+			isSet instanceof Object
+				? Object.values(isSet).every((value) => value === true)
+				: isSet;
+
+		if (!isSectionSet) {
+			result = false;
+			badConfig.push(key);
+		}
+	});
+	return { result, badConfig };
+};
+
 /**
  * It loads the config file and returns the config object
  * @returns The config object
@@ -105,6 +123,7 @@ module.exports = {
 	storeItInTempAsJSON,
 	createConfigFile,
 	loadConfigFile,
+	verifyConfig,
 	calculateProfit,
 	toDecimal,
 	toNumber,
