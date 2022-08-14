@@ -229,10 +229,10 @@ function printToConsole({
 					)}`,
 				},
 				{
-					text: ` `,
+					text: " ",
 				},
 				{
-					text: ` `,
+					text: " ",
 				}
 			);
 
@@ -243,9 +243,7 @@ function printToConsole({
 					)} ${chalk[cache.ui.defaultColor](outputToken.symbol)}`,
 				},
 				{
-					text: `PROFIT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
-						simulatedProfit.toFixed(2)
-					)} %`,
+					text: " ",
 				},
 				{
 					text: `MIN. OUT: ${chalk.magentaBright(
@@ -253,10 +251,10 @@ function printToConsole({
 					)}`,
 				},
 				{
-					text: ` `,
+					text: " ",
 				},
 				{
-					text: ` `,
+					text: " ",
 				}
 			);
 
@@ -267,16 +265,16 @@ function printToConsole({
 					)} %`,
 				},
 				{
-					text: ` `,
+					text: " ",
 				},
 				{
-					text: ` `,
+					text: " ",
 				},
 				{
-					text: ` `,
+					text: " ",
 				},
 				{
-					text: ` `,
+					text: " ",
 				}
 			);
 
