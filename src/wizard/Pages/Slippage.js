@@ -35,7 +35,7 @@ function Slippage() {
 	};
 
 	const handleCustomSlippageChange = (value) => {
-		const badChars = /[^0-9]/g;
+		const badChars = /[^0-9.]/g;
 		badChars.test(value)
 			? setInputBorderColor("red")
 			: setInputBorderColor("gray");
@@ -45,7 +45,7 @@ function Slippage() {
 	};
 
 	const handleCustomSlippageSubmit = () => {
-		configSetValue("slippage", parseInt(customSlippage));
+		configSetValue("slippage", Number(customSlippage));
 	};
 
 	return (
