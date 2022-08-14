@@ -8,6 +8,7 @@ const CONFIG_INITIAL_STATE = {
 			"strategy",
 			"tokens",
 			"trading size",
+			"profit",
 			"slippage",
 			"advanced",
 			"confirm",
@@ -55,6 +56,13 @@ const CONFIG_INITIAL_STATE = {
 		"trading size": {
 			value: "",
 			isSet: false,
+		},
+		profit: {
+			value: 1,
+			isSet: {
+				percent: false,
+				strategy: false,
+			},
 		},
 		slippage: {
 			value: 0,
