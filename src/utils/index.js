@@ -25,7 +25,10 @@ const createConfigFile = (config) => {
 		minInterval: parseInt(config.advanced.value.minInterval),
 		// tradingEnabled: config.tradingEnabled.value,
 		tradingEnabled: true,
-		tradeSize: parseFloat(config["trading size"].value),
+		tradeSize: {
+			value: parseFloat(config["trading size"].value.value),
+			strategy: config["trading size"].value.strategy,
+		},
 		ui: {
 			defaultColor: "cyan",
 		},

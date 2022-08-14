@@ -54,7 +54,10 @@ const CONFIG_INITIAL_STATE = {
 			},
 		},
 		"trading size": {
-			value: "",
+			value: {
+				strategy: "",
+				value: "",
+			},
 			isSet: false,
 		},
 		profit: {
