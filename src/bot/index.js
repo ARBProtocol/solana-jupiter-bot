@@ -65,10 +65,10 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 		const route = await routes.routesInfos[0];
 
 		// update slippage with "profit or kill" slippage
-		const profitOrKillSlippage =
-			cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
-
-		route.outAmountWithSlippage = profitOrKillSlippage;
+		if (cache.config.slippage === "profitOrKill") {
+			route.outAmountWithSlippage =
+				cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
+		}
 
 		// calculate profitability
 
@@ -245,8 +245,9 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 		const route = await routes.routesInfos[1];
 
 		// update slippage with "profit or kill" slippage
-		const profitOrKillSlippage = cache.lastBalance["tokenA"];
-		route.outAmountWithSlippage = profitOrKillSlippage;
+		if (cache.config.slippage === "profitOrKill") {
+			route.outAmountWithSlippage = cache.lastBalance["tokenA"];
+		}
 
 		// calculate profitability
 
