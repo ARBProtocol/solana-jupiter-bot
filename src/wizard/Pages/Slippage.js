@@ -36,7 +36,7 @@ function Slippage() {
 	const [customSlippage, setCustomSlippage] = useState("1");
 	const [inputBorderColor, setInputBorderColor] = useState("gray");
 
-	const handleSlippageStrattegySelect = (slippage) => {
+	const handleSlippageStrategySelect = (slippage) => {
 		const value = slippage.value;
 		setTempSlippageStrategy(value);
 		if (value !== "custom")
@@ -69,6 +69,7 @@ function Slippage() {
 				<SelectInput
 					items={SLIPPAGE_STRATEGIES}
 					itemComponent={Indicator}
+					onSelect={handleSlippageStrategySelect}
 				/>
 			</Box>
 			{tempSlippageStrategy === "custom" && (
