@@ -217,9 +217,7 @@ function printToConsole({
 					)} ${chalk[cache.ui.defaultColor](inputToken.symbol)}`,
 				},
 				{
-					text: `NOMINAL: ${chalk[cache.ui.defaultColor](
-						`${cache.config.tradeSize.value} ${inputToken.symbol}`
-					)}`,
+					text: " ",
 				},
 				{
 					text: `SLIPPAGE: ${chalk.magentaBright(
