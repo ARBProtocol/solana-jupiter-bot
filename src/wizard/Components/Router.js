@@ -9,6 +9,7 @@ const Rpc = importJsx("../Pages/Rpc");
 const Strategy = importJsx("../Pages/Strategy");
 const Tokens = importJsx("../Pages/Tokens");
 const TradingSize = importJsx("../Pages/TradingSize");
+const Profit = importJsx("../Pages/Profit");
 const Slippage = importJsx("../Pages/Slippage");
 const Advanced = importJsx("../Pages/Advanced");
 const Confirm = importJsx("../Pages/Confirm");
@@ -19,6 +20,7 @@ const ROUTES = {
 	strategy: <Strategy />,
 	tokens: <Tokens />,
 	"trading size": <TradingSize />,
+	profit: <Profit />,
 	slippage: <Slippage />,
 	advanced: <Advanced />,
 	confirm: <Confirm />,

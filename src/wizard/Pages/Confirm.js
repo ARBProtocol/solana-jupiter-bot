@@ -14,6 +14,7 @@ const Confirm = () => {
 			rpc: { value: rpc },
 			strategy: { value: strategy },
 			tokens: { value: tokens },
+			profit: { value: profit },
 			slippage: { value: slippage },
 			advanced: { value: advanced },
 		},
@@ -39,6 +40,7 @@ const Confirm = () => {
 					Tokens: {chalk.bold.blueBright(tokens.tokenA.symbol)} /{" "}
 					{chalk.bold.blueBright(tokens.tokenB.symbol)}
 				</Text>
+				<Text>Profit: {chalk.bold.greenBright(profit)}</Text>
 				<Text>Slippage: {chalk.bold.greenBright(slippage)}</Text>
 				<Text color="gray"></Text>
 				<Text>
