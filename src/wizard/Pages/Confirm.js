@@ -14,6 +14,7 @@ const Confirm = () => {
 			rpc: { value: rpc },
 			strategy: { value: strategy },
 			tokens: { value: tokens },
+			"trading size": { value: tradingSize },
 			profit: { value: profit },
 			slippage: { value: slippage },
 			advanced: { value: advanced },
@@ -39,6 +40,11 @@ const Confirm = () => {
 				<Text>
 					Tokens: {chalk.bold.blueBright(tokens.tokenA.symbol)} /{" "}
 					{chalk.bold.blueBright(tokens.tokenB.symbol)}
+				</Text>
+				<Text>
+					Trading size: {chalk.bold.greenBright(tradingSize.value)}{" "}
+					{chalk.gray(tokens.tokenA.symbol)} |{" "}
+					{chalk.greenBright(tradingSize.strategy)}
 				</Text>
 				<Text>Profit: {chalk.bold.greenBright(profit)}</Text>
 				<Text>Slippage: {chalk.bold.greenBright(slippage)}</Text>
