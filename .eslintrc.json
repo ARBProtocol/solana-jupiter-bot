@@ -16,7 +16,9 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-        "prettier/prettier": "error"
+        "prettier/prettier": "error",
+        "react/prop-types": "off" 
+
     },
     "plugins": [
         "react",
