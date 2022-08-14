@@ -57,7 +57,7 @@ const CONFIG_INITIAL_STATE = {
 			isSet: false,
 		},
 		slippage: {
-			value: "ProfitOrKill",
+			value: 0,
 			isSet: false,
 		},
 		advanced: {
