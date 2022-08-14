@@ -212,9 +212,37 @@ function printToConsole({
 
 			ui.div(
 				{
-					text: `IN: ${chalk.yellowBright(
+					text: `IN:  ${chalk.yellowBright(
 						toDecimal(route.inAmount, inputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](inputToken.symbol)}`,
+				},
+				{
+					text: `NOMINAL: ${chalk[cache.ui.defaultColor](
+						`${cache.config.tradeSize} ${inputToken.symbol}`
+					)}`,
+				},
+				{
+					text: `SLIPPAGE: ${chalk.magentaBright(
+						`${
+							cache.config.slippage === "profitOrKill"
+								? "ProfitOrKill"
+								: cache.config.slippage + " %"
+						}`
+					)}`,
+				},
+				{
+					text: ` `,
+				},
+				{
+					text: ` `,
+				}
+			);
+
+			ui.div(
+				{
+					text: `OUT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
+						toDecimal(route.outAmount, outputToken.decimals)
+					)} ${chalk[cache.ui.defaultColor](outputToken.symbol)}`,
 				},
 				{
 					text: `PROFIT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
@@ -222,19 +250,35 @@ function printToConsole({
 					)} %`,
 				},
 				{
-					text: `OUT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
-						toDecimal(route.outAmount, outputToken.decimals)
-					)} ${chalk[cache.ui.defaultColor](outputToken.symbol)}`,
-				},
-				{
-					text: `NOMINAL SIZE: ${chalk[cache.ui.defaultColor](
-						`${cache.config.tradeSize} ${inputToken.symbol}`
-					)}`,
-				},
-				{
-					text: `SLIPPAGE: ${chalk.magentaBright(
+					text: `MIN. OUT: ${chalk.magentaBright(
 						toDecimal(route.outAmountWithSlippage, outputToken.decimals)
 					)}`,
+				},
+				{
+					text: ` `,
+				},
+				{
+					text: ` `,
+				}
+			);
+
+			ui.div(
+				{
+					text: `PROFIT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
+						simulatedProfit.toFixed(2)
+					)} %`,
+				},
+				{
+					text: ` `,
+				},
+				{
+					text: ` `,
+				},
+				{
+					text: ` `,
+				},
+				{
+					text: ` `,
 				}
 			);
 
