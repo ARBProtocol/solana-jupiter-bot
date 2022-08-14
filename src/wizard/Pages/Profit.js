@@ -17,7 +17,6 @@ function MinProfit() {
 	const [inputBorderColor, setInputBorderColor] = useState("gray");
 
 	const handleMinProfitSubmit = (value) => {
-		console.log("value", value);
 		configSetValue("profit", value);
 	};
 
