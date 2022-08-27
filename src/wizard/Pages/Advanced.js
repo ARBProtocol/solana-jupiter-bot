@@ -1,10 +1,12 @@
 const React = require("react");
 const { Box, Text } = require("ink");
-const { useContext, useState } = require("react");
+const { useContext, useState, useRef, useEffect } = require("react");
 const WizardContext = require("../WizardContext");
 const { default: TextInput } = require("ink-text-input");
 
 function Advanced() {
+	let isMountedRef = useRef(false);
+
 	const {
 		config: {
 			advanced: { value: advancedValue, isSet: advancedIsSet },
@@ -27,6 +29,20 @@ function Advanced() {
 		});
 	};
 
+	const handleMinIntervalChange = (value) => {
+		if (!isMountedRef.current) return;
+
+		setTempAdvancedValue({
+			...tempAdvancedValue,
+			minInterval: value,
+		});
+	};
+
+	useEffect(() => {
+		isMountedRef.current = true;
+		return () => (isMountedRef.current = false);
+	}, []);
+
 	return (
 		<Box flexDirection="column">
 			<Text color="gray">
@@ -47,12 +63,7 @@ function Advanced() {
 										? tempAdvancedValue.minInterval.toString()
 										: ""
 								}
-								onChange={(value) => {
-									setTempAdvancedValue({
-										...tempAdvancedValue,
-										minInterval: value,
-									});
-								}}
+								onChange={handleMinIntervalChange}
 								onSubmit={(value) => {
 									handleSubmit("minInterval", value);
 								}}

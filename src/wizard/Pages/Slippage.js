@@ -1,7 +1,7 @@
 const React = require("react");
 const { Box, Text } = require("ink");
 const { default: SelectInput } = require("ink-select-input");
-const { useContext, useState } = require("react");
+const { useContext, useState, useEffect, useRef } = require("react");
 const WizardContext = require("../WizardContext");
 
 const { default: TextInput } = require("ink-text-input");
@@ -29,6 +29,7 @@ const Indicator = ({ label, value }) => {
 
 function Slippage() {
 	const { configSetValue } = useContext(WizardContext);
+	let isMountedRef = useRef(false);
 
 	const [tempSlippageStrategy, setTempSlippageStrategy] = useState(
 		SLIPPAGE_STRATEGIES[0]
@@ -53,12 +54,17 @@ function Slippage() {
 			: setInputBorderColor("gray");
 		const sanitizedValue = value.replace(badChars, "");
 		setCustomSlippage(sanitizedValue);
-		setTimeout(() => setInputBorderColor("gray"), 100);
+		setTimeout(() => isMountedRef.current && setInputBorderColor("gray"), 100);
 	};
 
 	const handleCustomSlippageSubmit = () => {
 		configSetValue("slippage", Number(customSlippage));
 	};
+
+	useEffect(() => {
+		isMountedRef.current = true;
+		return () => (isMountedRef.current = false);
+	}, []);
 
 	return (
 		<Box flexDirection="column">

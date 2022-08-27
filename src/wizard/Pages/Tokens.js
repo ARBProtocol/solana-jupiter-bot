@@ -2,7 +2,7 @@
 const React = require("react");
 const { Box, Text } = require("ink");
 const WizardContext = require("../WizardContext");
-const { useContext, useState, useEffect } = require("react");
+const { useContext, useState, useEffect, useRef } = require("react");
 const { default: SelectInput } = require("ink-select-input");
 const chalk = require("chalk");
 const { default: axios } = require("axios");
@@ -11,6 +11,8 @@ const { default: TextInput } = require("ink-text-input");
 const fs = require("fs");
 
 function Tokens() {
+	let isMountedRef = useRef(false);
+
 	const {
 		config: {
 			strategy: { value: strategy },
@@ -52,6 +54,7 @@ function Tokens() {
 	};
 
 	const handleTokenChange = (tokenId, value) => {
+		if (!isMountedRef.current) return;
 		const sanitizedValue = value.replace(/[^a-zA-Z0-9]/g, "");
 		const filteredTokens = tokens
 			.map((t) => ({
@@ -61,13 +64,15 @@ function Tokens() {
 			.filter((t) =>
 				t.label.toLowerCase().includes(sanitizedValue.toLowerCase())
 			);
-		setAutocompleteTokens(filteredTokens);
-		setTempTokensValue({
-			...tempTokensValue,
-			[tokenId]: {
-				symbol: sanitizedValue,
-			},
-		});
+		if (isMountedRef.current) {
+			setAutocompleteTokens(filteredTokens);
+			setTempTokensValue({
+				...tempTokensValue,
+				[tokenId]: {
+					symbol: sanitizedValue,
+				},
+			});
+		}
 	};
 
 	if (network === "") {
@@ -87,7 +92,7 @@ function Tokens() {
 			tokens.tokensFromFile?.length > 0 && setTokens(tokensFromFile);
 		} else {
 			axios.get(TOKEN_LIST_URL[network]).then((res) => {
-				setTokens(res.data);
+				isMountedRef.current && setTokens(res.data);
 				// save tokens to tokens.json file
 				fs.writeFileSync(
 					"./temp/tokens.json",
@@ -95,6 +100,11 @@ function Tokens() {
 				);
 			});
 		}
+	}, []);
+
+	useEffect(() => {
+		isMountedRef.current = true;
+		return () => (isMountedRef.current = false);
 	}, []);
 
 	return (

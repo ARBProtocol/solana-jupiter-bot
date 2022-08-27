@@ -1,6 +1,6 @@
 const React = require("react");
 const { Box, Text } = require("ink");
-const { useContext, useState } = require("react");
+const { useContext, useState, useRef, useEffect } = require("react");
 const WizardContext = require("../WizardContext");
 const { default: TextInput } = require("ink-text-input");
 const chalk = require("chalk");
@@ -24,6 +24,8 @@ const Indicator = ({ label, value }) => {
 };
 
 function TradingSize() {
+	let isMountedRef = useRef(false);
+
 	const {
 		config: {
 			tokens: { value: tokensValue },
@@ -45,14 +47,21 @@ function TradingSize() {
 	};
 
 	const handleTradingSizeChange = (value) => {
+		if (!isMountedRef.current) return;
+
 		const badChars = /[^0-9.]/g;
 		badChars.test(value)
 			? setInputBorderColor("red")
 			: setInputBorderColor("gray");
 		const sanitizedValue = value.replace(badChars, "");
-		setTimeout(() => setInputBorderColor("gray"), 100);
+		setTimeout(() => isMountedRef.current && setInputBorderColor("gray"), 100);
 		setTradingSize(sanitizedValue);
 	};
+
+	useEffect(() => {
+		isMountedRef.current = true;
+		return () => (isMountedRef.current = false);
+	}, []);
 
 	return (
 		<Box flexDirection="column">
