@@ -112,6 +112,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
+				route.outAmountWithSlippage = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
@@ -289,6 +290,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
+				route.outAmountWithSlippage = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
