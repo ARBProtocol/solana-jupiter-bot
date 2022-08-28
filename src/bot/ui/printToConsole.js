@@ -1,9 +1,10 @@
 const ui = require("cliui")({ width: 140 });
-const chart = require("asciichart");
-const moment = require("moment");
 const chalk = require("chalk");
-const { toDecimal } = require("./utils");
-const cache = require("./cache");
+const moment = require("moment");
+const chart = require("asciichart");
+
+const { toDecimal } = require("../../utils");
+const cache = require("../cache");
 
 function printToConsole({
 	date,
@@ -211,29 +212,69 @@ function printToConsole({
 
 			ui.div(
 				{
-					text: `IN: ${chalk.yellowBright(
+					text: `IN:  ${chalk.yellowBright(
 						toDecimal(route.inAmount, inputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](inputToken.symbol)}`,
 				},
 				{
-					text: `PROFIT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
-						simulatedProfit.toFixed(2)
-					)} %`,
+					text: " ",
 				},
+				{
+					text: `SLIPPAGE: ${chalk.magentaBright(
+						`${
+							cache.config.slippage === "profitOrKill"
+								? "ProfitOrKill"
+								: cache.config.slippage + " %"
+						}`
+					)}`,
+				},
+				{
+					text: " ",
+				},
+				{
+					text: " ",
+				}
+			);
+
+			ui.div(
 				{
 					text: `OUT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
 						toDecimal(route.outAmount, outputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](outputToken.symbol)}`,
 				},
 				{
-					text: `NOMINAL SIZE: ${chalk[cache.ui.defaultColor](
-						`${cache.config.tradeSize} ${inputToken.symbol}`
+					text: " ",
+				},
+				{
+					text: `MIN. OUT: ${chalk.magentaBright(
+						toDecimal(route.outAmountWithSlippage, outputToken.decimals)
 					)}`,
 				},
 				{
-					text: `SLIPPAGE: ${chalk.magentaBright(
-						toDecimal(route.outAmountWithSlippage, outputToken.decimals)
-					)}`,
+					text: " ",
+				},
+				{
+					text: " ",
+				}
+			);
+
+			ui.div(
+				{
+					text: `PROFIT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
+						simulatedProfit.toFixed(2)
+					)} % ${chalk.gray(`(${cache?.config?.minPercProfit})`)}`,
+				},
+				{
+					text: " ",
+				},
+				{
+					text: " ",
+				},
+				{
+					text: " ",
+				},
+				{
+					text: " ",
 				}
 			);
 
@@ -335,7 +376,15 @@ function printToConsole({
 							{ text: `${entry.inAmount} ${entry.inputToken}`, border: true },
 							{ text: `${entry.outAmount} ${entry.outputToken}`, border: true },
 							{
-								text: `${entry.profit > 0 ? entry.profit.toFixed(2) : "-"} %`,
+								text: `${
+									chalk[
+										entry.profit > 0
+											? "greenBright"
+											: entry.profit < 0
+											? "redBright"
+											: "cyanBright"
+									](isNaN(entry.profit) ? "0" : entry.profit.toFixed(2)) + " %"
+								}`,
 								border: true,
 							},
 							{

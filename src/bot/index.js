@@ -1,9 +1,8 @@
 console.clear();
+
 require("dotenv").config();
-
+const { clearInterval } = require("timers");
 const { PublicKey } = require("@solana/web3.js");
-
-const { setup, getInitialOutAmountWithSlippage } = require("./setup");
 
 const {
 	calculateProfit,
@@ -11,14 +10,11 @@ const {
 	toNumber,
 	updateIterationsPerMin,
 	checkRoutesResponse,
-} = require("./utils");
-
+} = require("../utils");
 const { handleExit, logExit } = require("./exit");
-
-const { clearInterval } = require("timers");
-const printToConsole = require("./ui");
 const cache = require("./cache");
-const listenHotkeys = require("./hotkeys");
+const { setup, getInitialOutAmountWithSlippage } = require("./setup");
+const { printToConsole } = require("./ui/");
 const { swap, failedSwapHandler, successSwapHandler } = require("./swap");
 
 const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
@@ -33,11 +29,15 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// Calculate amount that will be used for trade
 		const amountToTrade =
-			cache.currentBalance[cache.sideBuy ? "tokenA" : "tokenB"];
+			cache.config.tradeSize.strategy === "cumulative"
+				? cache.currentBalance[cache.sideBuy ? "tokenA" : "tokenB"]
+				: cache.initialBalance[cache.sideBuy ? "tokenA" : "tokenB"];
+
 		const baseAmount = cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
 
 		// default slippage
-		const slippage = 1;
+		const slippage =
+			typeof cache.config.slippage === "number" ? cache.config.slippage : 1;
 
 		// set input / output token
 		const inputToken = cache.sideBuy ? tokenA : tokenB;
@@ -69,10 +69,10 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 		const route = await routes.routesInfos[0];
 
 		// update slippage with "profit or kill" slippage
-		const profitOrKillSlippage =
-			cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
-
-		route.outAmountWithSlippage = profitOrKillSlippage;
+		if (cache.config.slippage === "profitOrKill") {
+			route.outAmountWithSlippage =
+				cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
+		}
 
 		// calculate profitability
 
@@ -112,6 +112,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
+				route.outAmountWithSlippage = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
@@ -217,8 +218,8 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 		const baseAmount = cache.lastBalance["tokenA"];
 
 		// default slippage
-		const slippage = 1;
-
+		const slippage =
+			typeof cache.config.slippage === "number" ? cache.config.slippage : 1;
 		// set input / output token
 		const inputToken = tokenA;
 		const outputToken = tokenA;
@@ -249,8 +250,9 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 		const route = await routes.routesInfos[1];
 
 		// update slippage with "profit or kill" slippage
-		const profitOrKillSlippage = cache.lastBalance["tokenA"];
-		route.outAmountWithSlippage = profitOrKillSlippage;
+		if (cache.config.slippage === "profitOrKill") {
+			route.outAmountWithSlippage = cache.lastBalance["tokenA"];
+		}
 
 		// calculate profitability
 
@@ -288,6 +290,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
+				route.outAmountWithSlippage = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
@@ -380,10 +383,10 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 		!cache.swappingRightNow &&
 		Object.keys(cache.queue).length < cache.queueThrottle
 	) {
-		if (cache.tradingStrategy === "pingpong") {
+		if (cache.config.tradingStrategy === "pingpong") {
 			await pingpongStrategy(jupiter, tokenA, tokenB);
 		}
-		if (cache.tradingStrategy === "arbitrage") {
+		if (cache.config.tradingStrategy === "arbitrage") {
 			await arbitrageStrategy(jupiter, tokenA, tokenB);
 		}
 	}
@@ -394,10 +397,10 @@ const run = async () => {
 		// set everything up
 		const { jupiter, tokenA, tokenB } = await setup();
 
-		if (cache.tradingStrategy === "pingpong") {
+		if (cache.config.tradingStrategy === "pingpong") {
 			// set initial & current & last balance for tokenA
 			cache.initialBalance.tokenA = toNumber(
-				cache.config.tradeSize,
+				cache.config.tradeSize.value,
 				tokenA.decimals
 			);
 			cache.currentBalance.tokenA = cache.initialBalance.tokenA;
@@ -411,10 +414,10 @@ const run = async () => {
 				cache.initialBalance.tokenA
 			);
 			cache.lastBalance.tokenB = cache.initialBalance.tokenB;
-		} else if (cache.tradingStrategy === "arbitrage") {
+		} else if (cache.config.tradingStrategy === "arbitrage") {
 			// set initial & current & last balance for tokenA
 			cache.initialBalance.tokenA = toNumber(
-				cache.config.tradeSize,
+				cache.config.tradeSize.value,
 				tokenA.decimals
 			);
 			cache.currentBalance.tokenA = cache.initialBalance.tokenA;
@@ -425,9 +428,6 @@ const run = async () => {
 			() => watcher(jupiter, tokenA, tokenB),
 			cache.config.minInterval
 		);
-
-		// listen for hotkeys
-		listenHotkeys();
 	} catch (error) {
 		logExit(error);
 		process.exitCode = 1;

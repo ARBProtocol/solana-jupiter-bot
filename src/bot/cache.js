@@ -1,10 +1,3 @@
-const fs = require("fs");
-let config = {};
-
-if (fs.existsSync("./config.json")) {
-	config = JSON.parse(fs.readFileSync("./config.json"));
-}
-
 // global cache
 const cache = {
 	startTime: new Date(),
@@ -47,7 +40,7 @@ const cache = {
 		sell: { success: 0, fail: 0 },
 	},
 	ui: {
-		defaultColor: config?.ui?.defaultColor || "cyan",
+		defaultColor: process.env.UI_COLOR ?? "cyan",
 		showPerformanceOfRouteCompChart: false,
 		showProfitChart: true,
 		showTradeHistory: true,
@@ -66,11 +59,13 @@ const cache = {
 		e: false,
 		r: false,
 	},
-	tradingEnabled: config?.tradingEnabled || false,
+	tradingEnabled:
+		process.env.TRADING_ENABLED === undefined
+			? true
+			: process.env.TRADING_ENABLED === "true",
 	swappingRightNow: false,
 	fetchingResultsFromSolscan: false,
 	fetchingResultsFromSolscanStart: 0,
-	tradingStrategy: config?.tradingStrategy || "arbitrage",
 	tradeHistory: [],
 	performanceOfTxStart: 0,
 	availableRoutes: {

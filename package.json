@@ -1,6 +1,6 @@
 {
 	"name": "solana-jupiter-bot",
-	"version": "0.0.3",
+	"version": "0.0.9",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -11,9 +11,9 @@
 		"node": ">=16"
 	},
 	"scripts": {
-		"config": "node ./src/cli.js",
-		"start": "node ./src/index.js && node ./src/bot.js",
-		"trade": "node ./src/bot.js",
+		"wizard": "node ./src/index.js",
+		"start": "node ./src/index.js && node ./src/bot/index.js",
+		"trade": "node ./src/bot/index.js",
 		"test": "xo && ava"
 	},
 	"files": [
@@ -27,9 +27,11 @@
 		"axios": "^0.27.2",
 		"bs58": "^5.0.0",
 		"cliui": "^7.0.4",
+		"gradient-string": "^2.0.1",
 		"import-jsx": "^4.0.1",
 		"ink": "^3.2.0",
 		"ink-big-text": "^1.2.0",
+		"ink-divider": "^3.0.0",
 		"ink-gradient": "^2.0.0",
 		"ink-select-input": "^4.2.1",
 		"ink-spinner": "^4.0.3",
@@ -37,6 +39,7 @@
 		"keypress": "^0.2.1",
 		"meow": "^9.0.0",
 		"moment": "^2.29.3",
+		"open": "^8.4.0",
 		"ora-classic": "^5.4.2",
 		"promise-retry": "^2.0.1",
 		"react": "^17.0.2",

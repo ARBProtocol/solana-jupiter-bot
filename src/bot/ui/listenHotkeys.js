@@ -1,7 +1,9 @@
 const keypress = require("keypress");
+const open = require("open");
 
-const cache = require("./cache");
-const { logExit, handleExit } = require("./exit");
+const { DISCORD_INVITE_URL } = require("../../constants");
+const { logExit, handleExit } = require("../exit");
+const cache = require("../cache");
 
 const listenHotkeys = () => {
 	keypress(process.stdin);
@@ -57,6 +59,11 @@ const listenHotkeys = () => {
 		// [S] - simulation mode switch
 		if (key && key.name === "s") {
 			cache.tradingEnabled = !cache.tradingEnabled;
+		}
+
+		// [D] - open discord invite link
+		if (key && key.name === "d") {
+			open(DISCORD_INVITE_URL);
 		}
 	});
 

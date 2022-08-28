@@ -1,18 +1,24 @@
+const fs = require("fs");
+const chalk = require("chalk");
+const ora = require("ora-classic");
+const bs58 = require("bs58");
 const { Jupiter } = require("@jup-ag/core");
 const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
-const bs58 = require("bs58");
-const chalk = require("chalk");
-const fs = require("fs");
-const ora = require("ora-classic");
-const cache = require("./cache");
+
 const { logExit } = require("./exit");
-const { loadConfigFile } = require("./utils");
+const { loadConfigFile } = require("../utils");
+const { intro, listenHotkeys } = require("./ui");
+const cache = require("./cache");
 
 const setup = async () => {
 	let spinner, tokens, tokenA, tokenB, wallet;
 	try {
+		// listen for hotkeys
+		listenHotkeys();
+		await intro();
+
 		// load config file and store it in cache
-		cache.config = loadConfigFile();
+		cache.config = loadConfigFile({ showSpinner: true });
 
 		spinner = ora({
 			text: "Loading tokens...",
