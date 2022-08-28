@@ -376,7 +376,15 @@ function printToConsole({
 							{ text: `${entry.inAmount} ${entry.inputToken}`, border: true },
 							{ text: `${entry.outAmount} ${entry.outputToken}`, border: true },
 							{
-								text: `${entry.profit > 0 ? entry.profit.toFixed(2) : "-"} %`,
+								text: `${
+									chalk[
+										entry.profit > 0
+											? "greenBright"
+											: entry.profit < 0
+											? "redBright"
+											: "cyanBright"
+									](isNaN(entry.profit) ? "0" : entry.profit.toFixed(2)) + " %"
+								}`,
 								border: true,
 							},
 							{
