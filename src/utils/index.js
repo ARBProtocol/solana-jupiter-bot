@@ -116,6 +116,15 @@ const checkRoutesResponse = (routes) => {
 	}
 };
 
+const checkForEnvFile = () => {
+	if (!fs.existsSync("./.env")) {
+		logExit(1, {
+			message: "No .env file found! ",
+		});
+		process.exit(1);
+	}
+};
+
 module.exports = {
 	createTempDir,
 	storeItInTempAsJSON,
@@ -127,4 +136,5 @@ module.exports = {
 	toNumber,
 	updateIterationsPerMin,
 	checkRoutesResponse,
+	checkForEnvFile,
 };

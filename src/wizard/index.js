@@ -1,5 +1,9 @@
 "use strict";
 
+// check for .env file
+const { checkForEnvFile } = require("../utils");
+checkForEnvFile();
+
 require("dotenv").config();
 const React = require("react");
 
