@@ -262,7 +262,7 @@ function printToConsole({
 				{
 					text: `PROFIT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
 						simulatedProfit.toFixed(2)
-					)} %`,
+					)} % ${chalk.gray(`(${cache?.config?.minPercProfit})`)}`,
 				},
 				{
 					text: " ",
