@@ -22,8 +22,7 @@ const random = (h = 100, l = 1) => Math.floor(Math.random() * (h - l + 1)) + l;
 
 async function intro() {
 	try {
-		const skipIntro =
-			process.env.SKIP_INTRO?.toString().toLowerCase() === "true" || false;
+		const skipIntro = process.env.SKIP_INTRO === "true" || false;
 
 		if (!skipIntro) {
 			ui.div(" ");

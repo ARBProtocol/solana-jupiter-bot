@@ -22,8 +22,6 @@ const createConfigFile = (config) => {
 		slippage: config.slippage.value,
 		minPercProfit: config.profit.value,
 		minInterval: parseInt(config.advanced.value.minInterval),
-		// tradingEnabled: config.tradingEnabled.value,
-		tradingEnabled: true,
 		tradeSize: {
 			value: parseFloat(config["trading size"].value.value),
 			strategy: config["trading size"].value.strategy,
