@@ -2,22 +2,21 @@ const keypress = require("keypress");
 const open = require("open");
 
 const { DISCORD_INVITE_URL } = require("../../constants");
-const { logExit, handleExit } = require("../exit");
+const { logExit } = require("../exit");
 const cache = require("../cache");
 
 const listenHotkeys = () => {
 	keypress(process.stdin);
 
 	process.stdin.on("keypress", function (ch, key) {
-		// console.log('got "keypress"', key);
 		if (key && key.ctrl && key.name == "c") {
 			cache.ui.allowClear = false;
 			// eslint-disable-next-line no-undef
-			clearInterval(botInterval);
+			if (global.botInterval) clearInterval(botInterval);
 			logExit(0, { message: "[CTRL]+[C] exiting by user " });
 			process.exitCode = 0;
 			process.stdin.setRawMode(false);
-			handleExit();
+			process.exit(0);
 		}
 
 		// [E] - forced execution
