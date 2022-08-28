@@ -1,3 +1,4 @@
+const chalk = require("chalk");
 const fs = require("fs");
 const ora = require("ora-classic");
 const { logExit } = require("../bot/exit");
@@ -70,11 +71,12 @@ const loadConfigFile = ({ showSpinner = false }) => {
 
 	if (fs.existsSync("./config.json")) {
 		config = JSON.parse(fs.readFileSync("./config.json"));
+		spinner?.succeed("Config loaded!");
+		return config;
 	}
 
-	spinner?.succeed("Config loaded!");
-
-	return config;
+	spinner?.fail(chalk.redBright("Loading config failed!\n"));
+	throw new Error("\nNo config.json file found!\n");
 };
 
 const calculateProfit = (oldVal, newVal) => ((newVal - oldVal) / oldVal) * 100;
