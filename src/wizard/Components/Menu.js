@@ -7,7 +7,7 @@ const Menu = () => {
 	return (
 		<Box
 			width="10%"
-			minWidth={6}
+			minWidth={12}
 			flexDirection="column"
 			justifyContent="center"
 			alignItems="flex-end"
