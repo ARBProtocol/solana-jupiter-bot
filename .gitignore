@@ -109,3 +109,9 @@ temp/*
 
 # useless stuff
 .DS_Store
+
+# debug stuff
+*.cpuprofile
+*.heapprofile
+*.heapsnapshot
+
