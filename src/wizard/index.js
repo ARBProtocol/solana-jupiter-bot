@@ -14,7 +14,7 @@ const WizardProvider = importJsx("./WizardProvider");
 
 const Layout = importJsx("./Components/Layout");
 
-const App = (props) => {
+const App = () => {
 	return (
 		<WizardProvider>
 			<Layout></Layout>
