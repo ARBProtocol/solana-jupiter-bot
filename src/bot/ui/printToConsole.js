@@ -115,6 +115,9 @@ function printToConsole({
 				}
 			);
 
+			const performanceOfRouteCompColor =
+				performanceOfRouteComp < 1000 ? cache.ui.defaultColor : "redBright";
+
 			ui.div(
 				{
 					text: `STARTED: ${chalk[cache.ui.defaultColor](
@@ -122,7 +125,7 @@ function printToConsole({
 					)}`,
 				},
 				{
-					text: `LOOKUP (ROUTE): ${chalk.bold[cache.ui.defaultColor](
+					text: `LOOKUP (ROUTE): ${chalk.bold[performanceOfRouteCompColor](
 						performanceOfRouteComp.toFixed()
 					)} ms`,
 				},
@@ -251,7 +254,9 @@ function printToConsole({
 					)}`,
 				},
 				{
-					text: " ",
+					text: `W/UNWRAP SOL: ${chalk[cache.ui.defaultColor](
+						cache.wrapUnwrapSOL ? "on" : "off"
+					)}`,
 				},
 				{
 					text: " ",

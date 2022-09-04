@@ -77,6 +77,7 @@ const setup = async () => {
 			cluster: cache.config.network,
 			user: wallet,
 			restrictIntermediateTokens: true,
+			wrapUnwrapSOL: cache.wrapUnwrapSOL,
 		});
 
 		cache.isSetupDone = true;

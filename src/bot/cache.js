@@ -63,6 +63,10 @@ const cache = {
 		process.env.TRADING_ENABLED === undefined
 			? true
 			: process.env.TRADING_ENABLED === "true",
+	wrapUnwrapSOL:
+		process.env.WRAP_UNWRAP_SOL === undefined
+			? true
+			: process.env.WRAP_UNWRAP_SOL === "true",
 	swappingRightNow: false,
 	fetchingResultsFromSolscan: false,
 	fetchingResultsFromSolscanStart: 0,
