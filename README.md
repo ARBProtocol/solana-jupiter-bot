@@ -132,7 +132,7 @@ DEFAULT_RPC=https://my-super-lazy-rpc.gov
 
 🥵 You want to `arbitrage` USDC or USDT? YES! Guess what? E V E R Y O N E wants to arbitrage USDC or USDT. If you don't have access to a super fancy RPC, there is a good chance you will end up with lots of 'Slippage errors'.
 
-🥶 `SLIPPAGE ERRORS` are not bot errors. They are part of the Solana blockchain. If you want to avoid them you have to go with the super fancy RPC or pick the less popular pairs/coins - just try to find out which ones have options.
+🥶 `SLIPPAGE ERRORS` are not bot errors. They are part of the Solana blockchain. If you want to avoid them you have to go with the super fancy RPC or pick the less popular pairs/coins - just try to find out which ones hold profit opportunities.
 
 🏓 `PingPong` strategy is really poweful on sideways markets. Search through charts the coins that are constantly moving up and down.
 
