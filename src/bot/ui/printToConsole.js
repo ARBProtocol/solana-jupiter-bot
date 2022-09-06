@@ -393,7 +393,7 @@ function printToConsole({
 								border: true,
 							},
 							{
-								text: `${entry.expectedOutAmount} ${entry.inputToken}`,
+								text: `${entry.expectedOutAmount} ${entry.outputToken}`,
 								border: true,
 							},
 							{
