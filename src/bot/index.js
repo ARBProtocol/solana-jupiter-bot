@@ -214,7 +214,10 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 		updateIterationsPerMin(cache);
 
 		// Calculate amount that will be used for trade
-		const amountToTrade = cache.initialBalance["tokenA"];
+		const amountToTrade =
+			cache.config.tradeSize.strategy === "cumulative"
+				? cache.currentBalance["tokenA"]
+				: cache.initialBalance["tokenA"];
 		const baseAmount = cache.lastBalance["tokenA"];
 
 		// default slippage
