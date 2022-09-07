@@ -1,6 +1,6 @@
 {
 	"name": "solana-jupiter-bot",
-	"version": "0.0.9",
+	"version": "0.0.10-beta",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
