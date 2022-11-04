@@ -1,0 +1,55 @@
+{
+	"name": "@arb-protocol/core",
+	"version": "1.0.0",
+	"license": "MIT",
+	"description": "Core for @arb-protocol/arb-jupiter-bot",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ARBProtocol/solana-jupiter-bot.git"
+	},
+	"main": "dist/index.js",
+	"types": "src/index.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsc",
+		"lint": "eslint --ext .ts src"
+	},
+	"dependencies": {
+		"@jup-ag/core": "3.0.0-beta.0",
+		"@solana/web3.js": "1.66.2",
+		"bs58": "5.0.0",
+		"cliui": "8.0.1",
+		"dotenv": "16.0.3",
+		"immer": "9.0.16",
+		"jsbi": "4.3.0",
+		"zustand": "4.1.4"
+	},
+	"devDependencies": {
+		"@types/node": "^18.11.7",
+		"@typescript-eslint/eslint-plugin": "^5.41.0",
+		"@typescript-eslint/parser": "^5.41.0",
+		"eslint": "^8.26.0",
+		"eslint-config-custom": "*",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-config-standard": "^17.0.0",
+		"eslint-plugin-import": "^2.26.0",
+		"eslint-plugin-n": "^15.3.0",
+		"eslint-plugin-prettier": "^4.2.1",
+		"eslint-plugin-promise": "^6.1.1",
+		"nodemon": "^2.0.20",
+		"ts-node": "^10.9.1",
+		"tsconfig": "*",
+		"typescript": "^4.8.4"
+	},
+	"engines": {
+		"node": ">=16.0.0"
+	},
+	"maintainers": [
+		{
+			"name": "Paweł Mioduszewski",
+			"email": "pmioduszewski@dobrebranie.pl"
+		}
+	]
+}

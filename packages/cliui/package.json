@@ -1,0 +1,27 @@
+{
+	"name": "@arb-protocol/cliui",
+	"version": "1.0.0",
+	"license": "MIT",
+	"description": "Command line user interface for @arb-protocol/solana-jupiter-bot",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ARBProtocol/solana-jupiter-bot.git"
+	},
+	"main": "dist/index.js",
+	"types": "src/index.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsc"
+	},
+	"dependencies": {
+		"boxen": "5.1.2",
+		"chalk": "^4.1.0",
+		"cliui": "8.0.1"
+	},
+	"devDependencies": {
+		"eslint-config-custom": "*",
+		"tsconfig": "*"
+	}
+}
