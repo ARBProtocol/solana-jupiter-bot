@@ -108,12 +108,9 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 			);
 
 		cache.lastBalance.tokenA = cache.currentBalance.tokenA;
-		cache.currentBalance.tokenA = outAmountFromSolscanParser;
-
-		cache.currentProfit.tokenA = calculateProfit(
-			cache.initialBalance.tokenA,
-			cache.currentBalance.tokenA
-		);
+		cache.currentBalance.tokenA =
+			cache.lastBalance.tokenA +
+			(outAmountFromSolscanParser - inAmountFromSolscanParser);
 
 		// update trade history
 		let tempHistory = cache.tradeHistory;
@@ -130,6 +127,11 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 		);
 		tempHistory.push(tradeEntry);
 		cache.tradeHistory = tempHistory;
+
+		const prevProfit = cache.currentProfit.tokenA;
+
+		// total profit
+		cache.currentProfit.tokenA = prevProfit + tradeEntry.profit;
 	}
 };
 exports.successSwapHandler = successSwapHandler;
