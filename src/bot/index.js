@@ -76,7 +76,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// calculate profitability
 
-		let simulatedProfit = calculateProfit(baseAmount, await route.outAmount);
+		const simulatedProfit = calculateProfit(baseAmount, await route.outAmount);
 
 		// store max profit spotted
 		if (
@@ -218,7 +218,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			cache.config.tradeSize.strategy === "cumulative"
 				? cache.currentBalance["tokenA"]
 				: cache.initialBalance["tokenA"];
-		const baseAmount = cache.lastBalance["tokenA"];
+		const baseAmount = amountToTrade;
 
 		// default slippage
 		const slippage =
@@ -254,12 +254,12 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
-			route.outAmountWithSlippage = cache.lastBalance["tokenA"];
+			route.outAmountWithSlippage = amountToTrade;
 		}
 
 		// calculate profitability
 
-		let simulatedProfit = calculateProfit(baseAmount, await route.outAmount);
+		const simulatedProfit = calculateProfit(baseAmount, await route.outAmount);
 
 		// store max profit spotted
 		if (simulatedProfit > cache.maxProfitSpotted["buy"]) {
@@ -331,10 +331,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 				// stop refreshing status
 				clearInterval(printTxStatus);
 
-				const profit = calculateProfit(
-					cache.currentBalance[cache.sideBuy ? "tokenB" : "tokenA"],
-					tx.outputAmount
-				);
+				const profit = calculateProfit(tradeEntry.inAmount, tx.outputAmount);
 
 				tradeEntry = {
 					...tradeEntry,
@@ -390,7 +387,7 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 			await pingpongStrategy(jupiter, tokenA, tokenB);
 		}
 		if (cache.config.tradingStrategy === "arbitrage") {
-			await arbitrageStrategy(jupiter, tokenA, tokenB);
+			await arbitrageStrategy(jupiter, tokenA);
 		}
 	}
 };

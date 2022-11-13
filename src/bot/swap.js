@@ -125,8 +125,8 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 		);
 
 		tradeEntry.profit = calculateProfit(
-			cache.lastBalance["tokenA"],
-			outAmountFromSolscanParser
+			tradeEntry.inAmount,
+			tradeEntry.outAmount
 		);
 		tempHistory.push(tradeEntry);
 		cache.tradeHistory = tempHistory;
