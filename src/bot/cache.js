@@ -1,4 +1,6 @@
 // global cache
+const JSBI = require("jsbi")
+
 const cache = {
 	startTime: new Date(),
 	queue: {},
@@ -11,25 +13,25 @@ const cache = {
 		counter: 0,
 	},
 	initialBalance: {
-		tokenA: 0,
-		tokenB: 0,
+		tokenA: JSBI.BigInt(0),
+		tokenB: JSBI.BigInt(0),
 	},
 
 	currentBalance: {
-		tokenA: 0,
-		tokenB: 0,
+		tokenA: JSBI.BigInt(0),
+		tokenB: JSBI.BigInt(0),
 	},
 	currentProfit: {
-		tokenA: 0,
-		tokenB: 0,
+		tokenA: JSBI.BigInt(0),
+		tokenB: JSBI.BigInt(0),
 	},
 	lastBalance: {
-		tokenA: 0,
-		tokenB: 0,
+		tokenA: JSBI.BigInt(0),
+		tokenB: JSBI.BigInt(0),
 	},
 	profit: {
-		tokenA: 0,
-		tokenB: 0,
+		tokenA: JSBI.BigInt(0),
+		tokenB: JSBI.BigInt(0),
 	},
 	maxProfitSpotted: {
 		buy: 0,
