@@ -301,7 +301,7 @@ function printToConsole({
 					toDecimal(Number(cache.initialBalance.tokenA.toString()), tokenA.decimals)
 				)} ${chalk[cache.ui.defaultColor](tokenA.symbol)}`,
 
-				`${chalk[Number(cache.currentProfit.tokenA > 0 ? "greenBright" : "redBright"](
+				`${chalk[Number(cache.currentProfit.tokenA.toString()) > 0 ? "greenBright" : "redBright"](
 					Number(cache.currentProfit.tokenA.toString()).toFixed(2)
 				)} %`,
 				" "
