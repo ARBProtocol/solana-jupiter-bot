@@ -219,7 +219,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			cache.config.tradeSize.strategy === "cumulative"
 				? cache.currentBalance["tokenA"]
 				: cache.initialBalance["tokenA"];
-		const baseAmount = JSBI.BigInt(amountToTrade);
+		const baseAmount = amountToTrade;
 
 		// default slippage
 		const slippage =
