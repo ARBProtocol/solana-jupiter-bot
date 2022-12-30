@@ -1,3 +1,4 @@
+const JSBI = require("jsbi")
 const { calculateProfit, toDecimal, storeItInTempAsJSON } = require("../utils");
 const cache = require("./cache");
 const { getSwapResultFromSolscanParser } = require("../services/solscan");
@@ -49,25 +50,25 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 		// update balance
 		if (cache.sideBuy) {
 			cache.lastBalance.tokenA = cache.currentBalance.tokenA;
-			cache.currentBalance.tokenA = 0;
+			cache.currentBalance.tokenA = JSBI.BigInt(0);
 			cache.currentBalance.tokenB = tx.outputAmount;
 		} else {
 			cache.lastBalance.tokenB = cache.currentBalance.tokenB;
-			cache.currentBalance.tokenB = 0;
+			cache.currentBalance.tokenB = JSBI.BigInt(0);
 			cache.currentBalance.tokenA = tx.outputAmount;
 		}
 
 		// update profit
 		if (cache.sideBuy) {
-			cache.currentProfit.tokenA = 0;
+			cache.currentProfit.tokenA = JSBI.BigInt(0);
 			cache.currentProfit.tokenB = calculateProfit(
-				cache.initialBalance.tokenB,
+				Number(cache.initialBalance.tokenB.toString()),
 				cache.currentBalance.tokenB
 			);
 		} else {
-			cache.currentProfit.tokenB = 0;
+			cache.currentProfit.tokenB = JSBI.BigInt(0);
 			cache.currentProfit.tokenA = calculateProfit(
-				cache.initialBalance.tokenA,
+				Number(cache.initialBalance.tokenA.toString()),
 				cache.currentBalance.tokenA
 			);
 		}
@@ -85,7 +86,7 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 		);
 
 		tradeEntry.profit = calculateProfit(
-			cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"],
+			Number(cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"].toString()),
 			tx.outputAmount
 		);
 		tempHistory.push(tradeEntry);
