@@ -26,6 +26,7 @@
 		"asciichart": "^1.5.25",
 		"axios": "^0.27.2",
 		"bs58": "^5.0.0",
+		"jsbi": "^3.2.4",
 		"cliui": "^7.0.4",
 		"gradient-string": "^2.0.1",
 		"import-jsx": "^4.0.1",
