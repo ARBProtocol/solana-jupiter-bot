@@ -289,16 +289,16 @@ function printToConsole({
 			ui.div("CURRENT BALANCE", "LAST BALANCE", "INIT BALANCE", "PROFIT", " ");
 
 			ui.div(
-				`${chalk[Number(cache.currentBalance.tokenA > 0 ? "yellowBright" : "gray"](
-					toDecimal(Number(cache.currentBalance.tokenA, tokenA.decimals)
+				`${chalk[Number(cache.currentBalance.tokenA.toString()) > 0 ? "yellowBright" : "gray"](
+					toDecimal(Number(cache.currentBalance.tokenA.toString()), tokenA.decimals)
 				)} ${chalk[cache.ui.defaultColor](tokenA.symbol)}`,
 
-				`${chalk[Number(cache.lastBalance.tokenA > 0 ? "yellowBright" : "gray"](
-					toDecimal(Number(cache.lastBalance.tokenA, tokenA.decimals)
+				`${chalk[Number(cache.lastBalance.tokenA.toString()) > 0 ? "yellowBright" : "gray"](
+					toDecimal(Number(cache.lastBalance.tokenA.toString()), tokenA.decimals)
 				)} ${chalk[cache.ui.defaultColor](tokenA.symbol)}`,
 
-				`${chalk[Number(cache.initialBalance.tokenA > 0 ? "yellowBright" : "gray"](
-					toDecimal(Number(cache.initialBalance.tokenA, tokenA.decimals)
+				`${chalk[Number(cache.initialBalance.tokenA.toString()) > 0 ? "yellowBright" : "gray"](
+					toDecimal(Number(cache.initialBalance.tokenA.toString()), tokenA.decimals)
 				)} ${chalk[cache.ui.defaultColor](tokenA.symbol)}`,
 
 				`${chalk[Number(cache.currentProfit.tokenA > 0 ? "greenBright" : "redBright"](
