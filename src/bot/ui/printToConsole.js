@@ -1,3 +1,4 @@
+const JSBI = require("jsbi")
 const ui = require("cliui")({ width: 140 });
 const chalk = require("chalk");
 const moment = require("moment");
@@ -216,7 +217,7 @@ function printToConsole({
 			ui.div(
 				{
 					text: `IN:  ${chalk.yellowBright(
-						toDecimal(route.inAmount, inputToken.decimals)
+						toDecimal(Number(route.inAmount.toString()), inputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](inputToken.symbol)}`,
 				},
 				{
@@ -242,7 +243,7 @@ function printToConsole({
 			ui.div(
 				{
 					text: `OUT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
-						toDecimal(route.outAmount, outputToken.decimals)
+						toDecimal(Number(route.outAmount.toString()), outputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](outputToken.symbol)}`,
 				},
 				{
@@ -250,7 +251,7 @@ function printToConsole({
 				},
 				{
 					text: `MIN. OUT: ${chalk.magentaBright(
-						toDecimal(route.outAmountWithSlippage, outputToken.decimals)
+						toDecimal(Number(route.outAmountWithSlippage.toString()), outputToken.decimals)
 					)}`,
 				},
 				{
@@ -301,7 +302,7 @@ function printToConsole({
 				)} ${chalk[cache.ui.defaultColor](tokenA.symbol)}`,
 
 				`${chalk[cache.currentProfit.tokenA > 0 ? "greenBright" : "redBright"](
-					cache.currentProfit.tokenA.toFixed(2)
+					Number(cache.currentProfit.tokenA.toString()).toFixed(2)
 				)} %`,
 				" "
 			);
@@ -320,7 +321,7 @@ function printToConsole({
 				)} ${chalk[cache.ui.defaultColor](tokenB.symbol)}`,
 
 				`${chalk[cache.currentProfit.tokenB > 0 ? "greenBright" : "redBright"](
-					cache.currentProfit.tokenB.toFixed(2)
+					Number(cache.currentProfit.tokenB.toString()).toFixed(2)
 				)} %`,
 				" "
 			);
