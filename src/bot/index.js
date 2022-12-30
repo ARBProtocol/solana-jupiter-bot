@@ -38,7 +38,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// default slippage
 		const slippage =
-			typeof cache.config.slippage === "number" ? cache.config.slippage : 1;
+			typeof cache.config.slippage === "number" ? cache.config.slippage : 100; // 1.0%
 
 		// set input / output token
 		const inputToken = cache.sideBuy ? tokenA : tokenB;
@@ -223,7 +223,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 
 		// default slippage
 		const slippage =
-			typeof cache.config.slippage === "number" ? cache.config.slippage : 1;
+			typeof cache.config.slippage === "number" ? cache.config.slippage : 100; // 1.0%
 		// set input / output token
 		const inputToken = tokenA;
 		const outputToken = tokenA;
