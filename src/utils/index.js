@@ -82,10 +82,9 @@ const loadConfigFile = ({ showSpinner = false }) => {
 
 const calculateProfit = (oldVal, newVal) => ((newVal - oldVal) / oldVal) * 100;
 
-const toDecimal = (number, decimals) =>
-	(number / 10 ** decimals).toFixed(decimals);
+const toDecimal = (number, decimals) =>	(number / 10 ** decimals).toFixed(decimals);
 
-const toNumber = (number, decimals) => JSBI.BigInt(number * 10 ** decimals);
+const toNumber = (number, decimals) => Number(number * 10 ** decimals);
 
 /**
  * It calculates the number of iterations per minute and updates the cache.
