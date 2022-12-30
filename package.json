@@ -21,11 +21,12 @@
 		"./src/generator.js"
 	],
 	"dependencies": {
-		"@jup-ag/core": "1.0.0-beta.28",
+		"@jup-ag/core": "4.0.0-beta.3",
 		"@solana/web3.js": "^1.44.0",
 		"asciichart": "^1.5.25",
 		"axios": "^0.27.2",
 		"bs58": "^5.0.0",
+		"jsbi": "^3.2.4",
 		"cliui": "^7.0.4",
 		"gradient-string": "^2.0.1",
 		"import-jsx": "^4.0.1",
