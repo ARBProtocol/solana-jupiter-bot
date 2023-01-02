@@ -112,7 +112,7 @@ const getInitialOutAmountWithSlippage = async (
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			inputAmount: amountToTrade,
+			amount: amountToTrade,
 			slippage: 0,
 			forceFeech: true,
 		});

@@ -1,4 +1,5 @@
 const ui = require("cliui")({ width: 140 });
+const JSBI = require('jsbi')
 const chalk = require("chalk");
 const moment = require("moment");
 const chart = require("asciichart");
@@ -216,7 +217,7 @@ function printToConsole({
 			ui.div(
 				{
 					text: `IN:  ${chalk.yellowBright(
-						toDecimal(route.inAmount, inputToken.decimals)
+						toDecimal(JSBI.toNumber(route.inAmount), inputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](inputToken.symbol)}`,
 				},
 				{
@@ -242,7 +243,7 @@ function printToConsole({
 			ui.div(
 				{
 					text: `OUT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
-						toDecimal(route.outAmount, outputToken.decimals)
+						toDecimal(JSBI.toNumber(route.outAmount), outputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](outputToken.symbol)}`,
 				},
 				{
@@ -250,7 +251,7 @@ function printToConsole({
 				},
 				{
 					text: `MIN. OUT: ${chalk.magentaBright(
-						toDecimal(route.outAmountWithSlippage, outputToken.decimals)
+						toDecimal(JSBI.toNumberWithSlippage, outputToken.decimals)
 					)}`,
 				},
 				{
