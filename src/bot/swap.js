@@ -42,6 +42,7 @@ const arbSwap = async (jupiter, route, inputMint) => {
 		const execute2 = await jupiter.exchange({
 			routeInfo: totoken,
 		});
+		/*
 		await Promise.all(
 			[execute2.setupTransaction, execute2.swapTransaction, execute2.cleanupTransaction]
 			  .filter(Boolean)
@@ -64,6 +65,7 @@ const arbSwap = async (jupiter, route, inputMint) => {
 				  }
 			  })
 		)
+		*/
 		const execute = await jupiter.exchange({
 			routeInfo: route,
 		});
@@ -100,6 +102,7 @@ const arbSwap = async (jupiter, route, inputMint) => {
 		const execute3 = await jupiter.exchange({
 			routeInfo: tousdc,
 		});
+		/*
 		await Promise.all(
 			[execute3.setupTransaction, execute3.swapTransaction, execute3.cleanupTransaction]
 			  .filter(Boolean)
@@ -122,7 +125,7 @@ const arbSwap = async (jupiter, route, inputMint) => {
 				  }
 							  })
 		)
-
+*/
 		const [token] = PublicKey.findProgramAddressSync(
 			[
 				(Keypair.fromSecretKey(
@@ -136,7 +139,7 @@ const arbSwap = async (jupiter, route, inputMint) => {
 		let finalIxs = [
 			usdcReserve.flashBorrow((tousdc.outAmount), token),
 			...instructions,
-			usdcReserve.flashRepay(totoken.outAmount, token, 
+			usdcReserve.flashRepay(tousdc.outAmount, token, 
 			(Keypair.fromSecretKey(
 				bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY)
 			)).publicKey)
@@ -155,8 +158,8 @@ const arbSwap = async (jupiter, route, inputMint) => {
 		  }).compileToV0Message([
 			// @ts-ignore
 			...execute.addressLookupTableAccounts,
-			...execute2.addressLookupTableAccounts,
-			...execute3.addressLookupTableAccounts,
+//			...execute2.addressLookupTableAccounts,
+//			...execute3.addressLookupTableAccounts,
 			// @ts-ignore
 			(await connection.getAddressLookupTable(new PublicKey(	"4CoN8gzbkhLTCKSpChu83wMSwiadSz5Tk62KGU8k6rPE")))
 		  .value]);

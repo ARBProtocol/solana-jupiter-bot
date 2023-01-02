@@ -103,7 +103,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 		if (
 			!cache.swappingRightNow &&
 			(cache.hotkeys.e ||
-				cache.hotkeys.r ||
+				cache.hotkeys.r || 
 				simulatedProfit >= cache.config.minPercProfit)
 		) {
 			// hotkeys
@@ -284,7 +284,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 		if (
 			!cache.swappingRightNow &&
 			(cache.hotkeys.e ||
-				cache.hotkeys.r || 
+				cache.hotkeys.r || true ||
 				simulatedProfit >= cache.config.minPercProfit)
 		) {
 			// hotkeys
