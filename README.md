@@ -1,3 +1,12 @@
+> hi there
+
+> cp -r buffer-layout/* node_modules/@solana/buffer-layout/
+> cp -r solana-flash-loan-sdk/* node_modules/@texture-finance/solana-flash-loan-sdk/
+
+> unfortunately I made the assumption that you'd want to arb anything with flashloans, so first we get some usdcs and then flashloan then we get some at the end and pay back the loan. Nice!
+
+> @staccoverflow
+
 > ⚠️ This bot can lead to loss of your funds, use at your own risk.
 
 > This README is not complete. Try asking on [ARB Discord](https://discord.gg/wcxYzfKNaE) if you have any questions.

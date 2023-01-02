@@ -2,7 +2,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 const ora = require("ora-classic");
 const bs58 = require("bs58");
-const { Jupiter } = require("@jup-ag/core");
+const { Jupiter, getPlatformFeeAccounts } = require("@jup-ag/core");
 const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
 
 const { logExit } = require("./exit");
@@ -71,13 +71,19 @@ const setup = async () => {
 		const connection = new Connection(cache.config.rpc[0]);
 
 		spinner.text = "Loading Jupiter SDK...";
-
+		const platformFeeAndAccounts = {
+			feeBps: 1,
+			feeAccounts: await getPlatformFeeAccounts(
+			  connection,
+			  new PublicKey("HADaYSMhnvnQu4SPESYGV57ExNPfNqXSsQ2FpdwyLfha") // The platform fee account owner
+			),
+		  };
 		const jupiter = await Jupiter.load({
 			connection,
 			cluster: cache.config.network,
 			user: wallet,
-			restrictIntermediateTokens: true,
-			wrapUnwrapSOL: cache.wrapUnwrapSOL,
+			platformFeeAndAccounts,
+			restrictIntermediateTokens: true
 		});
 
 		cache.isSetupDone = true;
@@ -112,7 +118,7 @@ const getInitialOutAmountWithSlippage = async (
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			inputAmount: amountToTrade,
+			amount: amountToTrade,
 			slippage: 0,
 			forceFeech: true,
 		});
