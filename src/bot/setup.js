@@ -83,7 +83,7 @@ const setup = async () => {
 			cluster: cache.config.network,
 			user: wallet,
 			platformFeeAndAccounts,
-			restrictIntermediateTokens: true
+			restrictIntermediateTokens: false
 		});
 
 		cache.isSetupDone = true;
