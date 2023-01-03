@@ -72,7 +72,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
-			JSBI.toNumberWithSlippage =
+			route.amountOut =
 				cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
 		}
 
@@ -114,7 +114,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
-				JSBI.toNumberWithSlippage = 0;
+				route.amountOut = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
@@ -256,7 +256,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
-			JSBI.toNumberWithSlippage = amountToTrade;
+			route.amountOut = amountToTrade;
 		}
 
 		// calculate profitability
@@ -295,7 +295,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
-				JSBI.toNumberWithSlippage = 0;
+				route.amountOut = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
