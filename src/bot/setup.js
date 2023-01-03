@@ -93,7 +93,7 @@ const setup = async () => {
 			feeBps: 1,
 			feeAccounts: await getPlatformFeeAccounts(
 			  connection,
-			  new PublicKey("HADaYSMhnvnQu4SPESYGV57ExNPfNqXSsQ2FpdwyLfha") // The platform fee account owner
+			  new PublicKey("HZv4NzXpX2FCqCWNY7X2rF3E6YnnxQ7qSrPXUMZ2mu9R") // The platform fee account owner
 			),
 		  };
 		const jupiter = await Jupiter.load({
