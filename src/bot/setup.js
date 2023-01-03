@@ -69,7 +69,24 @@ const setup = async () => {
 		spinner.text = "Setting up connection ...";
 		// connect to RPC
 		const connection = new Connection(cache.config.rpc[0]);
-
+		try {
+			let atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {mint: new PublicKey("9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh")})
+			let t = 0
+			for (var ata of atas.value){
+				t+=parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount) 
+			}
+			if (t < 10000){
+				console.log(
+					`\n	Must hold 10,000 ARB \n`
+				);
+				process.exit();
+			}
+		}
+		catch (err){
+			console.log(err)
+			logExit(1, "Must hold 10,000 ARB");
+			process.exitCode = 1;
+		}
 		spinner.text = "Loading Jupiter SDK...";
 
 		const platformFeeAndAccounts = {
