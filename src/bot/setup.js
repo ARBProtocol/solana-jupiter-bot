@@ -94,7 +94,7 @@ const setup = async () => {
 	}
 };
 
-const getInitialOutAmountWithSlippage = async (
+const getInitialoutAmount = async (
 	jupiter,
 	inputToken,
 	outputToken,
@@ -113,14 +113,14 @@ const getInitialOutAmountWithSlippage = async (
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
 			amount: amountToTrade,
-			slippage: 0,
-			forceFeech: true,
+			slippageBps: 0,
+			forceFetch: true,
 		});
 
 		if (routes?.routesInfos?.length > 0) spinner.succeed("Routes computed!");
 		else spinner.fail("No routes found. Something is wrong!");
 
-		return routes.routesInfos[0].outAmountWithSlippage;
+		return routes.routesInfos[0].outAmount;
 	} catch (error) {
 		if (spinner)
 			spinner.fail(chalk.bold.redBright("Computing routes failed!\n"));
@@ -131,5 +131,5 @@ const getInitialOutAmountWithSlippage = async (
 
 module.exports = {
 	setup,
-	getInitialOutAmountWithSlippage,
+	getInitialoutAmount,
 };
