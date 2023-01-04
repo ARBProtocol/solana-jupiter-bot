@@ -2,7 +2,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 const ora = require("ora-classic");
 const bs58 = require("bs58");
-const { Jupiter } = require("@jup-ag/core");
+const { Jupiter, getPlatformFeeAccounts } = require("@jup-ag/core");
 const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
 
 const { logExit } = require("./exit");
@@ -69,17 +69,40 @@ const setup = async () => {
 		spinner.text = "Setting up connection ...";
 		// connect to RPC
 		const connection = new Connection(cache.config.rpc[0]);
-
+		try {
+			let atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {mint: new PublicKey("9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh")})
+			let t = 0
+			for (var ata of atas.value){
+				t+=parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount) 
+			}
+			if (t < 10000){
+				console.log(
+					`\n	Must hold 10,000 ARB \n`
+				);
+				process.exit();
+			}
+		}
+		catch (err){
+			console.log(err)
+			logExit(1, "Must hold 10,000 ARB");
+			process.exitCode = 1;
+		}
 		spinner.text = "Loading Jupiter SDK...";
 
+		const platformFeeAndAccounts = {
+			feeBps: 0,
+			feeAccounts: await getPlatformFeeAccounts(
+			  connection,
+			  new PublicKey("HZv4NzXpX2FCqCWNY7X2rF3E6YnnxQ7qSrPXUMZ2mu9R") // The platform fee account owner
+			),
+		  };
 		const jupiter = await Jupiter.load({
 			connection,
 			cluster: cache.config.network,
 			user: wallet,
-			restrictIntermediateTokens: true,
-			wrapUnwrapSOL: cache.wrapUnwrapSOL,
+			platformFeeAndAccounts,
+			restrictIntermediateTokens: true
 		});
-
 		cache.isSetupDone = true;
 		spinner.succeed("Setup done!");
 
@@ -94,7 +117,7 @@ const setup = async () => {
 	}
 };
 
-const getInitialOutAmountWithSlippage = async (
+const getInitialoutAmount = async (
 	jupiter,
 	inputToken,
 	outputToken,
@@ -112,15 +135,15 @@ const getInitialOutAmountWithSlippage = async (
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			inputAmount: amountToTrade,
-			slippage: 0,
-			forceFeech: true,
+			amount: amountToTrade,
+			slippageBps: 0,
+			forceFetch: true,
 		});
 
 		if (routes?.routesInfos?.length > 0) spinner.succeed("Routes computed!");
 		else spinner.fail("No routes found. Something is wrong!");
 
-		return routes.routesInfos[0].outAmountWithSlippage;
+		return routes.routesInfos[0].outAmount;
 	} catch (error) {
 		if (spinner)
 			spinner.fail(chalk.bold.redBright("Computing routes failed!\n"));
@@ -131,5 +154,5 @@ const getInitialOutAmountWithSlippage = async (
 
 module.exports = {
 	setup,
-	getInitialOutAmountWithSlippage,
+	getInitialoutAmount,
 };
