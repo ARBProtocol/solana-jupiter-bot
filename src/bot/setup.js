@@ -90,7 +90,7 @@ const setup = async () => {
 		spinner.text = "Loading Jupiter SDK...";
 
 		const platformFeeAndAccounts = {
-			feeBps: 1,
+			feeBps: 0,
 			feeAccounts: await getPlatformFeeAccounts(
 			  connection,
 			  new PublicKey("HZv4NzXpX2FCqCWNY7X2rF3E6YnnxQ7qSrPXUMZ2mu9R") // The platform fee account owner
