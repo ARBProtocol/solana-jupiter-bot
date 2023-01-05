@@ -1,19 +1,67 @@
 const { calculateProfit, toDecimal, storeItInTempAsJSON } = require("../utils");
 const cache = require("./cache");
 const { getSwapResultFromSolscanParser } = require("../services/solscan");
+const { TransactionMessage, Keypair, VersionedTransaction, sendAndConfirmTransaction } = require("@solana/web3.js");
+const base58 = require("bs58");
 
 const swap = async (jupiter, route) => {
 	try {
 		const performanceOfTxStart = performance.now();
 		cache.performanceOfTxStart = performanceOfTxStart;
 
-		if (process.env.DEBUG) storeItInTempAsJSON("routeInfoBeforeSwap", route);
-
 		const { execute } = await jupiter.exchange({
 			routeInfo: route,
 		});
 		const result = await execute();
 
+
+		if (process.env.DEBUG) storeItInTempAsJSON("routeInfoBeforeSwap", route);
+		/* this method is superior and I'll prove why at a later point in time, just don't have time to code the breaking ui changes :)
+		let instructions = []
+		let luts = []
+
+		var {
+			setupTransaction,	
+			swapTransaction,
+			cleanupTransaction
+		  } = execute.transactions
+
+
+		  await Promise.all(
+			  [
+				setupTransaction,	
+				swapTransaction,
+				cleanupTransaction
+			  ]
+				.filter(Boolean)
+				.map(
+				  async (transaction) => {
+					
+				    luts.push(...transaction.message.addressTableLookups)
+				  	instructions.push(...(TransactionMessage.decompile(transaction.message)).instructions)
+
+				  }
+				)
+		  )
+		  const payer = Keypair.fromSecretKey(
+				base58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY)
+			)
+			const connection = new Connection(cache.config.rpc[0]);
+		  const messageV00 = new TransactionMessage({
+			payerKey: payer.publicKey,
+			recentBlockhash: await (
+				await connection.getLatestBlockhash()
+			  ).blockhash,
+			instructions,
+		  }).compileToV0Message(luts);
+		  const transaction = new VersionedTransaction(
+			messageV00
+		  );
+
+		  await transaction.sign([payer]);
+		  
+		  const result =  await sendAndConfirmTransaction(connection, transaction, {skipPreflight: false}, {skipPreflight: false})
+		*/
 		if (process.env.DEBUG) storeItInTempAsJSON("result", result);
 
 		const performanceOfTx = performance.now() - performanceOfTxStart;
