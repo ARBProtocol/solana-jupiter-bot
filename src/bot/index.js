@@ -39,7 +39,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// default slippage
 		const slippage =
-			typeof cache.config.slippage === "number" ? cache.config.slippage : 1;
+			typeof cache.config.slippage === "number" ? cache.config.slippage : 100;
 
 		// set input / output token
 		const inputToken = cache.sideBuy ? tokenA : tokenB;
@@ -50,7 +50,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			amount: amountToTrade,
+			amount: JSBI.BigInt(amountToTrade),
 			slippageBps: slippage,
 			forceFetch: true,
 		});
@@ -68,7 +68,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			performance.now() - performanceOfRouteCompStart;
 
 		// choose first route
-		const route = await routes.routesInfos[0];
+		const route = routes.routesInfos[0];
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
@@ -125,8 +125,8 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 					buy: cache.sideBuy,
 					inputToken: inputToken.symbol,
 					outputToken: outputToken.symbol,
-					inAmount: toDecimal(JSBI.toNumber(route.inAmount), inputToken.decimals),
-					expectedOutAmount: toDecimal(JSBI.toNumber(route.outAmount), outputToken.decimals),
+					inAmount: route.inAmount,
+					expectedOutAmount: route.outAmount,
 					expectedProfit: simulatedProfit,
 				};
 
@@ -224,7 +224,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 
 		// default slippage
 		const slippage =
-			typeof cache.config.slippage === "number" ? cache.config.slippage : 1;
+			typeof cache.config.slippage === "number" ? cache.config.slippage : 100;
 		// set input / output token
 		const inputToken = tokenA;
 		const outputToken = tokenA;
@@ -234,7 +234,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			amount: amountToTrade,
+			amount: JSBI.BigInt(amountToTrade),
 			slippageBps: slippage,
 			forceFetch: true,
 		});
@@ -252,7 +252,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			performance.now() - performanceOfRouteCompStart;
 
 		// choose first route
-		const route = await routes.routesInfos[1];
+		const route = routes.routesInfos[0];
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
@@ -261,7 +261,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 
 		// calculate profitability
 
-		const simulatedProfit = calculateProfit(baseAmount, await JSBI.toNumber(route.outAmount));
+		const simulatedProfit = calculateProfit(baseAmount, JSBI.toNumber(route.outAmount));
 
 		// store max profit spotted
 		if (simulatedProfit > cache.maxProfitSpotted["buy"]) {
@@ -307,8 +307,8 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 						buy: cache.sideBuy,
 						inputToken: inputToken.symbol,
 						outputToken: outputToken.symbol,
-						inAmount: toDecimal(JSBI.toNumber(route.inAmount), inputToken.decimals),
-						expectedOutAmount: toDecimal(JSBI.toNumber(route.outAmount), outputToken.decimals),
+						inAmount: route.inAmount,
+						expectedOutAmount: route.outAmount,
 						expectedProfit: simulatedProfit,
 					};
 
