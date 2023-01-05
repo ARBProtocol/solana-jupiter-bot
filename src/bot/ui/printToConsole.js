@@ -217,7 +217,7 @@ function printToConsole({
 			ui.div(
 				{
 					text: `IN:  ${chalk.yellowBright(
-						toDecimal(JSBI.toNumber(route.inAmount), inputToken.decimals)
+						toDecimal(Number(route.inAmount.toString()), inputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](inputToken.symbol)}`,
 				},
 				{
@@ -243,7 +243,7 @@ function printToConsole({
 			ui.div(
 				{
 					text: `OUT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
-						toDecimal(JSBI.toNumber(route.outAmount), outputToken.decimals)
+						toDecimal(Number(route.outAmount.toString()), outputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](outputToken.symbol)}`,
 				},
 				{

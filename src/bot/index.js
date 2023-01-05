@@ -78,7 +78,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// calculate profitability
 
-		const simulatedProfit = calculateProfit(baseAmount, await JSBI.toNumber(route.outAmount));
+		const simulatedProfit = calculateProfit(baseAmount, await Number(route.outAmount.toString()));
 
 		// store max profit spotted
 		if (
@@ -125,8 +125,8 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 					buy: cache.sideBuy,
 					inputToken: inputToken.symbol,
 					outputToken: outputToken.symbol,
-					inAmount: toDecimal(JSBI.toNumber(route.inAmount), inputToken.decimals),
-					expectedOutAmount: toDecimal(JSBI.toNumber(route.outAmount), outputToken.decimals),
+					inAmount: toDecimal(Number(route.inAmount.toString()), inputToken.decimals),
+					expectedOutAmount: toDecimal(Number(route.outAmount.toString()), outputToken.decimals),
 					expectedProfit: simulatedProfit,
 				};
 
@@ -261,7 +261,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 
 		// calculate profitability
 
-		const simulatedProfit = calculateProfit(baseAmount, await JSBI.toNumber(route.outAmount));
+		const simulatedProfit = calculateProfit(baseAmount, await Number(route.outAmount.toString()));
 
 		// store max profit spotted
 		if (simulatedProfit > cache.maxProfitSpotted["buy"]) {
@@ -307,8 +307,8 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 						buy: cache.sideBuy,
 						inputToken: inputToken.symbol,
 						outputToken: outputToken.symbol,
-						inAmount: toDecimal(JSBI.toNumber(route.inAmount), inputToken.decimals),
-						expectedOutAmount: toDecimal(JSBI.toNumber(route.outAmount), outputToken.decimals),
+						inAmount: toDecimal(Number(route.inAmount.toString()), inputToken.decimals),
+						expectedOutAmount: toDecimal(Number(route.outAmount.toString()), outputToken.decimals),
 						expectedProfit: simulatedProfit,
 					};
 
@@ -414,7 +414,7 @@ const run = async () => {
 			cache.lastBalance.tokenA = cache.initialBalance.tokenA;
 
 			// set initial & last balance for tokenB
-			cache.initialBalance.tokenB = JSBI.toNumber(await getInitialoutAmount(
+			cache.initialBalance.tokenB = Number(await getInitialoutAmount(
 				jupiter,
 				tokenA,
 				tokenB,
