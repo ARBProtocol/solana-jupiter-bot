@@ -78,7 +78,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// calculate profitability
 
-		const simulatedProfit = calculateProfit(baseAmount, await JSBI.toNumber(route.outAmount));
+		const simulatedProfit = calculateProfit(baseAmount, await Number(route.outAmount.toString()));
 
 		// store max profit spotted
 		if (
