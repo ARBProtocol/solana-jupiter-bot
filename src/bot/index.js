@@ -125,8 +125,8 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 					buy: cache.sideBuy,
 					inputToken: inputToken.symbol,
 					outputToken: outputToken.symbol,
-					inAmount: toDecimal(Number(route.inAmount.toString()), inputToken.decimals),
-					expectedOutAmount: toDecimal(Number(route.outAmount.toString()), outputToken.decimals),
+					inAmount: toDecimal(JSBI.toNumber(route.inAmount), inputToken.decimals),
+					expectedOutAmount: toDecimal(JSBI.toNumber(route.outAmount), outputToken.decimals),
 					expectedProfit: simulatedProfit,
 				};
 
@@ -307,8 +307,8 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 						buy: cache.sideBuy,
 						inputToken: inputToken.symbol,
 						outputToken: outputToken.symbol,
-						inAmount: toDecimal(Number(route.inAmount.toString()), inputToken.decimals),
-						expectedOutAmount: toDecimal(Number(route.outAmount.toString()), outputToken.decimals),
+						inAmount: toDecimal(JSBI.toNumber(route.inAmount), inputToken.decimals),
+						expectedOutAmount: toDecimal(JSBI.toNumber(route.outAmount), outputToken.decimals),
 						expectedProfit: simulatedProfit,
 					};
 
