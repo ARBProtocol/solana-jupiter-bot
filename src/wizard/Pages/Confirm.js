@@ -12,6 +12,7 @@ const Confirm = () => {
 		config: {
 			network: { value: network },
 			rpc: { value: rpc },
+			aggregator: { value: aggregator },
 			strategy: { value: strategy },
 			tokens: { value: tokens },
 			"trading size": { value: tradingSize },
@@ -36,6 +37,7 @@ const Confirm = () => {
 			<Box margin={1} flexDirection="column">
 				<Text>Network: {chalk.greenBright(network)}</Text>
 				<Text>RPC: {chalk.greenBright(rpc)}</Text>
+				<Text>Aggregator: {chalk.bold.greenBright(aggregator)}</Text>
 				<Text>Strategy: {chalk.bold.greenBright(strategy)}</Text>
 				<Text>
 					Tokens: {chalk.bold.blueBright(tokens.tokenA.symbol)} /{" "}

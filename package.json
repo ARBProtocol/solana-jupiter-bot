@@ -21,7 +21,9 @@
 		"./src/generator.js"
 	],
 	"dependencies": {
+		"@coral-xyz/anchor": "^0.26.0",
 		"@jup-ag/core": "4.0.0-beta.3",
+		"@prism-hq/prism-ag": "^0.2.30",
 		"@solana/web3.js": "^1.73.0",
 		"asciichart": "^1.5.25",
 		"axios": "^0.27.2",

@@ -4,18 +4,27 @@ const { getSwapResultFromSolscanParser } = require("../services/solscan");
 const { TransactionMessage, Keypair, VersionedTransaction, sendAndConfirmTransaction } = require("@solana/web3.js");
 const base58 = require("bs58");
 
-const swap = async (jupiter, route) => {
+const swap = async (jupiter, prism, route) => {
 	try {
 		const performanceOfTxStart = performance.now();
 		cache.performanceOfTxStart = performanceOfTxStart;
-
-		const { execute } = await jupiter.exchange({
-			routeInfo: route,
-		});
-		const result = await execute();
-
-
-		if (process.env.DEBUG) storeItInTempAsJSON("routeInfoBeforeSwap", route);
+		let result
+		if (cache.config.aggregator == 'jupiter'){
+			const { execute } = await jupiter.exchange({
+				routeInfo: route,
+			});
+			result = await execute();
+		}
+		else if (cache.config.aggregator == 'prism'){
+			let hm = await prism.swap(route)
+			result
+		}
+		console.log(result)
+		try {
+			if (process.env.DEBUG) storeItInTempAsJSON("routeInfoBeforeSwap", route);
+		} catch (err){
+			console.log('oops')
+		}
 		/* this method is superior and I'll prove why at a later point in time, just don't have time to code the breaking ui changes :)
 		let instructions = []
 		let luts = []

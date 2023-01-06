@@ -17,6 +17,7 @@ const createConfigFile = (config) => {
 	const configValues = {
 		network: config.network.value,
 		rpc: config.rpc.value,
+		aggregator: config.aggregator.value,
 		tradingStrategy: config.strategy.value,
 		tokenA: config.tokens.value.tokenA,
 		tokenB: config.tokens.value.tokenB,

@@ -2,6 +2,9 @@ const fs = require("fs");
 const chalk = require("chalk");
 const ora = require("ora-classic");
 const bs58 = require("bs58");
+
+const { Prism } = require("@prism-hq/prism-ag");
+
 const { Jupiter, getPlatformFeeAccounts } = require("@jup-ag/core");
 const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
 
@@ -87,26 +90,25 @@ const setup = async () => {
 			logExit(1, "Must hold 10,000 ARB");
 			process.exitCode = 1;
 		}
-		spinner.text = "Loading Jupiter SDK...";
+		spinner.text = "Loading Jupiter and Prism SDKs...";
+		
+		const prism = await Prism.init({
+			user: wallet,
+			slippage: cache.config.slippage,
+			connection: connection,
+		});
 
-		const platformFeeAndAccounts = {
-			feeBps: 0,
-			feeAccounts: await getPlatformFeeAccounts(
-			  connection,
-			  new PublicKey("HZv4NzXpX2FCqCWNY7X2rF3E6YnnxQ7qSrPXUMZ2mu9R") // The platform fee account owner
-			),
-		  };
 		const jupiter = await Jupiter.load({
 			connection,
 			cluster: cache.config.network,
 			user: wallet,
-			platformFeeAndAccounts,
-			restrictIntermediateTokens: true
+			restrictIntermediateTokens: true,
+			wrapUnwrapSOL: true
 		});
 		cache.isSetupDone = true;
 		spinner.succeed("Setup done!");
 
-		return { jupiter, tokenA, tokenB };
+		return { jupiter, prism, tokenA, tokenB };
 	} catch (error) {
 		if (spinner)
 			spinner.fail(
