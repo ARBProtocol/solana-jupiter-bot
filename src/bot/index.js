@@ -50,7 +50,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			amount: amountToTrade,
+			amount: amountToTrade instanceof JSBI ? amountToTrade : JSBI.BigInt(amountToTrade),
 			slippageBps: slippage,
 			forceFetch: true,
 		});
@@ -234,7 +234,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			amount: amountToTrade,
+			amount: amountToTrade instanceof JSBI ? amountToTrade : JSBI.BigInt(amountToTrade),
 			slippageBps: slippage,
 			forceFetch: true,
 		});
