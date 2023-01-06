@@ -1,9 +1,10 @@
-import { Bot } from "../bot/bot";
 import { PublicKey } from "../web3";
 import { Address } from "../jupiter";
+import { Store } from "../store";
+import { getTokenInfo } from "../bot/getTokenInfo";
 
 export const setToken = (
-	store: Bot["store"],
+	store: Store,
 	slot: "tokenA" | "tokenB",
 	tokenAddress: Address | null
 ) => {
@@ -11,9 +12,15 @@ export const setToken = (
 		throw new Error("setToken: tokenAddress is null");
 	}
 
+	// get additional token info
+	const tokenInfo = getTokenInfo(store, tokenAddress);
+
 	const tokenPublicKey = new PublicKey(tokenAddress);
 
 	store.setState((state) => {
-		state.config.tokens[slot].publicKey = tokenPublicKey;
+		state.config.tokens[slot] = {
+			...tokenInfo,
+			publicKey: tokenPublicKey,
+		};
 	});
 };

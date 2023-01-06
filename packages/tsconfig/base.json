@@ -2,8 +2,8 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"display": "Default",
 	"compilerOptions": {
-		"target": "es2016",
-		"module": "commonjs",
+		"target": "ES6",
+		"module": "CommonJS",
 		"moduleResolution": "node",
 		"declarationMap": false,
 		"inlineSources": false,

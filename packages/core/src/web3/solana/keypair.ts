@@ -11,3 +11,5 @@ export const createKeypair = (privateKey: string | null) => {
 
 	return keypair;
 };
+
+// function that takes private key and returns a wallet address (public key)

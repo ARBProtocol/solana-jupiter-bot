@@ -20,3 +20,18 @@ export const createStore = (initialState: GlobalState) => {
 };
 
 export type Store = ReturnType<typeof createStore>;
+
+export const createCustomStore = <T>(initialState: T) => {
+	const store = create(subscribeWithSelector(() => initialState));
+
+	const setStateWithImmer = (fn: (state: T) => void) => {
+		store.setState((state) => {
+			return produce(state, fn);
+		});
+	};
+
+	return {
+		...store,
+		setState: setStateWithImmer,
+	};
+};

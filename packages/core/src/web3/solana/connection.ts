@@ -4,7 +4,7 @@ export type SolanaConnection = Connection;
 
 export const createSolanaConnection = ({
 	rpcURL,
-	// rpcWSS,
+	rpcWSS,
 	commitment = "confirmed",
 }: {
 	rpcURL: string | null;
@@ -17,6 +17,6 @@ export const createSolanaConnection = ({
 
 	return new Connection(rpcURL, {
 		commitment,
-		// wsEndpoint: rpcWSS,
+		wsEndpoint: rpcWSS,
 	});
 };

@@ -1,0 +1,177 @@
+import { Jupiter } from "../jupiter";
+import { Store } from "../store";
+import { PublicKey } from "../web3";
+import { Queue } from "./queue";
+import { GetStatus, SetStatus } from "./bot";
+import { JSBItoNumber, shiftAndPush, sleep, toDecimal } from "../utils";
+
+const rateLimiter = async (store: Store, setStatus: SetStatus) => {
+	const { lastIterationTimestamp, rateLimit, rateLimitPer } =
+		store.getState().bot;
+
+	if (rateLimit !== 0) {
+		const now = performance.now();
+		const timeSinceLastIteration =
+			lastIterationTimestamp === 0
+				? rateLimitPer
+				: now - lastIterationTimestamp;
+		if (timeSinceLastIteration < rateLimitPer) {
+			setStatus("rateLimiterActive");
+			const timeToWait = rateLimitPer - timeSinceLastIteration;
+			await sleep(timeToWait);
+			setStatus("idle");
+		}
+	}
+};
+
+export const computeRoutes = async (
+	store: Store,
+	getStatus: GetStatus,
+	setStatus: SetStatus,
+	jupiter: Jupiter | null,
+	queue: Queue
+) => {
+	try {
+		if (getStatus() !== "idle") {
+			throw new Error("computeRoutes: bot is busy");
+		}
+
+		await rateLimiter(store, setStatus);
+
+		setStatus("computingRoutes");
+
+		if (queue.getCount() > queue.getMaxAllowed()) {
+			throw new Error("computeRoutes: queue is full");
+		}
+
+		if (!jupiter) {
+			throw new Error("computeRoutes: Jupiter instance does not exist");
+		}
+
+		// increase queue count
+		queue.increase();
+
+		console.count("computeRoutes");
+
+		// increase iteration count
+		store.setState((state) => {
+			state.bot.iterationCount++;
+		});
+
+		const inputMint = store.getState().config.tokens.tokenA
+			.publicKey as PublicKey;
+
+		if (!inputMint) throw new Error("computeRoutes: inputMint is null");
+
+		const outputMint = store.getState().config.tokens.tokenB
+			.publicKey as PublicKey;
+
+		const amount = store.getState().config.strategy.tradeAmount.jsbi;
+		const slippageBps = store.getState().config.strategy.rules?.slippage.bps;
+
+		const lookupTimeStart = performance.now();
+
+		const routes = await jupiter.computeRoutes({
+			inputMint,
+			outputMint,
+			amount,
+			forceFetch: true,
+			slippageBps: slippageBps ?? 0, // 1bps = 0.01%
+		});
+
+		const lookupTime = performance.now() - lookupTimeStart;
+
+		// update lookupTime chart
+		store.setState((state) => {
+			state.chart.lookupTime.values = shiftAndPush(
+				state.chart.lookupTime.values,
+				lookupTime
+			);
+		});
+
+		if (!routes) throw new Error("computeRoutes: routes is null");
+		if (!routes.routesInfos || routes.routesInfos.length === 0)
+			throw new Error("computeRoutes: routesInfos is null");
+
+		if (routes.cached) {
+			console.warn("computeRoutes: routes are cached!");
+		}
+
+		// store best route
+		store.setState((state) => {
+			if (routes.routesInfos[0]) {
+				state.routes.currentRoute.raw = routes.routesInfos[0] || null;
+
+				if ("inAmount" in routes.routesInfos[0]) {
+					const { inAmount } = routes.routesInfos[0];
+					state.routes.currentRoute.input.amount.jsbi = inAmount;
+
+					const decimals = state.config.tokens.tokenA.decimals;
+
+					if (!decimals) throw new Error("computeRoutes: decimals is null");
+
+					const asNumber = JSBItoNumber(inAmount);
+
+					const asDecimal = toDecimal(asNumber, decimals);
+
+					state.routes.currentRoute.input.amount.decimal = asDecimal;
+				}
+
+				if ("outAmount" in routes.routesInfos[0]) {
+					const { outAmount } = routes.routesInfos[0];
+					state.routes.currentRoute.output.amount.jsbi = outAmount;
+
+					const decimals = state.config.tokens.tokenB.decimals;
+
+					if (!decimals) throw new Error("computeRoutes: decimals is null");
+
+					const asNumber = JSBItoNumber(outAmount);
+
+					const asDecimal = toDecimal(asNumber, decimals);
+
+					state.routes.currentRoute.output.amount.decimal = asDecimal;
+				}
+			}
+		});
+
+		setStatus("routesComputed");
+		setStatus("idle");
+
+		return routes;
+	} catch (e: Error | any) {
+		setStatus("routesError");
+		if (typeof e === "object" && "message" in e) {
+			if (e.message.match(/Account info [\w\d]+ missing/)) {
+				throw new Error(`Some data is missing from the RPC
+			- If error persists, please try to use another RPC
+
+			CURRENT RPC: ${store.getState().config.rpcURL}
+			CURRENT RPC WS: ${store.getState().config.rpcWSS}
+			
+			IMPORTANT!
+			NEVER SHARE YOUR PRIVATE KEY WITH ANYONE!`);
+			}
+		}
+
+		const error = e as Error;
+		const parsedError = `${error?.stack}`;
+
+		// todo: more robust error handling for every AMM, so the user can see which AMM is failing
+		const isGooseFxError = parsedError.includes("goosefx");
+		if (isGooseFxError) {
+			console.error(
+				"It's probably a GooseFX error, try to exclude it in the config and try again"
+			);
+		}
+		console.error(error);
+		throw error;
+	} finally {
+		store.setState((state) => {
+			state.bot.lastIterationTimestamp = performance.now();
+		});
+		// decrease queue count
+		queue.decrease();
+	}
+};
+
+export type ComputeRoutes = typeof computeRoutes;

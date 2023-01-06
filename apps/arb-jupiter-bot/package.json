@@ -1,6 +1,6 @@
 {
 	"name": "@arb-protocol/arb-jupiter-bot",
-	"version": "1.0.0-alpha",
+	"version": "1.0.0-alpha.1",
 	"license": "MIT",
 	"description": "Arb Jupiter Bot | Solana Trading Bot",
 	"repository": {
@@ -9,20 +9,22 @@
 	},
 	"main": "src/index.ts",
 	"types": "src/index.ts",
+	"private": true,
 	"scripts": {
 		"build": "tsc",
+		"lint": "eslint --ext .ts src",
 		"start": "node dist/index.js",
 		"dev": "nodemon src/index.ts"
 	},
 	"dependencies": {
-		"@arb-protocol/core": "*",
-		"@arb-protocol/cliui": "*"
+		"@arb-protocol/cliui": "*",
+		"@arb-protocol/core": "*"
 	},
 	"devDependencies": {
-		"ts-config": "*",
 		"eslint-config-custom": "*",
 		"nodemon": "^2.0.20",
-		"prettier": "latest"
+		"prettier": "2.8.0",
+		"ts-config": "*"
 	},
 	"engines": {
 		"node": ">=16.0.0"

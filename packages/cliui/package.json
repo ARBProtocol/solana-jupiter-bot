@@ -1,6 +1,6 @@
 {
 	"name": "@arb-protocol/cliui",
-	"version": "1.0.0",
+	"version": "1.0.0-alpha.1",
 	"license": "MIT",
 	"description": "Command line user interface for @arb-protocol/solana-jupiter-bot",
 	"repository": {
@@ -13,14 +13,20 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc"
+		"build": "tsc",
+		"lint": "eslint --ext .ts src"
 	},
 	"dependencies": {
+		"asciichart": "^1.5.25",
 		"boxen": "5.1.2",
-		"chalk": "^4.1.0",
-		"cliui": "8.0.1"
+		"chalk": "4.1.0",
+		"cli-table3": "^0.6.3",
+		"cliui": "8.0.1",
+		"decimal.js": "^10.4.2",
+		"open": "^8.4.0"
 	},
 	"devDependencies": {
+		"@types/asciichart": "^1.5.6",
 		"eslint-config-custom": "*",
 		"tsconfig": "*"
 	}

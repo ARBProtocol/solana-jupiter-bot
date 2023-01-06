@@ -1,6 +1,5 @@
 {
-	"name": "@arb-protocol/arb-jupiter-bot",
-	"version": "1.0.0-alpha",
+	"name": "arb-jupiter-bot",
 	"description": "Arb Jupiter Bot Turborepo",
 	"private": true,
 	"workspaces": [
@@ -14,24 +13,23 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build --force": "turbo run build --force",
-		"start": "turbo run build && cd apps/arb-jupiter-bot && yarn start",
+		"start": "NODE_ENV=production turbo run build && cd apps/arb-jupiter-bot && yarn start",
 		"trade": "turbo run build && cd apps/arb-jupiter-bot && yarn start",
 		"dev": "cd apps/arb-jupiter-bot && yarn dev",
 		"lint": "turbo run lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\""
 	},
-	"devDependencies": {
-		"prettier": "latest",
-		"turbo": "latest"
-	},
 	"engines": {
 		"node": ">=16.0.0"
 	},
 	"dependencies": {
+		"@changesets/cli": "^2.26.0",
 		"@manypkg/cli": "^0.19.2",
-		"eslint-plugin-turbo": "^0.0.4"
+		"eslint-plugin-turbo": "^0.0.7",
+		"prettier": "2.8.1",
+		"turbo": "latest"
 	},
-	"packageManager": "yarn@1.22.19",
+	"packageManager": "npm@9.2.0",
 	"maintainers": [
 		{
 			"name": "Paweł Mioduszewski",

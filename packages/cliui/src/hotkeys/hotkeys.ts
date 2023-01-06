@@ -52,49 +52,6 @@ export const createKeyboardListener = () => {
 	};
 };
 
-// let onKeyPress = (keyRaw: KeyRaw) => {
-// 	console.log(`You pressed the "${keyRaw.name}" key`);
-// 	console.table(keyRaw);
-// 	console.log(
-// 		"You most likely forgot pass the callback to the hotkeys function if you see this message"
-// 	);
-// };
-
-// process.stdin.on("keypress", (str, keyRaw) => {
-// 	if (keyRaw.ctrl && keyRaw.name === "c") {
-// 		console.log("User pressed Ctrl+C, exiting...");
-// 		process.exit();
-// 	}
-// 	onKeyPress(keyRaw);
-// });
-
-// export const keyboard = {
-// 	onKeyPress: (key: Key | KeyCombo, callback: () => void) => {
-// 		onKeyPress = (keyRaw: KeyRaw) => {
-// 			console.log(
-// 				`You pressed the "${keyRaw.name}" key and key ${key} is equal?  ${keyRaw.name === key}`
-// 			);
-// 			console.table(keyRaw);
-// 			if (key.includes("+")) {
-// 				console.log("Key includes +");
-// 				const [modifier, keyName] = key.split("+") as [Modifier, Key];
-
-// 				console.log(`Modifier: ${modifier}, keyName: ${keyName}`);
-
-// 				if (modifier !== "ctrl" && modifier !== "shift") {
-// 					throw new Error("Only ctrl and shift modifiers are supported");
-// 				}
-
-// 				if (keyRaw[modifier] && keyName === keyRaw.name) {
-// 					callback();
-// 				}
-// 			} else if (key === keyRaw.name) {
-// 				callback();
-// 			}
-// 		};
-// 	},
-// };
-
 type Key =
 	| "q"
 	| "w"
@@ -133,10 +90,10 @@ type Key =
 	| "8"
 	| "9"
 	| "space"
-	| "arrowLeft"
-	| "arrowRight"
-	| "arrowUp"
-	| "arrowDown"
+	| "left"
+	| "right"
+	| "up"
+	| "down"
 	| "enter"
 	| "plus"
 	| "minus"
