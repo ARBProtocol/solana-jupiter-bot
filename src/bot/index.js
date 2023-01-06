@@ -414,12 +414,12 @@ const run = async () => {
 			cache.lastBalance.tokenA = cache.initialBalance.tokenA;
 
 			// set initial & last balance for tokenB
-			cache.initialBalance.tokenB = Number(await getInitialoutAmount(
+			cache.initialBalance.tokenB = Number((await getInitialoutAmount(
 				jupiter,
 				tokenA,
 				tokenB,
 				cache.initialBalance.tokenA
-			));
+			)).toString());
 			cache.lastBalance.tokenB = cache.initialBalance.tokenB;
 		} else if (cache.config.tradingStrategy === "arbitrage") {
 			// set initial & current & last balance for tokenA
