@@ -1,0 +1,105 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Generated schema for Root",
+	"type": "object",
+	"properties": {
+		"ammsToExclude": {
+			"description": "The list of AMMs to exclude from the route computation.",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"backOff": {
+			"description": "The back-off mode will wait for a specified time after route computation fails. If shutdownOnCount is specified, the bot will shutdown after the specified number of computation failures. ",
+			"type": "object",
+			"properties": {
+				"enabled": {
+					"type": "boolean",
+					"default": false
+				},
+				"shutdownOnCount": {
+					"type": "number"
+				},
+				"ms": {
+					"type": "number"
+				}
+			}
+		},
+		"tokens": {
+			"type": "object",
+			"properties": {
+				"tokenA": {
+					"type": "object",
+					"properties": {
+						"address": {
+							"type": "string"
+						}
+					},
+					"required": ["address"]
+				},
+				"tokenB": {
+					"type": "object",
+					"properties": {
+						"address": {
+							"type": "string"
+						}
+					},
+					"required": ["address"]
+				}
+			},
+			"required": ["tokenA", "tokenB"]
+		},
+		"strategy": {
+			"type": "object",
+			"properties": {
+				"tradeAmount": {
+					"type": "number"
+				},
+				"rules": {
+					"type": "object",
+					"properties": {
+						"execute": {
+							"type": "object",
+							"properties": {
+								"above": {
+									"type": "object",
+									"properties": {
+										"potentialProfit": {
+											"type": "number"
+										}
+									},
+									"required": ["potentialProfit"]
+								}
+							},
+							"required": ["above"]
+						},
+						"slippage": {
+							"type": "object",
+							"properties": {
+								"bps": {
+									"type": "number"
+								}
+							},
+							"required": ["bps"]
+						}
+					},
+					"required": ["execute", "slippage"]
+				}
+			},
+			"required": ["tradeAmount", "rules"]
+		},
+		"cliui": {
+			"description": "The CLI UI configuration.",
+			"type": "object",
+			"properties": {
+				"allowClearConsole": {
+					"description": "If true, terminal will be cleared before every UI update.",
+					"type": "boolean",
+					"default": false
+				}
+			}
+		}
+	},
+	"required": ["amsToExclude", "backOff", "tokens", "strategy", "cliui"]
+}

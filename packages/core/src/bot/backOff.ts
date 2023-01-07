@@ -22,6 +22,9 @@ export const backOff = async (store: Store, setStatus: SetStatus) => {
 	});
 
 	setStatus("backOff");
+
+	// trigger backOff
 	await sleep(backOffState.ms);
+
 	setStatus("idle");
 };

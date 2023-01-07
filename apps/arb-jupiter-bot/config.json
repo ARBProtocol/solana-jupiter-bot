@@ -1,0 +1,33 @@
+{
+	"$schema": "./src/config.schema.json",
+	"amsToExclude": ["GoseFX", "Serum"],
+	"tokens": {
+		"tokenA": {
+			"address": "0x0000000000000000000000000000000000000000"
+		},
+		"tokenB": {
+			"address": "0x0000000000000000000000000000000000000000"
+		}
+	},
+	"backOff": {
+		"enabled": true,
+		"shutdownOnCount": 3,
+		"ms": 10000
+	},
+	"strategy": {
+		"tradeAmount": 500,
+		"rules": {
+			"execute": {
+				"above": {
+					"potentialProfit": 1
+				}
+			},
+			"slippage": {
+				"bps": 10
+			}
+		}
+	},
+	"cliui": {
+		"allowClearConsole": false
+	}
+}
