@@ -1,9 +1,10 @@
 import { createJupiter, getJupiterTokens, JupiterToken } from "../jupiter";
 import { Store } from "../store";
 import { createKeypair, createSolanaConnection } from "../web3";
-import { SetStatus, SetJupiter, ConfigRequired } from "./bot";
-import { performanceTest } from "./performanceTest";
+import { ConfigRequired, SetJupiter, SetStatus } from "./bot";
 import { loadConfig } from "./loadConfig";
+import { performanceTest } from "./performanceTest";
+import fs from "fs";
 
 export const start = async (
 	store: Store,
@@ -17,6 +18,9 @@ export const start = async (
 
 		// performance test
 		performanceTest(store, setStatus);
+
+		// create ./temp directory
+		fs.mkdirSync("./temp", { recursive: true });
 
 		// get all Jupiter tokens
 		setStatus("loadingTokens");
