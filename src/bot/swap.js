@@ -3,17 +3,19 @@ const cache = require("./cache");
 const { getSwapResultFromSolscanParser } = require("../services/solscan");
 const { TransactionMessage, Keypair, VersionedTransaction, sendAndConfirmTransaction } = require("@solana/web3.js");
 const base58 = require("bs58");
-
-const swap = async (jupiter, prism, route) => {
+const { Connection, PublicKey } = require("@solana/web3.js/lib/index.cjs");
+const { TOKEN_PROGRAM_ID } = require("@prism-hq/prism-ag/dist/types/types");
+const { Token } = require('@solana/spl-token')
+const swap = async (jupiter, prism, route, route2, tokenA, tokenB) => {
 	try {
 		const performanceOfTxStart = performance.now();
 		cache.performanceOfTxStart = performanceOfTxStart;
 		let result
 		if (cache.config.aggregator == 'jupiter'){
-			const { execute } = await jupiter.exchange({
-				routeInfo: route,
-			});
-			result = await execute();
+			//const { execute } = await jupiter.exchange({
+			//	routeInfo: route,
+			//});
+			//result = await execute();
 		}
 		else if (cache.config.aggregator == 'prism'){
 			let hm = await prism.swap(route)
@@ -26,51 +28,133 @@ const swap = async (jupiter, prism, route) => {
 			console.log('oops')
 		}
 		/* this method is superior and I'll prove why at a later point in time, just don't have time to code the breaking ui changes :)
-		let instructions = []
-		let luts = []
+		
+		/* and now; magik */
+		if (cache.config.aggregator == 'jupiter'){
 
-		var {
-			setupTransaction,	
-			swapTransaction,
-			cleanupTransaction
-		  } = execute.transactions
-
-
-		  await Promise.all(
-			  [
+			var {
 				setupTransaction,	
 				swapTransaction,
-				cleanupTransaction
-			  ]
-				.filter(Boolean)
-				.map(
-				  async (transaction) => {
-					
-				    luts.push(...transaction.message.addressTableLookups)
-				  	instructions.push(...(TransactionMessage.decompile(transaction.message)).instructions)
+				cleanupTransaction,
+				addressLookupTableAccounts
+			} = await jupiter.exchange({
+				routeInfo: route,
+			});
+			
+			let instructions = []
+			let luts = []
 
-				  }
-				)
-		  )
-		  const payer = Keypair.fromSecretKey(
-				base58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY)
+			await Promise.all(
+				[
+					setupTransaction,	
+					swapTransaction,
+					cleanupTransaction
+				]
+					.filter(Boolean)
+					.map(
+					async (transaction) => {
+						let DecompileArgs = {
+							addressLookupTableAccounts:
+							addressLookupTableAccounts,
+						  };
+						  let decompiled = TransactionMessage.decompile(
+							// @ts-ignore
+							transaction.message,
+							DecompileArgs
+						  );
+						  let c = 0 
+						  for (var abc of decompiled.instructions){
+							if (c != 0){
+								instructions.push(abc)
+							}
+							c++
+						  }
+
+						luts.push(...addressLookupTableAccounts)
+
+
+						}
+					)
 			)
-			const connection = new Connection(cache.config.rpc[0]);
-		  const messageV00 = new TransactionMessage({
-			payerKey: payer.publicKey,
-			recentBlockhash: await (
-				await connection.getLatestBlockhash()
-			  ).blockhash,
-			instructions,
-		  }).compileToV0Message(luts);
-		  const transaction = new VersionedTransaction(
-			messageV00
-		  );
 
-		  await transaction.sign([payer]);
-		  
-		  const result =  await sendAndConfirmTransaction(connection, transaction, {skipPreflight: false}, {skipPreflight: false})
-		*/
+			var {
+				setupTransaction,	
+				swapTransaction,
+				cleanupTransaction,
+				addressLookupTableAccounts
+			} = await jupiter.exchange({
+				routeInfo: route2,
+			});
+
+			await Promise.all(
+				[
+					setupTransaction,	
+					swapTransaction,
+					cleanupTransaction
+				]
+					.filter(Boolean)
+					.map(
+					async (transaction) => {
+						let DecompileArgs = {
+							addressLookupTableAccounts:
+							addressLookupTableAccounts,
+						  };
+						  let decompiled = TransactionMessage.decompile(
+							// @ts-ignore
+							transaction.message,
+							DecompileArgs
+						  );
+						  let c = 0 
+						  for (var abc of decompiled.instructions){
+							if (c != 0){
+								instructions.push(abc)
+							}
+							c++
+						  }
+
+						luts.push(...addressLookupTableAccounts)
+
+
+						}
+					)
+			)
+			const payer = Keypair.fromSecretKey(
+					base58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY)
+				)
+			const connection = new Connection(cache.config.rpc[0]);
+			const atas = (await connection.getTokenAccountsByOwner(payer.publicKey,{mint: new PublicKey(tokenA.address)})).value 
+			let t = 0;
+			var theata 
+			for (var ata of atas){
+				t+=(await connection.getTokenAccountBalance(ata.pubkey)).value.amount 
+				theata = ata 
+			}
+			instructions.push(Token.createTransferInstruction (
+				new PublicKey(TOKEN_PROGRAM_ID),
+				theata.pubkey,
+				theata.pubkey,
+				payer.publicKey,
+				[],
+				t
+			  )
+			)
+			const messageV00 = new TransactionMessage({
+				payerKey: payer.publicKey,
+				recentBlockhash: await (
+					await connection.getLatestBlockhash()
+				).blockhash,
+				instructions,
+			}).compileToV0Message(luts);
+
+			const transaction = new VersionedTransaction(
+				messageV00
+			);
+
+			await transaction.sign([payer]);
+			
+			result =  await sendAndConfirmTransaction(connection, transaction, {skipPreflight: false}, {skipPreflight: false})
+
+		}
 		if (process.env.DEBUG) storeItInTempAsJSON("result", result);
 
 		const performanceOfTx = performance.now() - performanceOfTxStart;
@@ -78,6 +162,7 @@ const swap = async (jupiter, prism, route) => {
 		return [result, performanceOfTx];
 	} catch (error) {
 		console.log("Swap error: ", error);
+		return [undefined, 0]
 	}
 };
 exports.swap = swap;

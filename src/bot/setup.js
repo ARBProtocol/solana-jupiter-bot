@@ -90,22 +90,29 @@ const setup = async () => {
 			logExit(1, "Must hold 10,000 ARB");
 			process.exitCode = 1;
 		}
-		spinner.text = "Loading Jupiter and Prism SDKs...";
-		
-		const prism = await Prism.init({
-			user: wallet,
-			slippage: cache.config.slippage,
-			connection: connection,
-		});
+		spinner.text = "Loading Jupiter or Prism SDK...";
+		let jupiter 
+		let prism 
 
-		const jupiter = await Jupiter.load({
-			connection,
-			cluster: cache.config.network,
-			user: wallet,
-			restrictIntermediateTokens: true,
-			wrapUnwrapSOL: true
-		});
+		
+		if (cache.config.aggregator == 'jupiter'){
+			jupiter = await Jupiter.load({
+				connection,
+				cluster: cache.config.network,
+				user: wallet,
+				restrictIntermediateTokens: true,
+				wrapUnwrapSOL: true
+			});
+		}
+		else {
+			prism = await Prism.init({
+				user: wallet,
+				slippage: cache.config.slippage,
+				connection: connection,
+			});
+		}
 		cache.isSetupDone = true;
+
 		spinner.succeed("Setup done!");
 
 		return { jupiter, prism, tokenA, tokenB };
@@ -119,7 +126,7 @@ const setup = async () => {
 	}
 };
 
-const getInitialoutAmount = async (
+const getInitialOutAmount = async (
 	jupiter,
 	inputToken,
 	outputToken,
@@ -138,7 +145,7 @@ const getInitialoutAmount = async (
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
 			amount: amountToTrade,
-			slippageBps: 0,
+			slippageBps: cache.config.slippage,
 			forceFetch: true,
 		});
 
@@ -156,5 +163,5 @@ const getInitialoutAmount = async (
 
 module.exports = {
 	setup,
-	getInitialoutAmount,
+	getInitialOutAmount,
 };

@@ -26,7 +26,6 @@
 		"@prism-hq/prism-ag": "^0.2.30",
 		"@solana/web3.js": "^1.73.0",
 		"asciichart": "^1.5.25",
-		"axios": "^0.27.2",
 		"bs58": "^5.0.0",
 		"cliui": "^7.0.4",
 		"gradient-string": "^2.0.1",
