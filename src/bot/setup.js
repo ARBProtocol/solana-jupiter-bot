@@ -107,7 +107,7 @@ const setup = async () => {
 		else {
 			prism = await Prism.init({
 				user: wallet,
-				slippage: cache.config.slippage,
+				slippage: cache.config.slippage * 100,
 				connection: connection,
 			});
 		}
