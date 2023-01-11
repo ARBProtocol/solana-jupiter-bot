@@ -393,10 +393,10 @@ const arbitrageStrategy = async (jupiter, prism, tokenA) => {
 					}, 500);
 
 					[tx, performanceOfTx] = await swap(jupiter, prism, route);
-
-					// stop refreshing status
+try {// so anyways the lesson here is to use less esoteric anyspl tokens - yawn. I'm so incredibly tired
+					// stop refreshing status zzz zzz zz zzzz z zz 
 					clearInterval(printTxStatus);
-
+					//this is the ui stuff that's broken regardless - like the way the tx's used to be parsed. that said, we can probably parse the successful ones with solscanparser
 					const profit = calculateProfit(tradeEntry.inAmount, tx.outputAmount);
 
 					tradeEntry = {
@@ -418,6 +418,9 @@ const arbitrageStrategy = async (jupiter, prism, tokenA) => {
 						}
 						successSwapHandler(tx, tradeEntry, tokenA, tokenA);
 					}
+				} catch (err){
+
+				}
 				}
 				catch (err){
 					console.log(err)

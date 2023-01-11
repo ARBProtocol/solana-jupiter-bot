@@ -103,7 +103,7 @@ const setup = async () => {
 				restrictIntermediateTokens: true,
 				wrapUnwrapSOL: true
 			});
-		}
+		}// meh
 		else {
 			prism = await Prism.init({
 				user: wallet,

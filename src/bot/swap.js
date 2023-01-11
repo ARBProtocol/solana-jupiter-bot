@@ -14,12 +14,12 @@ const swap = async (jupiter, prism, route, route2, tokenA, tokenB) => {
 		if (cache.config.aggregator == 'jupiter'){
 			//const { execute } = await jupiter.exchange({
 			//	routeInfo: route,
-			//});
+			//});/ /// it's working, but failing for some odd reason according to whatever AMM we just tried.     'Program log: AnchorError occurred. Error Code: SlippageToleranceExceeded. Error Number: 6001. Error Message: Slippage tolerance exceeded.', like that, for one. Although my slippage should be 50?
 			//result = await execute();
 		}
 		else if (cache.config.aggregator == 'prism'){
-			let hm = await prism.swap(route)
-			result
+			 result = await prism.swap(route)
+			
 		}
 		console.log(result)
 		try {
@@ -155,7 +155,7 @@ const swap = async (jupiter, prism, route, route2, tokenA, tokenB) => {
 			result =  await sendAndConfirmTransaction(connection, transaction, {skipPreflight: false}, {skipPreflight: false})
 
 		}
-		if (process.env.DEBUG) storeItInTempAsJSON("result", result);
+		// this is broken for prism if (process.env.DEBUG) storeItInTempAsJSON("result", result);
 
 		const performanceOfTx = performance.now() - performanceOfTxStart;
 
