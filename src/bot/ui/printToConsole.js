@@ -1,5 +1,4 @@
 const ui = require("cliui")({ width: 140 });
-const JSBI = require('jsbi')
 const chalk = require("chalk");
 const moment = require("moment");
 const chart = require("asciichart");
@@ -18,7 +17,6 @@ function printToConsole({
 	route,
 	simulatedProfit,
 }) {
-	return
 	try {
 		if (cache.ui.allowClear) {
 			// update max profitability spotted chart
@@ -218,8 +216,7 @@ function printToConsole({
 			ui.div(
 				{
 					text: `IN:  ${chalk.yellowBright(
-						toDecimal(Number(cache.config.aggregator == 'prism' ? 
-				route.amountIn / 10 ** inputToken.decimals : route.inAmount.toString()), inputToken.decimals)
+						toDecimal(route.inAmount, inputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](inputToken.symbol)}`,
 				},
 				{
@@ -245,8 +242,7 @@ function printToConsole({
 			ui.div(
 				{
 					text: `OUT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
-						toDecimal(Number(cache.config.aggregator == 'prism' ? 
-				route.amountOut / 10 ** inputToken.decimals : route.outAmount.toString()), outputToken.decimals)
+						toDecimal(route.outAmount, outputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](outputToken.symbol)}`,
 				},
 				{
@@ -254,7 +250,7 @@ function printToConsole({
 				},
 				{
 					text: `MIN. OUT: ${chalk.magentaBright(
-						toDecimal(route.amountOut, outputToken.decimals)
+						toDecimal(route.outAmountWithSlippage, outputToken.decimals)
 					)}`,
 				},
 				{

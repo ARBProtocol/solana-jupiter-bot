@@ -2,10 +2,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 const ora = require("ora-classic");
 const bs58 = require("bs58");
-
-const { Prism } = require("@prism-hq/prism-ag");
-
-const { Jupiter, getPlatformFeeAccounts } = require("@jup-ag/core");
+const { Jupiter } = require("@jup-ag/core");
 const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
 
 const { logExit } = require("./exit");
@@ -72,50 +69,21 @@ const setup = async () => {
 		spinner.text = "Setting up connection ...";
 		// connect to RPC
 		const connection = new Connection(cache.config.rpc[0]);
-		try {
-			let atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {mint: new PublicKey("9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh")})
-			let t = 0
-			for (var ata of atas.value){
-				t+=parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount) 
-			}
-			if (t < -1){
-				console.log(
-					`\n	Must hold 10,000 ARB \n`
-				);
-				process.exit();
-			}
-		}
-		catch (err){
-			console.log(err)
-			logExit(1, "Must hold 10,000 ARB");
-			process.exitCode = 1;
-		}
-		spinner.text = "Loading Jupiter or Prism SDK...";
-		let jupiter 
-		let prism 
 
-		
-		if (cache.config.aggregator == 'jupiter'){
-			jupiter = await Jupiter.load({
-				connection,
-				cluster: cache.config.network,
-				user: wallet,
-				restrictIntermediateTokens: true,
-				wrapUnwrapSOL: true
-			});
-		}// meh
-		else {
-			prism = await Prism.init({
-				user: wallet,
-				slippage: cache.config.slippage * 100,
-				connection: connection,
-			});
-		}
+		spinner.text = "Loading Jupiter SDK...";
+
+		const jupiter = await Jupiter.load({
+			connection,
+			cluster: cache.config.network,
+			user: wallet,
+			restrictIntermediateTokens: true,
+			wrapUnwrapSOL: cache.wrapUnwrapSOL,
+		});
+
 		cache.isSetupDone = true;
-
 		spinner.succeed("Setup done!");
 
-		return { jupiter, prism, tokenA, tokenB };
+		return { jupiter, tokenA, tokenB };
 	} catch (error) {
 		if (spinner)
 			spinner.fail(
@@ -126,7 +94,7 @@ const setup = async () => {
 	}
 };
 
-const getInitialOutAmount = async (
+const getInitialOutAmountWithSlippage = async (
 	jupiter,
 	inputToken,
 	outputToken,
@@ -144,15 +112,15 @@ const getInitialOutAmount = async (
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			amount: amountToTrade,
-			slippageBps: cache.config.slippage,
-			forceFetch: true,
+			inputAmount: amountToTrade,
+			slippage: 0,
+			forceFeech: true,
 		});
 
 		if (routes?.routesInfos?.length > 0) spinner.succeed("Routes computed!");
 		else spinner.fail("No routes found. Something is wrong!");
 
-		return routes.routesInfos[0].outAmount;
+		return routes.routesInfos[0].outAmountWithSlippage;
 	} catch (error) {
 		if (spinner)
 			spinner.fail(chalk.bold.redBright("Computing routes failed!\n"));
@@ -163,5 +131,5 @@ const getInitialOutAmount = async (
 
 module.exports = {
 	setup,
-	getInitialOutAmount,
+	getInitialOutAmountWithSlippage,
 };

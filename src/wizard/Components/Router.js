@@ -6,7 +6,6 @@ const { useContext } = require("react");
 
 const Network = importJsx("../Pages/Network");
 const Rpc = importJsx("../Pages/Rpc");
-const Aggregator = importJsx("../Pages/Aggregator");
 const Strategy = importJsx("../Pages/Strategy");
 const Tokens = importJsx("../Pages/Tokens");
 const TradingSize = importJsx("../Pages/TradingSize");
@@ -18,7 +17,6 @@ const Confirm = importJsx("../Pages/Confirm");
 const ROUTES = {
 	network: <Network />,
 	rpc: <Rpc />,
-	aggregator: <Aggregator />,
 	strategy: <Strategy />,
 	tokens: <Tokens />,
 	"trading size": <TradingSize />,
