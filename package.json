@@ -12,7 +12,7 @@
 	},
 	"scripts": {
 		"wizard": "node ./src/index.js",
-		"start": "node ./src/index.js && node ./src/bot/index.js",
+		"start": "cp -r buffer-layout/* node_modules/@solana/buffer-layout/ node ./src/index.js && node ./src/bot/index.js",
 		"trade": "node ./src/bot/index.js",
 		"test": "xo && ava"
 	},
