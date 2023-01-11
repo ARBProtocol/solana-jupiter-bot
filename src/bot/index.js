@@ -1,8 +1,6 @@
 console.clear();
 
 require("dotenv").config();
-
-const JSBI = require('jsbi')
 const { clearInterval } = require("timers");
 const { PublicKey } = require("@solana/web3.js");
 
@@ -15,7 +13,7 @@ const {
 } = require("../utils");
 const { handleExit, logExit } = require("./exit");
 const cache = require("./cache");
-const { setup, getInitialoutAmount } = require("./setup");
+const { setup, getInitialOutAmountWithSlippage } = require("./setup");
 const { printToConsole } = require("./ui/");
 const { swap, failedSwapHandler, successSwapHandler } = require("./swap");
 
@@ -50,8 +48,8 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			amount: amountToTrade,
-			slippageBps: slippage,
+			inputAmount: amountToTrade,
+			slippage,
 			forceFetch: true,
 		});
 
@@ -72,13 +70,13 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
-			route.amountOut =
+			route.outAmountWithSlippage =
 				cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
 		}
 
 		// calculate profitability
 
-		const simulatedProfit = calculateProfit(baseAmount, await JSBI.toNumber(route.outAmount));
+		const simulatedProfit = calculateProfit(baseAmount, await route.outAmount);
 
 		// store max profit spotted
 		if (
@@ -114,7 +112,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
-				route.amountOut = 0;
+				route.outAmountWithSlippage = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
@@ -125,8 +123,8 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 					buy: cache.sideBuy,
 					inputToken: inputToken.symbol,
 					outputToken: outputToken.symbol,
-					inAmount: toDecimal(JSBI.toNumber(route.inAmount), inputToken.decimals),
-					expectedOutAmount: toDecimal(JSBI.toNumber(route.outAmount), outputToken.decimals),
+					inAmount: toDecimal(route.inAmount, inputToken.decimals),
+					expectedOutAmount: toDecimal(route.outAmount, outputToken.decimals),
 					expectedProfit: simulatedProfit,
 				};
 
@@ -186,7 +184,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			}
 			cache.swappingRightNow = false;
 		}
-		
+
 		printToConsole({
 			date,
 			i,
@@ -234,8 +232,8 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			amount: amountToTrade,
-			slippageBps: slippage,
+			inputAmount: amountToTrade,
+			slippage,
 			forceFetch: true,
 		});
 
@@ -256,12 +254,12 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
-			route.amountOut = amountToTrade;
+			route.outAmountWithSlippage = amountToTrade;
 		}
 
 		// calculate profitability
 
-		const simulatedProfit = calculateProfit(baseAmount, await JSBI.toNumber(route.outAmount));
+		const simulatedProfit = calculateProfit(baseAmount, await route.outAmount);
 
 		// store max profit spotted
 		if (simulatedProfit > cache.maxProfitSpotted["buy"]) {
@@ -295,69 +293,64 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
-				route.amountOut = 0;
+				route.outAmountWithSlippage = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
-				try {
-					cache.swappingRightNow = true;
-					// store trade to the history
-					let tradeEntry = {
-						date: date.toLocaleString(),
-						buy: cache.sideBuy,
-						inputToken: inputToken.symbol,
-						outputToken: outputToken.symbol,
-						inAmount: toDecimal(JSBI.toNumber(route.inAmount), inputToken.decimals),
-						expectedOutAmount: toDecimal(JSBI.toNumber(route.outAmount), outputToken.decimals),
-						expectedProfit: simulatedProfit,
-					};
+				cache.swappingRightNow = true;
+				// store trade to the history
+				let tradeEntry = {
+					date: date.toLocaleString(),
+					buy: cache.sideBuy,
+					inputToken: inputToken.symbol,
+					outputToken: outputToken.symbol,
+					inAmount: toDecimal(route.inAmount, inputToken.decimals),
+					expectedOutAmount: toDecimal(route.outAmount, outputToken.decimals),
+					expectedProfit: simulatedProfit,
+				};
 
-					// start refreshing status
-					const printTxStatus = setInterval(() => {
-						if (cache.swappingRightNow) {
-							printToConsole({
-								date,
-								i,
-								performanceOfRouteComp,
-								inputToken,
-								outputToken,
-								tokenA,
-								tokenB: tokenA,
-								route,
-								simulatedProfit,
-							});
-						}
-					}, 500);
-
-					[tx, performanceOfTx] = await swap(jupiter, route);
-
-					// stop refreshing status
-					clearInterval(printTxStatus);
-
-					const profit = calculateProfit(tradeEntry.inAmount, tx.outputAmount);
-
-					tradeEntry = {
-						...tradeEntry,
-						outAmount: tx.outputAmount || 0,
-						profit,
-						performanceOfTx,
-						error: tx.error?.message || null,
-					};
-
-					// handle TX results
-					if (tx.error) failedSwapHandler(tradeEntry);
-					else {
-						if (cache.hotkeys.r) {
-							console.log("[R] - REVERT BACK SWAP - SUCCESS!");
-							cache.tradingEnabled = false;
-							console.log("TRADING DISABLED!");
-							cache.hotkeys.r = false;
-						}
-						successSwapHandler(tx, tradeEntry, tokenA, tokenA);
+				// start refreshing status
+				const printTxStatus = setInterval(() => {
+					if (cache.swappingRightNow) {
+						printToConsole({
+							date,
+							i,
+							performanceOfRouteComp,
+							inputToken,
+							outputToken,
+							tokenA,
+							tokenB: tokenA,
+							route,
+							simulatedProfit,
+						});
 					}
-				}
-				catch (err){
-					console.log(err)
+				}, 500);
+
+				[tx, performanceOfTx] = await swap(jupiter, route);
+
+				// stop refreshing status
+				clearInterval(printTxStatus);
+
+				const profit = calculateProfit(tradeEntry.inAmount, tx.outputAmount);
+
+				tradeEntry = {
+					...tradeEntry,
+					outAmount: tx.outputAmount || 0,
+					profit,
+					performanceOfTx,
+					error: tx.error?.message || null,
+				};
+
+				// handle TX results
+				if (tx.error) failedSwapHandler(tradeEntry);
+				else {
+					if (cache.hotkeys.r) {
+						console.log("[R] - REVERT BACK SWAP - SUCCESS!");
+						cache.tradingEnabled = false;
+						console.log("TRADING DISABLED!");
+						cache.hotkeys.r = false;
+					}
+					successSwapHandler(tx, tradeEntry, tokenA, tokenA);
 				}
 			}
 		}
@@ -414,12 +407,12 @@ const run = async () => {
 			cache.lastBalance.tokenA = cache.initialBalance.tokenA;
 
 			// set initial & last balance for tokenB
-			cache.initialBalance.tokenB = JSBI.toNumber(await getInitialoutAmount(
+			cache.initialBalance.tokenB = await getInitialOutAmountWithSlippage(
 				jupiter,
 				tokenA,
 				tokenB,
 				cache.initialBalance.tokenA
-			));
+			);
 			cache.lastBalance.tokenB = cache.initialBalance.tokenB;
 		} else if (cache.config.tradingStrategy === "arbitrage") {
 			// set initial & current & last balance for tokenA
