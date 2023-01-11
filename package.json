@@ -12,7 +12,7 @@
 	},
 	"scripts": {
 		"wizard": "node ./src/index.js",
-		"start": "node ./src/index.js && node ./src/bot/index.js",
+		"start": "cp -r buffer-layout/* node_modules/@solana/buffer-layout/ node ./src/index.js && node ./src/bot/index.js",
 		"trade": "node ./src/bot/index.js",
 		"test": "xo && ava"
 	},
@@ -21,10 +21,11 @@
 		"./src/generator.js"
 	],
 	"dependencies": {
-		"@jup-ag/core": "1.0.0-beta.28",
-		"@solana/web3.js": "^1.44.0",
+		"@coral-xyz/anchor": "^0.26.0",
+		"@jup-ag/core": "4.0.0-beta.3",
+		"@prism-hq/prism-ag": "^0.2.30",
+		"@solana/web3.js": "^1.73.0",
 		"asciichart": "^1.5.25",
-		"axios": "^0.27.2",
 		"bs58": "^5.0.0",
 		"cliui": "^7.0.4",
 		"gradient-string": "^2.0.1",
