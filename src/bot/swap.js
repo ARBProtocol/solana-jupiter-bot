@@ -21,9 +21,7 @@ const swap = async (jupiter, route) => {
 		return [result, performanceOfTx];
 	} catch (error) {
 		return [
-			{
-				error: error?.message || "TX failed, Unknown error",
-			},
+			{ error: { message: error?.message || "TX failed, Unknown error" } },
 			0,
 		];
 	}
