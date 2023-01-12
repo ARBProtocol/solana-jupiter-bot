@@ -20,7 +20,12 @@ const swap = async (jupiter, route) => {
 
 		return [result, performanceOfTx];
 	} catch (error) {
-		console.log("Swap error: ", error);
+		return [
+			{
+				error: error?.message || "TX failed, Unknown error",
+			},
+			0,
+		];
 	}
 };
 exports.swap = swap;
