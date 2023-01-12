@@ -77,7 +77,7 @@ const setup = async () => {
 			for (var ata of atas.value){
 				t+=parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount) 
 			}
-			if (t < -1){
+			if (t < 10000){
 				console.log(
 					`\n	Must hold 10,000 ARB \n`
 				);
@@ -110,6 +110,7 @@ const setup = async () => {
 				connection: connection,
 			});
 		}
+
 		cache.isSetupDone = true;
 
 		spinner.succeed("Setup done!");

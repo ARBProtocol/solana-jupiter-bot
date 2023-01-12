@@ -290,6 +290,7 @@ const arbitrageStrategy = async (jupiter, prism, tokenA) => {
 			route = await routes.routesInfos[1];
 				// count available routes
 			cache.availableRoutes[cache.sideBuy ? "buy" : "sell"] =
+
 			routes.routesInfos.length;
 			// update slippage with "profit or kill" slippage
 			// todo I don't actually know what this does
@@ -481,6 +482,7 @@ const run = async () => {
 
 			// set initial & last balance for tokenB
 			cache.initialBalance.tokenB = Number((await getInitialOutAmount(
+
 				jupiter,
 				tokenA,
 				tokenB,
