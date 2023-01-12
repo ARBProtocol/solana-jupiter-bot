@@ -144,7 +144,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 						});
 					}
 				}, 500);
-
+try {
 				[tx, performanceOfTx] = await swap(jupiter, route);
 
 				// stop refreshing status
@@ -174,7 +174,14 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 					}
 					successSwapHandler(tx, tradeEntry, tokenA, tokenB);
 				}
-			}
+		
+		}
+		catch (err){
+			cache.sideBuy = !cache.sideBuy;
+			cache.swappingRightNow = false;
+
+		}
+	}
 		}
 
 		if (tx) {
@@ -325,7 +332,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 						});
 					}
 				}, 500);
-
+try {
 				[tx, performanceOfTx] = await swap(jupiter, route);
 
 				// stop refreshing status
@@ -353,6 +360,12 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 					successSwapHandler(tx, tradeEntry, tokenA, tokenA);
 				}
 			}
+			catch (err){
+				cache.sideBuy = !cache.sideBuy;
+				cache.swappingRightNow = false;
+	
+			}
+		}
 		}
 
 		if (tx) {
