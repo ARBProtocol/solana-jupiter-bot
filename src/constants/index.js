@@ -5,6 +5,7 @@ const CONFIG_INITIAL_STATE = {
 		steps: [
 			"network",
 			"rpc",
+			"aggregator",
 			"strategy",
 			"tokens",
 			"trading size",
@@ -38,6 +39,10 @@ const CONFIG_INITIAL_STATE = {
 						})),
 				],
 			},
+		},
+		aggregator: {
+			value: "", 
+			isSet: false
 		},
 		strategy: {
 			value: "",

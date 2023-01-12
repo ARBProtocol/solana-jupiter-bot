@@ -17,6 +17,7 @@ const createConfigFile = (config) => {
 	const configValues = {
 		network: config.network.value,
 		rpc: config.rpc.value,
+		aggregator: config.aggregator.value,
 		tradingStrategy: config.strategy.value,
 		tokenA: config.tokens.value.tokenA,
 		tokenB: config.tokens.value.tokenB,
@@ -105,10 +106,10 @@ const updateIterationsPerMin = (cache) => {
 const checkRoutesResponse = (routes) => {
 	if (Object.hasOwn(routes, "routesInfos")) {
 		if (routes.routesInfos.length === 0) {
-			logExit(1, {
-				message: "No routes found or something is wrong with RPC / Jupiter! ",
-			});
-			process.exit(1);
+			//logExit(1, {
+			//	message: "No routes found or something is wrong with RPC / Jupiter! ",
+			//});
+			//process.exit(1);
 		}
 	} else {
 		logExit(1, {
