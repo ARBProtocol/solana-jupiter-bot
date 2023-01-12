@@ -361,7 +361,6 @@ try {
 				}
 			}
 			catch (err){
-				cache.sideBuy = !cache.sideBuy;
 				cache.swappingRightNow = false;
 	
 			}
