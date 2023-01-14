@@ -24,8 +24,7 @@ export const loop = async (
 		// if bot is busy, wait
 		const status = bot.getStatus();
 		if (status !== "idle") {
-			console.log(`bot is busy, waiting... (${status})`);
-			await bot.utils.sleep(1);
+			await bot.utils.sleep(500);
 			continue;
 		}
 

@@ -8,6 +8,9 @@ export const getSwapResultFromSolscan = async (
 	store: Store,
 	swapResult: SwapSuccess
 ) => {
+	if (!swapResult)
+		throw new Error("getSwapResultFromSolscan: swapResult is null");
+
 	const walletAddress = store.getState().wallet.address;
 
 	const { txid: txId } = swapResult;

@@ -17,11 +17,7 @@ export const swap = async (
 	jupiter: Jupiter | null,
 	route?: RouteInfo
 ) => {
-	console.log("🚀 ~ file: bot.ts ~ line 30 ~ swap ~ route", route);
-
 	try {
-		console.log("swap!");
-
 		// set bot status to "swapping"
 		setStatus("swapping");
 
@@ -74,5 +70,7 @@ export const swap = async (
 		console.log("🚀 ~ file: swap.ts:74 ~ error", error);
 		setStatus("swapFail");
 		return error;
+	} finally {
+		setStatus("idle");
 	}
 };
