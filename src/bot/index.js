@@ -177,15 +177,15 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 					successSwapHandler(tx, tradeEntry, tokenA, tokenB);
 				}
 			}
+			if (tx) {
+				if (!tx.error) {
+					// change side
+					cache.sideBuy = !cache.sideBuy;
+				}
+			}
 		}
 
-		if (tx) {
-			if (!tx.error) {
-				// change side
-				cache.sideBuy = !cache.sideBuy;
-			}
-			cache.swappingRightNow = false;
-		}
+		cache.swappingRightNow = false;
 		
 		printToConsole({
 			date,
