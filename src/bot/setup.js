@@ -138,7 +138,7 @@ const getInitialoutAmount = async (
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			amount: JSBI.BigInt(amountToTrade),
+			amount: amountToTrade instanceof JSBI ? amountToTrade : JSBI.BigInt(amountToTrade),
 			slippageBps: 0,
 			forceFetch: true,
 		});
