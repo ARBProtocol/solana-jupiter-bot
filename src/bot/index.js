@@ -68,17 +68,17 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			performance.now() - performanceOfRouteCompStart;
 
 		// choose first route
-		const route = await routes.routesInfos[0];
+		const route = routes.routesInfos[0];
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
-			route.amountOut =
+			route.otherAmountThreshold =
 				cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
 		}
 
 		// calculate profitability
 
-		const simulatedProfit = calculateProfit(baseAmount, await Number(route.outAmount.toString()));
+		const simulatedProfit = calculateProfit(baseAmount, Number(route.outAmount.toString()));
 
 		// store max profit spotted
 		if (
@@ -114,7 +114,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
-				route.amountOut = 0;
+				route.otherAmountThreshold = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
@@ -252,16 +252,16 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			performance.now() - performanceOfRouteCompStart;
 
 		// choose first route
-		const route = await routes.routesInfos[1];
+		const route = routes.routesInfos[0];
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
-			route.amountOut = amountToTrade;
+			route.otherAmountThreshold = amountToTrade;
 		}
 
 		// calculate profitability
 
-		const simulatedProfit = calculateProfit(baseAmount, await Number(route.outAmount.toString()));
+		const simulatedProfit = calculateProfit(baseAmount, Number(route.outAmount.toString()));
 
 		// store max profit spotted
 		if (simulatedProfit > cache.maxProfitSpotted["buy"]) {
@@ -295,7 +295,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
-				route.amountOut = 0;
+				route.otherAmountThreshold = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
