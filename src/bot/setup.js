@@ -2,6 +2,8 @@ const fs = require("fs");
 const chalk = require("chalk");
 const ora = require("ora-classic");
 const bs58 = require("bs58");
+const JSBI = require('jsbi')
+
 const { Jupiter, getPlatformFeeAccounts } = require("@jup-ag/core");
 const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
 
@@ -136,7 +138,7 @@ const getInitialoutAmount = async (
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			amount: amountToTrade,
+			amount: JSBI.BigInt(amountToTrade),
 			slippageBps: 0,
 			forceFetch: true,
 		});
