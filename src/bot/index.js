@@ -51,7 +51,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
 			amount: amountToTrade instanceof JSBI ? amountToTrade : JSBI.BigInt(amountToTrade),
-			slippageBps: slippage,
+			slippageBps: slippage * 100,
 			forceFetch: true,
 		});
 
@@ -72,7 +72,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
-			route.otherAmountThreshold =
+			route.amountOut =
 				cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
 		}
 
@@ -177,27 +177,28 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 					successSwapHandler(tx, tradeEntry, tokenA, tokenB);
 				}
 			}
+
 			if (tx) {
 				if (!tx.error) {
 					// change side
 					cache.sideBuy = !cache.sideBuy;
 				}
 			}
+			
+			cache.swappingRightNow = false;
+			
+			printToConsole({
+				date,
+				i,
+				performanceOfRouteComp,
+				inputToken,
+				outputToken,
+				tokenA,
+				tokenB,
+				route,
+				simulatedProfit,
+			});
 		}
-
-		cache.swappingRightNow = false;
-		
-		printToConsole({
-			date,
-			i,
-			performanceOfRouteComp,
-			inputToken,
-			outputToken,
-			tokenA,
-			tokenB,
-			route,
-			simulatedProfit,
-		});
 	} catch (error) {
 		cache.queue[i] = 1;
 		console.log(error);
@@ -295,7 +296,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
-				route.otherAmountThreshold = 0;
+				route.amountOut = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
@@ -308,7 +309,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 						inputToken: inputToken.symbol,
 						outputToken: outputToken.symbol,
 						inAmount: toDecimal(Number(route.inAmount.toString()), inputToken.decimals),
-						expectedOutAmount: toDecimal(Number(route.outAmount.toString()), outputToken.decimals),
+						expectedOutAmount: toDecimal(Number(route.otherAmountThreshold.toString()), outputToken.decimals),
 						expectedProfit: simulatedProfit,
 					};
 
