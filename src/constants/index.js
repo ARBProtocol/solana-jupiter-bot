@@ -11,6 +11,7 @@ const CONFIG_INITIAL_STATE = {
 			"profit",
 			"slippage",
 			"advanced",
+			"priority fee",
 			"confirm",
 		],
 	},
@@ -78,6 +79,10 @@ const CONFIG_INITIAL_STATE = {
 			isSet: {
 				minInterval: false,
 			},
+		},
+		"priority fee": {
+			value: 0,
+			isSet: false,
 		},
 	},
 };
