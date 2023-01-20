@@ -18,6 +18,7 @@ const Confirm = () => {
 			profit: { value: profit },
 			slippage: { value: slippage },
 			advanced: { value: advanced },
+			"priority fee": { value: priorityFee },
 		},
 		config,
 	} = useContext(WizardContext);
@@ -51,6 +52,9 @@ const Confirm = () => {
 				<Text color="gray"></Text>
 				<Text>
 					Min Interval: {chalk.bold.greenBright(advanced.minInterval)}
+				</Text>
+				<Text>
+					Priority Fee: {chalk.bold.greenBright(priorityFee)}
 				</Text>
 			</Box>
 			{isConfigOk.result ? (
