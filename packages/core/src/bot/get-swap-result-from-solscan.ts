@@ -3,6 +3,7 @@ import { Store } from "../store";
 
 import fs from "fs";
 import { SwapSuccess } from "../aggregators/jupiter";
+import { writeJsonToTempDir } from "../utils";
 
 export const getSwapResultFromSolscan = async (
 	store: Store,
@@ -33,10 +34,7 @@ export const getSwapResultFromSolscan = async (
 	const tx = await getTransaction(txId);
 
 	if (tx) {
-		fs.writeFileSync(
-			"./temp/txSolscanResult.json",
-			JSON.stringify(tx, null, 2)
-		);
+		writeJsonToTempDir("txSolscanResult", tx);
 		const result: Event[] = [];
 
 		const inputAddressString = inputAddress.toString();
@@ -115,7 +113,8 @@ export const getSwapResultFromSolscan = async (
 				result.find((event) => event.destinationOwner === walletAddress)?.amount
 			);
 
-			fs.writeFileSync("./temp/txResult.json", JSON.stringify(result, null, 2));
+			writeJsonToTempDir("txResult", result);
+
 			console.log(
 				"🚀 ~ file: getSwapResultFromSolscan.ts:46 ~ tx.unknownTransfers.forEach ~ result",
 				result

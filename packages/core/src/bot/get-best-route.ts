@@ -1,7 +1,7 @@
 import { RouteInfo } from "../aggregators/jupiter";
 import { Store } from "../store";
 
-import fs from "fs";
+import { writeJsonToTempDir } from "../utils";
 
 export const getBestRoute = (
 	store: Store,
@@ -17,10 +17,7 @@ export const getBestRoute = (
 
 		const { routesInfos } = routes;
 
-		fs.writeFileSync(
-			"./temp/routes.json",
-			JSON.stringify(routesInfos[0], null, 2)
-		);
+		writeJsonToTempDir("routes", routesInfos[0]);
 
 		if (routesInfos.length === 0)
 			throw new Error("getBestRoute: routes is empty");

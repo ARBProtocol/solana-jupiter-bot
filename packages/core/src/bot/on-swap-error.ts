@@ -1,9 +1,9 @@
 import { RouteInfo, SwapError } from "../aggregators/jupiter";
 import { Store } from "../store";
 
-import fs from "fs";
 import { storeSwapResultInHistory } from "./store-swap-result-in-history";
 import { SetStatus } from "./bot";
+import { writeJsonToTempDir } from "../utils";
 
 export const onSwapError = (
 	store: Store,
@@ -18,10 +18,7 @@ export const onSwapError = (
 	);
 
 	try {
-		fs.writeFileSync(
-			`./temp/${new Date().getTime()}.json`,
-			JSON.stringify(swapResult, null, 2)
-		);
+		writeJsonToTempDir(swapTimestamp, swapResult);
 	} catch (error) {
 		console.log(error);
 	}
