@@ -1,4 +1,4 @@
-import { RouteInfo } from "../jupiter";
+import { RouteInfo } from "../aggregators/jupiter";
 import { Store } from "../store";
 
 import fs from "fs";

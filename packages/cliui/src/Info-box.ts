@@ -11,7 +11,10 @@ export const InfoBox = (ui: UI, state: GlobalState) => {
 
 	const textBox = boxen(
 		`
-STATUS: ${state.bot.status}
+STATUS: ${state.bot.status.value} (${(
+			(performance.now() - state.bot.status.updatedAt) /
+			1000
+		).toFixed(2)}s ago)
 RUNNING FOR: ${state.bot?.startedAt ? (Date.now() - state.bot?.startedAt) / 1000 : "-"} s
 ITERATION: ${state.bot.iterationCount}
 RATE LIMITER: ~ ${iterationsPerValue.toFixed()} / ${state.bot.rateLimit} per  ${

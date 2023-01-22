@@ -1,8 +1,8 @@
 import { GlobalState } from "./core";
-import { TradeHistoryTable } from "./components/tradeHistoryTable";
-import { uiStore } from "./uiStore";
+import { TradeHistoryTable } from "./components/trade-history-table";
+import { uiStore } from "./ui-store";
 import { UI, potentialProfitChart } from "./cliui";
-import { InfoBox } from "./InfoBox";
+import { InfoBox } from "./Info-box";
 import chalk from "chalk";
 
 export const updateUI = (
@@ -18,7 +18,8 @@ export const updateUI = (
 
 	const fps = (lastUpdateTimestamp && 1000 / (performance.now() - lastUpdateTimestamp)) || 0;
 
-	if (maxFps && fps > maxFps) return { ui, uiOutput: ui.toString() };
+	// restrict fps
+	// if (maxFps && fps > maxFps) return { ui, uiOutput: ui.toString() };
 
 	uiStore.setState((uiState) => {
 		uiState.isUpdating = true;

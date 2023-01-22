@@ -1,1 +1,1 @@
-export * from "./swapRateLimiter";
+export * from "./swap-rate-limiter";

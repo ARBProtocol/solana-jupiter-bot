@@ -16,7 +16,9 @@ export const getAndSetInitialOutAmount = async (
 
 	const initialOutAmount = bestRoute.outAmount;
 
+	// set initial out amount
 	store.setState((state) => {
+		state.bot.prevOutAmount.tokenB = initialOutAmount;
 		state.bot.initialOutAmount.tokenB = initialOutAmount;
 	});
 

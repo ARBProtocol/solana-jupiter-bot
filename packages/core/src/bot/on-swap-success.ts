@@ -1,9 +1,9 @@
-import { RouteInfo, SwapSuccess } from "../jupiter";
+import { RouteInfo, SwapSuccess } from "../aggregators/jupiter";
 import { Store } from "../store";
 import fs from "fs";
-import { storeSwapResultInHistory } from "./storeSwapResultInHistory";
-import { getSwapResultFromSolscan } from "./getSwapResultFromSolscan";
-import { calculateTxProfit } from "./calculateTxProfit";
+import { storeSwapResultInHistory } from "./store-swap-result-in-history";
+import { getSwapResultFromSolscan } from "./get-swap-result-from-solscan";
+import { calculateTxProfit } from "./calculate-tx-profit";
 import { SetStatus } from "./bot";
 
 export const onSwapSuccess = async (

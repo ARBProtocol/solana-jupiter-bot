@@ -1,1 +1,1 @@
-export * from "./DeepPartial";
+export * from "./deep-partial";

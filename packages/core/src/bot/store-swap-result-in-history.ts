@@ -14,12 +14,12 @@ export const storeSwapResultInHistory = (
 ) => {
 	const { address: inputAddress } = store.getState().config.tokens.tokenA;
 	const { address: outputAddress } = store.getState().config.tokens.tokenB;
-	console.log("🚀 ~ file: history.ts:14 ~ swapResult", swapResult);
 	try {
 		let entry: TradeHistoryEntry = {
 			timestamp: swapTimestamp,
 			txId: "dev",
 			status: "pending",
+			statusUpdatedAt: performance.now(),
 			inAmount: 0,
 			outAmount: 0,
 			inToken: "dev",
@@ -43,6 +43,7 @@ export const storeSwapResultInHistory = (
 				...entry,
 				txId: swapResult.error?.txid || "error",
 				status: "error",
+				statusUpdatedAt: performance.now(),
 				error: swapResult.error?.message,
 				inAmount: JSBItoNumber(route.inAmount),
 			};
@@ -53,6 +54,7 @@ export const storeSwapResultInHistory = (
 				...entry,
 				txId: swapResult.txid,
 				status: "fetchingResult",
+				statusUpdatedAt: performance.now(),
 				inAmount: swapResult.inputAmount,
 				outAmount: swapResult.outputAmount,
 			};

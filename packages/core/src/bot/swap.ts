@@ -1,8 +1,8 @@
-import { Jupiter, RouteInfo } from "../jupiter";
+import { Jupiter, RouteInfo } from "../aggregators/jupiter";
 import { Store } from "../store";
 import { SetStatus } from "./bot";
-import { onSwapSuccess } from "./onSwapSuccess";
-import { onSwapError } from "./onSwapError";
+import { onSwapSuccess } from "./on-swap-success";
+import { onSwapError } from "./on-swap-error";
 
 /**
  * It takes a route, and then uses the route to execute a swap

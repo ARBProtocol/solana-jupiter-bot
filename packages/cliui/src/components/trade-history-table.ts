@@ -2,7 +2,7 @@ import { GlobalState } from "@arb-protocol/core";
 import { TradeHistoryEntry } from "@arb-protocol/core/src/store";
 import chalk from "chalk";
 import cliTable from "cli-table3";
-import { uiStore } from "../uiStore";
+import { uiStore } from "../ui-store";
 
 interface Column {
 	accessor: keyof TradeHistoryEntry;
@@ -107,6 +107,11 @@ export const TradeHistoryTable = (state: GlobalState) => {
 					.replaceAll(" ", "");
 			}
 
+			// formatter
+			if (formatter) {
+				value = formatter(value);
+			}
+
 			if (accessor === "status") {
 				type Status = typeof trade.status;
 				const variants: {
@@ -116,14 +121,11 @@ export const TradeHistoryTable = (state: GlobalState) => {
 					success: chalk.green(trade[accessor]),
 					error: chalk.red(trade[accessor]),
 					unknown: chalk.red(trade[accessor]),
-					fetchingResult: chalk.yellow(".".repeat(Math.floor(Math.random() * 3))),
+					fetchingResult: chalk.yellow(
+						`solscan ${((performance.now() - trade.statusUpdatedAt) / 1000).toFixed(0)}s`
+					),
 				};
 				value = variants[trade[accessor]] || ".".repeat(Math.floor(Math.random() * 3));
-			}
-
-			// formatter
-			if (formatter) {
-				value = formatter(value);
 			}
 
 			const cell = {

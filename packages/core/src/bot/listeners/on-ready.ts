@@ -1,5 +1,5 @@
-import { arbitrage } from "../../strategy/arbitrage";
-// import { pingPong } from "../../strategy/ping-pong";
+// import { arbitrage } from "../../strategy/arbitrage";
+import { pingPong } from "../../strategy/ping-pong";
 import { Bot } from "../bot";
 
 export const onReady = async (bot: Omit<Bot, "loadPlugin">) => {
@@ -8,7 +8,7 @@ export const onReady = async (bot: Omit<Bot, "loadPlugin">) => {
 		bot.setStatus("idle");
 		// get initial out amount
 		await bot.getAndSetInitialOutAmountX();
-		await arbitrage(bot);
-		// await pingPong(bot);
+		// await arbitrage(bot);
+		await pingPong(bot);
 	});
 };

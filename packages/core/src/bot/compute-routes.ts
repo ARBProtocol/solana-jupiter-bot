@@ -1,4 +1,4 @@
-import { Jupiter } from "../jupiter";
+import { Jupiter } from "../aggregators/jupiter";
 import { Store } from "../store";
 import { PublicKey } from "../web3";
 import { Queue } from "./queue";

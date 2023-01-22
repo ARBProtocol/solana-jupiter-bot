@@ -1,3 +1,3 @@
-export * from "./onReady";
-export * from "./onShutdown";
-export * from "./onStatusChange";
+export * from "./on-ready";
+export * from "./on-shutdown";
+export * from "./on-status-change";

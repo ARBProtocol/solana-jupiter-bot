@@ -1,6 +1,6 @@
 import { Bot } from "../../bot";
 import { loop } from "../../bot/";
-import { getBestRoute } from "../../bot/getBestRoute";
+import { getBestRoute } from "../../bot/get-best-route";
 import { swapRateLimiter } from "../../bot/limiters";
 import { toDecimal, shiftAndPush } from "../../utils";
 

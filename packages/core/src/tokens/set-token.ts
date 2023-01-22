@@ -1,7 +1,7 @@
 import { PublicKey } from "../web3";
-import { Address } from "../jupiter";
+import { Address } from "../aggregators/jupiter";
 import { Store } from "../store";
-import { getTokenInfo } from "../bot/getTokenInfo";
+import { getTokenInfo } from "../bot/get-token-Info";
 
 export const setToken = (
 	store: Store,

@@ -32,14 +32,14 @@ export const setup = async () => {
 					// address: "9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh", // ARB
 				},
 				tokenB: {
-					address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
-					// address: "So11111111111111111111111111111111111111112", // SOL
+					// address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
+					address: "So11111111111111111111111111111111111111112", // SOL
 					// address: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", // USDT
 					// address: "9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh", // ARB
 				},
 			},
 			strategy: {
-				tradeAmount: 500,
+				tradeAmount: 0.1,
 				rules: {
 					execute: {
 						above: {
@@ -61,7 +61,7 @@ export const setup = async () => {
 
 		// start cliui
 		const { onKeyPress } = startCLIUI(bot, {
-			allowClearConsole: true,
+			// allowClearConsole: false,
 		});
 
 		onKeyPress("z", () => console.log("You pressed z, test ok!"));

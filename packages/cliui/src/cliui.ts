@@ -5,24 +5,34 @@ import open from "open";
 import { Chart } from "./components";
 import { Bot, GlobalState } from "./core";
 import { createKeyboardListener } from "./hotkeys/hotkeys";
-import { uiStore } from "./uiStore";
-import { updateUI } from "./updateUI";
+import { uiStore } from "./ui-store";
+import { updateUI } from "./update-ui";
 
 // Keyboard Listener
 const keyboard = createKeyboardListener();
 
 const refreshUI = (state: GlobalState, ui: UI, allowClearConsole: boolean) => {
 	const { ui: newUI, uiOutput } = updateUI(ui, state);
-	const lastOutput = uiStore.getState().lastOutput;
+	// const lastOutput = uiStore.getState().lastOutput;
 	ui = newUI;
-	if (uiOutput !== lastOutput) {
-		uiStore.setState((uiState) => {
-			uiState.lastOutput = uiOutput;
-		});
-		if (allowClearConsole) console.clear();
-		console.log(uiOutput);
-		console.count("UI Render");
-	}
+	// subscribe version
+	// if (uiOutput !== lastOutput) {
+	// 	uiStore.setState((uiState) => {
+	// 		uiState.lastOutput = uiOutput;
+	// 	});
+	// 	if (allowClearConsole) console.clear();
+	// 	console.log(uiOutput);
+	// 	console.count("UI Render");
+	// }
+
+	// 24 FPS version
+	// uiStore.setState((uiState) => {
+	// 	uiState.lastOutput = uiOutput;
+	// });
+	if (allowClearConsole) console.clear();
+	console.log(uiOutput);
+	console.count("UI Render");
+
 	return ui;
 };
 
@@ -40,10 +50,12 @@ export type UI = ReturnType<typeof cliui>;
 export const potentialProfitChart = (ui: UI, state: GlobalState) => {
 	const potentialProfit = state.chart.potentialProfit.values.at(-1);
 	const chartContainer = boxen(Chart(state, ["potentialProfit"]), {
-		title: `Potential Profit ${potentialProfit ? "~ " + potentialProfit.toFixed(12) : ""}`,
+		title: `Potential Profit ${
+			typeof potentialProfit === "number" ? "~ " + potentialProfit.toFixed(12) : ""
+		}`,
 		titleAlignment: "left",
 		borderStyle: "round",
-		borderColor: "green",
+		borderColor: potentialProfit ? (potentialProfit > 0 ? "green" : "red") : "gray",
 	});
 	ui.div({
 		text: chartContainer,
@@ -121,12 +133,19 @@ const startStateSubscription = (ui: UI, store: Bot["store"], allowClearConsole: 
 	// }
 	// );
 
-	store.subscribe(
-		(state) => state,
-		(state) => {
-			ui = refreshUI(state, ui, allowClearConsole);
-		}
-	);
+	// subscribe version
+	// store.subscribe(
+	// 	(state) => state,
+	// 	(state) => {
+	// 		ui = refreshUI(state, ui, allowClearConsole);
+	// 	}
+	// );
+
+	// 24 FPS version
+	setInterval(() => {
+		const state = store.getState();
+		ui = refreshUI(state, ui, allowClearConsole);
+	}, 1000 / 24);
 };
 
 interface Config {

@@ -2,7 +2,7 @@ import { Event, getTransaction } from "../solscan";
 import { Store } from "../store";
 
 import fs from "fs";
-import { SwapSuccess } from "../jupiter";
+import { SwapSuccess } from "../aggregators/jupiter";
 
 export const getSwapResultFromSolscan = async (
 	store: Store,
@@ -19,49 +19,29 @@ export const getSwapResultFromSolscan = async (
 	const { address: outputAddress } = store.getState().config.tokens.tokenB;
 
 	if (!txId || !inputAddress || !outputAddress) {
-		console.log(
-			"🚀 ~ file: getSwapResultFromSolscan.ts:5 ~ getSwapResultFromSolscan ~ txId, inputAddress, outputAddress",
-			txId,
-			inputAddress,
-			outputAddress
-		);
 		return { txId: null, inAmount: null, outAmount: null };
 	}
 
 	// set swap status to fetchingResults
 	store.setState((state) => {
 		if (state.tradeHistory.txId) {
-			return (state.tradeHistory.txId.status = "fetchingResult");
+			state.tradeHistory.txId.status = "fetchingResult";
+			state.tradeHistory.txId.statusUpdatedAt = performance.now();
 		}
 	});
 
-	console.log(
-		"🚀 ~ file: getSwapResultFromSolscan.ts:6 ~ getSwapResultFromSolscan ~ walletAddress",
-		walletAddress
-	);
-
 	const tx = await getTransaction(txId);
 
-	fs.writeFileSync("./temp/txSolscanResult.json", JSON.stringify(tx, null, 2));
-
-	console.log(
-		"🚀 ~ file: getSwapResultFromSolscan.ts:5 ~ getSwapResultFromSolscan ~ tx",
-		tx
-	);
-
 	if (tx) {
+		fs.writeFileSync(
+			"./temp/txSolscanResult.json",
+			JSON.stringify(tx, null, 2)
+		);
 		const result: Event[] = [];
 
 		const inputAddressString = inputAddress.toString();
-		console.log(
-			"🚀 ~ file: getSwapResultFromSolscan.ts:50 ~ inputAddressString",
-			inputAddressString
-		);
+
 		const outputAddressString = outputAddress.toString();
-		console.log(
-			"🚀 ~ file: getSwapResultFromSolscan.ts:52 ~ outputAddressString",
-			outputAddressString
-		);
 
 		if ("unknownTransfers" in tx) {
 			console.log("SOLSCAN - UnknownTransfers found");
@@ -146,6 +126,7 @@ export const getSwapResultFromSolscan = async (
 				if (state.tradeHistory.txId) {
 					const temp = { ...state.tradeHistory.txId };
 					temp.status = "success";
+					temp.statusUpdatedAt = performance.now();
 					return temp;
 				}
 			});
@@ -165,6 +146,7 @@ export const getSwapResultFromSolscan = async (
 		if (state.tradeHistory.txId) {
 			const temp = { ...state.tradeHistory.txId };
 			temp.status = "unknown";
+			temp.statusUpdatedAt = performance.now();
 			return temp;
 		}
 	});

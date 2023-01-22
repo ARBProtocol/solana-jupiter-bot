@@ -6,7 +6,7 @@ import {
 	TransactionError,
 } from "@jup-ag/core";
 
-import { Keypair, SolanaConnection } from "../web3";
+import { Keypair, SolanaConnection } from "../../web3";
 
 export { TOKEN_LIST_URL, Address, RouteInfo } from "@jup-ag/core";
 

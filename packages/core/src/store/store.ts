@@ -1,7 +1,7 @@
 import create from "zustand/vanilla";
 import { subscribeWithSelector } from "zustand/middleware";
 
-import { GlobalState } from "./initialState";
+import { GlobalState } from "./initial-state";
 import produce from "immer";
 
 export const createStore = (initialState: GlobalState) => {

@@ -1,8 +1,8 @@
 import { JSBI } from "../utils/jsbi";
-import { AmmsToExclude, JupiterToken, RouteInfo } from "../jupiter";
+import { AmmsToExclude, JupiterToken, RouteInfo } from "../aggregators/jupiter";
 import { PublicKey } from "../web3";
 import { createArray } from "../utils";
-import { BotStatus } from "./BotStatus";
+import { BotStatus } from "./bot-status";
 import Decimal from "decimal.js";
 
 interface Token extends JupiterToken {
@@ -80,12 +80,20 @@ export interface GlobalState {
 	bot: {
 		isStarted: boolean;
 		startedAt: number | null;
-		status: BotStatus;
+		status: {
+			value: BotStatus;
+			updatedAt: number;
+		};
 		iterationCount: number;
 		backOff: BackOff;
 		queue: Queue;
 		side: "buy" | "sell";
+		currentOutToken: "tokenA" | "tokenB";
 		initialOutAmount: {
+			tokenA: JSBI;
+			tokenB: JSBI;
+		};
+		prevOutAmount: {
 			tokenA: JSBI;
 			tokenB: JSBI;
 		};
@@ -183,6 +191,7 @@ export interface TradeHistoryEntry {
 	timestamp: number;
 	txId: string;
 	status: "success" | "error" | "fetchingResult" | "pending" | "unknown";
+	statusUpdatedAt: number;
 	error?: string;
 	inAmount: number;
 	inToken: string;
@@ -210,7 +219,10 @@ export const initialState: GlobalState = {
 	bot: {
 		isStarted: false,
 		startedAt: null,
-		status: "idle",
+		status: {
+			value: "idle",
+			updatedAt: performance.now(),
+		},
 		iterationCount: 0,
 		backOff: {
 			count: 0,
@@ -222,7 +234,12 @@ export const initialState: GlobalState = {
 			maxAllowed: 1,
 		},
 		side: "buy",
+		currentOutToken: "tokenA",
 		initialOutAmount: {
+			tokenA: JSBI.BigInt(0),
+			tokenB: JSBI.BigInt(0),
+		},
+		prevOutAmount: {
 			tokenA: JSBI.BigInt(0),
 			tokenB: JSBI.BigInt(0),
 		},

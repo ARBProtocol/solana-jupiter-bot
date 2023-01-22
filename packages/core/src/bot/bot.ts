@@ -1,4 +1,4 @@
-import { Jupiter, RouteInfo } from "../jupiter";
+import { Jupiter, RouteInfo } from "../aggregators/jupiter";
 import { BotStatus, Config, createStore, initialState, Store } from "../store";
 import {
 	defineProperty,
@@ -8,13 +8,13 @@ import {
 	sleep,
 	getErrorMessage,
 } from "../utils";
-import { backOff } from "./backOff";
-import { computeRoutes } from "./computeRoutes";
-import { getAndSetInitialOutAmount } from "./getAndSetInitialOutAmount";
-import { getTokenInfo } from "./getTokenInfo";
-import { storeSwapResultInHistory } from "./storeSwapResultInHistory";
+import { backOff } from "./back-off";
+import { computeRoutes } from "./compute-routes";
+import { getAndSetInitialOutAmount } from "./get-and-set-Initial-out-amount";
+import { getTokenInfo } from "./get-token-Info";
+import { storeSwapResultInHistory } from "./store-swap-result-in-history";
 import { onReady, onStatusChange } from "./listeners";
-import { onShutdown } from "./listeners/onShutdown";
+import { onShutdown } from "./listeners/on-shutdown";
 import { createQueue } from "./queue";
 import { start } from "./start";
 import { swap } from "./swap";
@@ -65,7 +65,10 @@ export const createBot = (config: ConfigRequired) => {
 
 	const setStatus = withStore((store: Store, status: BotStatus) => {
 		store.setState((state) => {
-			state.bot.status = status;
+			state.bot.status = {
+				value: status,
+				updatedAt: performance.now(),
+			};
 		});
 	});
 
@@ -92,7 +95,7 @@ export const createBot = (config: ConfigRequired) => {
 	};
 
 	const getStatus = withStore((store) => {
-		return store.getState().bot.status;
+		return store.getState().bot.status.value;
 	});
 
 	const queue = createQueue(store);
@@ -107,7 +110,7 @@ export const createBot = (config: ConfigRequired) => {
 	) => {
 		const isWildCard = observedStatus === "*";
 		store.subscribe(
-			(state) => state.bot.status,
+			(state) => state.bot.status.value,
 			(status, prevStatus) => {
 				if (
 					isWildCard ||

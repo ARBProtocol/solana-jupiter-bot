@@ -1,3 +1,3 @@
 export * from "./store";
-export * from "./initialState";
-export * from "./BotStatus";
+export * from "./initial-state";
+export * from "./bot-status";

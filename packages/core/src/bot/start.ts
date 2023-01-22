@@ -1,9 +1,13 @@
-import { createJupiter, getJupiterTokens, JupiterToken } from "../jupiter";
+import {
+	createJupiter,
+	getJupiterTokens,
+	JupiterToken,
+} from "../aggregators/jupiter";
 import { Store } from "../store";
 import { createKeypair, createSolanaConnection } from "../web3";
 import { ConfigRequired, SetJupiter, SetStatus } from "./bot";
-import { loadConfig } from "./loadConfig";
-import { performanceTest } from "./performanceTest";
+import { loadConfig } from "./load-config";
+import { performanceTest } from "./performance-test";
 import fs from "fs";
 
 export const start = async (

@@ -1,8 +1,8 @@
-import { RouteInfo, SwapError } from "../jupiter";
+import { RouteInfo, SwapError } from "../aggregators/jupiter";
 import { Store } from "../store";
 
 import fs from "fs";
-import { storeSwapResultInHistory } from "./storeSwapResultInHistory";
+import { storeSwapResultInHistory } from "./store-swap-result-in-history";
 import { SetStatus } from "./bot";
 
 export const onSwapError = (
