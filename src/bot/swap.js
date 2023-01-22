@@ -13,7 +13,7 @@ const swap = async (jupiter, route) => {
 
 		const { execute } = await jupiter.exchange({
 			routeInfo: route,
-			computeUnitPriceMicroLamports: config["priority fee"].value,
+			computeUnitPriceMicroLamports: cache.config.priorityFee,
 		});
 
 		if (process.env.DEBUG) storeItInTempAsJSON("routeInfoBeforeSwap", route);
