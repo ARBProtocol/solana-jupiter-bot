@@ -21,6 +21,7 @@ const createConfigFile = (config) => {
 		tokenA: config.tokens.value.tokenA,
 		tokenB: config.tokens.value.tokenB,
 		slippage: config.slippage.value,
+		priorityFee: parseInt(config["priority fee"].value),
 		minPercProfit: config.profit.value,
 		minInterval: parseInt(config.advanced.value.minInterval),
 		tradeSize: {

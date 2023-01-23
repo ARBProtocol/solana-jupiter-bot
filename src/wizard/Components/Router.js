@@ -12,6 +12,7 @@ const TradingSize = importJsx("../Pages/TradingSize");
 const Profit = importJsx("../Pages/Profit");
 const Slippage = importJsx("../Pages/Slippage");
 const Advanced = importJsx("../Pages/Advanced");
+const PriorityFee = importJsx("../Pages/PriorityFee");
 const Confirm = importJsx("../Pages/Confirm");
 
 const ROUTES = {
@@ -23,6 +24,7 @@ const ROUTES = {
 	profit: <Profit />,
 	slippage: <Slippage />,
 	advanced: <Advanced />,
+	"priority fee": <PriorityFee />,
 	confirm: <Confirm />,
 };
 

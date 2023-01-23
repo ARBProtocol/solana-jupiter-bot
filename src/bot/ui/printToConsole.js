@@ -251,7 +251,7 @@ function printToConsole({
 				},
 				{
 					text: `MIN. OUT: ${chalk.magentaBright(
-						toDecimal(route.amountOut, outputToken.decimals)
+						toDecimal(Number(route.otherAmountThreshold.toString()), outputToken.decimals)
 					)}`,
 				},
 				{

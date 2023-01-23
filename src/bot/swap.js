@@ -9,24 +9,22 @@ const swap = async (jupiter, route) => {
 		const performanceOfTxStart = performance.now();
 		cache.performanceOfTxStart = performanceOfTxStart;
 
+		if (process.env.DEBUG) storeItInTempAsJSON("routeInfoBeforeSwap", route);
+
 		const { execute } = await jupiter.exchange({
 			routeInfo: route,
+			computeUnitPriceMicroLamports: cache.config.priorityFee,
 		});
-		const result = await execute();
-
 
 		if (process.env.DEBUG) storeItInTempAsJSON("routeInfoBeforeSwap", route);
 		/* this method is superior and I'll prove why at a later point in time, just don't have time to code the breaking ui changes :)
 		let instructions = []
 		let luts = []
-
 		var {
 			setupTransaction,	
 			swapTransaction,
 			cleanupTransaction
 		  } = execute.transactions
-
-
 		  await Promise.all(
 			  [
 				setupTransaction,	
@@ -39,7 +37,6 @@ const swap = async (jupiter, route) => {
 					
 				    luts.push(...transaction.message.addressTableLookups)
 				  	instructions.push(...(TransactionMessage.decompile(transaction.message)).instructions)
-
 				  }
 				)
 		  )
@@ -57,18 +54,23 @@ const swap = async (jupiter, route) => {
 		  const transaction = new VersionedTransaction(
 			messageV00
 		  );
-
 		  await transaction.sign([payer]);
 		  
 		  const result =  await sendAndConfirmTransaction(connection, transaction, {skipPreflight: false}, {skipPreflight: false})
 		*/
+		const result = await execute();
+
 		if (process.env.DEBUG) storeItInTempAsJSON("result", result);
 
 		const performanceOfTx = performance.now() - performanceOfTxStart;
 
 		return [result, performanceOfTx];
+		
 	} catch (error) {
-		console.log("Swap error: ", error);
+		return [
+			{ error: { message: error?.message || "TX failed, Unknown error" } },
+			0,
+		];
 	}
 };
 exports.swap = swap;

@@ -51,7 +51,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
 			amount: amountToTrade instanceof JSBI ? amountToTrade : JSBI.BigInt(amountToTrade),
-			slippageBps: slippage,
+			slippageBps: slippage * 100,
 			forceFetch: true,
 		});
 
@@ -68,7 +68,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			performance.now() - performanceOfRouteCompStart;
 
 		// choose first route
-		const route = await routes.routesInfos[0];
+		const route = routes.routesInfos[0];
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
@@ -78,7 +78,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// calculate profitability
 
-		const simulatedProfit = calculateProfit(baseAmount, await Number(route.outAmount.toString()));
+		const simulatedProfit = calculateProfit(baseAmount, Number(route.outAmount.toString()));
 
 		// store max profit spotted
 		if (
@@ -114,7 +114,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			}
 			if (cache.hotkeys.r) {
 				console.log("[R] PRESSED - REVERT BACK SWAP!");
-				route.amountOut = 0;
+				route.otherAmountThreshold = 0;
 			}
 
 			if (cache.tradingEnabled || cache.hotkeys.r) {
@@ -177,27 +177,28 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 					successSwapHandler(tx, tradeEntry, tokenA, tokenB);
 				}
 			}
-		}
 
-		if (tx) {
-			if (!tx.error) {
-				// change side
-				cache.sideBuy = !cache.sideBuy;
+			if (tx) {
+				if (!tx.error) {
+					// change side
+					cache.sideBuy = !cache.sideBuy;
+				}
 			}
+			
 			cache.swappingRightNow = false;
+			
+			printToConsole({
+				date,
+				i,
+				performanceOfRouteComp,
+				inputToken,
+				outputToken,
+				tokenA,
+				tokenB,
+				route,
+				simulatedProfit,
+			});
 		}
-		
-		printToConsole({
-			date,
-			i,
-			performanceOfRouteComp,
-			inputToken,
-			outputToken,
-			tokenA,
-			tokenB,
-			route,
-			simulatedProfit,
-		});
 	} catch (error) {
 		cache.queue[i] = 1;
 		console.log(error);
@@ -252,16 +253,16 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			performance.now() - performanceOfRouteCompStart;
 
 		// choose first route
-		const route = await routes.routesInfos[1];
+		const route = routes.routesInfos[0];
 
 		// update slippage with "profit or kill" slippage
 		if (cache.config.slippage === "profitOrKill") {
-			route.amountOut = amountToTrade;
+			route.otherAmountThreshold = amountToTrade;
 		}
 
 		// calculate profitability
 
-		const simulatedProfit = calculateProfit(baseAmount, await Number(route.outAmount.toString()));
+		const simulatedProfit = calculateProfit(baseAmount, Number(route.outAmount.toString()));
 
 		// store max profit spotted
 		if (simulatedProfit > cache.maxProfitSpotted["buy"]) {
@@ -308,7 +309,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 						inputToken: inputToken.symbol,
 						outputToken: outputToken.symbol,
 						inAmount: toDecimal(Number(route.inAmount.toString()), inputToken.decimals),
-						expectedOutAmount: toDecimal(Number(route.outAmount.toString()), outputToken.decimals),
+						expectedOutAmount: toDecimal(Number(route.otherAmountThreshold.toString()), outputToken.decimals),
 						expectedProfit: simulatedProfit,
 					};
 

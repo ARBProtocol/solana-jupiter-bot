@@ -2,6 +2,8 @@ const fs = require("fs");
 const chalk = require("chalk");
 const ora = require("ora-classic");
 const bs58 = require("bs58");
+const JSBI = require('jsbi')
+
 const { Jupiter, getPlatformFeeAccounts } = require("@jup-ag/core");
 const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
 
@@ -136,7 +138,7 @@ const getInitialoutAmount = async (
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			amount: amountToTrade,
+			amount: amountToTrade instanceof JSBI ? amountToTrade : JSBI.BigInt(amountToTrade),
 			slippageBps: 0,
 			forceFetch: true,
 		});
@@ -144,7 +146,7 @@ const getInitialoutAmount = async (
 		if (routes?.routesInfos?.length > 0) spinner.succeed("Routes computed!");
 		else spinner.fail("No routes found. Something is wrong!");
 
-		return routes.routesInfos[0].outAmount;
+		return routes.routesInfos[0].otherAmountThreshold;
 	} catch (error) {
 		if (spinner)
 			spinner.fail(chalk.bold.redBright("Computing routes failed!\n"));
