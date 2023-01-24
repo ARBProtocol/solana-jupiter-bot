@@ -236,7 +236,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
 			amount: amountToTrade instanceof JSBI ? amountToTrade : JSBI.BigInt(amountToTrade),
-			slippageBps: slippage,
+			slippageBps: slippage * 100,
 			forceFetch: true,
 		});
 
