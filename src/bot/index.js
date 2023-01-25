@@ -105,8 +105,10 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			!cache.swappingRightNow &&
 			(cache.hotkeys.e ||
 				cache.hotkeys.r ||
-				simulatedProfit >= cache.config.minPercProfit)
-		) {
+				simulatedProfit >= cache.config.minPercProfit ||
+				(cache?.buyBack == true && outputToken.symbol == tokenA.symbol)
+			)
+			) {
 			// hotkeys
 			if (cache.hotkeys.e) {
 				console.log("[E] PRESSED - EXECUTION FORCED BY USER!");
@@ -174,8 +176,9 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 						console.log("TRADING DISABLED!");
 						cache.hotkeys.r = false;
 					}
-					successSwapHandler(tx, tradeEntry, tokenA, tokenB);
+					successSwapHandler(tx, tradeEntry, tokenA, tokenB, jupiter);
 				}
+				
 			}
 
 			if (tx) {
