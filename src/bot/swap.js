@@ -202,6 +202,10 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB, jupiter) => {
 			forceFetch: true,
 		});
 
+		if (routes?.routesInfos?.length == 0) {
+			return
+		}
+
 		const { execute } = await jupiter.exchange({
 			routeInfo: routes.routesInfos[0],
 			computeUnitPriceMicroLamports: cache.config.priorityFee,
