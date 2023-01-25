@@ -52,7 +52,7 @@ function printToConsole({
 						: statusPerformance < 60000
 						? "yellowBright"
 						: "redBright"
-				](`SWAPPING ... ${(statusPerformance / 1000).toFixed(2)} s`);
+				](`SWAPPING ... ${(statusPerformance / 1000).toFixed(2)} s @ ${route?.marketInfos[0].amm.label}`);
 			} else if (cache.fetchingResultsFromSolscan) {
 				statusPerformance =
 					performance.now() - cache.fetchingResultsFromSolscanStart;
@@ -286,7 +286,7 @@ function printToConsole({
 
 			ui.div(" ");
 
-			ui.div("CURRENT BALANCE", "LAST BALANCE", "INIT BALANCE", "PROFIT", " ");
+			ui.div("CURRENT BALANCE", "LAST BALANCE", "INIT BALANCE", "PROFIT", "ARB Buys");
 
 			ui.div(
 				`${chalk[cache.currentBalance.tokenA > 0 ? "yellowBright" : "gray"](
@@ -304,7 +304,9 @@ function printToConsole({
 				`${chalk[cache.currentProfit.tokenA > 0 ? "greenBright" : "redBright"](
 					cache.currentProfit.tokenA.toFixed(2)
 				)} %`,
-				" "
+				`${chalk[cache.buyBack > 0 ? "greenBright" : "redBright"](
+					Math.floor(cache.buyBack)
+				)}`,
 			);
 
 			ui.div(
