@@ -22,6 +22,7 @@ const createConfigFile = (config) => {
 		tokenB: config.tokens.value.tokenB,
 		slippage: config.slippage.value,
 		priorityFee: parseInt(config["priority fee"].value),
+		buyBack: parseInt(config["buy back"].value),
 		minPercProfit: config.profit.value,
 		minInterval: parseInt(config.advanced.value.minInterval),
 		tradeSize: {
@@ -32,6 +33,10 @@ const createConfigFile = (config) => {
 			defaultColor: "cyan",
 		},
 		storeFailedTxInHistory: true,
+		arb: {
+			address: config.arb.address,
+			symbol: config.arb.symbol,
+		}
 	};
 
 	fs.writeFileSync("./config.json", JSON.stringify(configValues, null, 2), {});
