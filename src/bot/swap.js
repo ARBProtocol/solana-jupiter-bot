@@ -184,7 +184,7 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB, jupiter) => {
 		// total profit
 		cache.currentProfit.tokenA = prevProfit + tradeEntry.profit;
 	}
-	
+
 	//Handle Arb buy if buyBack set
 
 	if (cache.config?.buyBack > 0 && tradeEntry?.profit > 0) {
@@ -192,8 +192,8 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB, jupiter) => {
 		const slippage =
 		typeof cache.config.slippage === "number" ? cache.config.slippage : 1;
 		
-		const amountToTrade = Math.floor(((tx.outputAmount * entry.profit) * cache.config.buyBack / 100))
-		
+		const amountToTrade = Math.floor((tx.outputAmount * tradeEntry.profit) * cache.config.buyBack / 100)
+
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(tokenB.address),
 			outputMint: new PublicKey(cache.config.arb.address),
