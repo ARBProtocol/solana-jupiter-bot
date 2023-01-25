@@ -1,8 +1,9 @@
 const { calculateProfit, toDecimal, storeItInTempAsJSON } = require("../utils");
 const cache = require("./cache");
 const { getSwapResultFromSolscanParser } = require("../services/solscan");
-const { TransactionMessage, Keypair, VersionedTransaction, sendAndConfirmTransaction } = require("@solana/web3.js");
+const { PublicKey, TransactionMessage, Keypair, VersionedTransaction, sendAndConfirmTransaction } = require("@solana/web3.js");
 const base58 = require("bs58");
+const JSBI = require('jsbi')
 
 const swap = async (jupiter, route) => {
 	try {
@@ -89,7 +90,7 @@ const failedSwapHandler = (tradeEntry) => {
 };
 exports.failedSwapHandler = failedSwapHandler;
 
-const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
+const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB, jupiter) => {
 	if (process.env.DEBUG) storeItInTempAsJSON(`txResultFromSDK_${tx?.txid}`, tx);
 
 	// update counter
@@ -182,6 +183,39 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 
 		// total profit
 		cache.currentProfit.tokenA = prevProfit + tradeEntry.profit;
+	}
+
+	//Handle Arb buy if buyBack set
+
+	if (cache.config?.buyBack > 0 && tradeEntry?.profit > 0) {
+		// default slippage
+		const slippage =
+		typeof cache.config.slippage === "number" ? cache.config.slippage : 1;
+		
+		const amountToTrade = Math.floor((tx.outputAmount * tradeEntry.profit) * cache.config.buyBack / 100)
+
+		const routes = await jupiter.computeRoutes({
+			inputMint: new PublicKey(tokenB.address),
+			outputMint: new PublicKey(cache.config.arb.address),
+			amount: JSBI.BigInt(amountToTrade),
+			slippageBps: slippage * 100,
+			forceFetch: true,
+		});
+
+		if (routes?.routesInfos?.length == 0) {
+			return
+		}
+
+		const { execute } = await jupiter.exchange({
+			routeInfo: routes.routesInfos[0],
+			computeUnitPriceMicroLamports: cache.config.priorityFee,
+		});
+
+		const result = await execute();
+		
+		if (result?.outputAmount > 0) {
+			cache.buyBack += result?.outputAmount / 10 ** 6
+		}
 	}
 };
 exports.successSwapHandler = successSwapHandler;

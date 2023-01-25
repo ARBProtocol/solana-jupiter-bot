@@ -12,6 +12,7 @@ const CONFIG_INITIAL_STATE = {
 			"slippage",
 			"advanced",
 			"priority fee",
+			"buy back",
 			"confirm",
 		],
 	},
@@ -84,6 +85,14 @@ const CONFIG_INITIAL_STATE = {
 			value: 0,
 			isSet: false,
 		},
+		"buy back": {
+			value: 0,
+			isSet: false,
+		},
+		"arb": {
+			address: "9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh",
+			symbol: "ARB",
+		}
 	},
 };
 
