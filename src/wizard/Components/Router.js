@@ -13,6 +13,7 @@ const Profit = importJsx("../Pages/Profit");
 const Slippage = importJsx("../Pages/Slippage");
 const Advanced = importJsx("../Pages/Advanced");
 const PriorityFee = importJsx("../Pages/PriorityFee");
+const BuyBack = importJsx("../Pages/BuyBack");
 const Confirm = importJsx("../Pages/Confirm");
 
 const ROUTES = {
@@ -25,6 +26,7 @@ const ROUTES = {
 	slippage: <Slippage />,
 	advanced: <Advanced />,
 	"priority fee": <PriorityFee />,
+	"buy back": <BuyBack />,
 	confirm: <Confirm />,
 };
 
