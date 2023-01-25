@@ -106,7 +106,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			(cache.hotkeys.e ||
 				cache.hotkeys.r ||
 				simulatedProfit >= cache.config.minPercProfit ||
-				(cache?.buyBack == true && outputToken.symbol == tokenA.symbol)
+				(cache?.swapBack == true && outputToken.symbol == tokenA.symbol)
 			)
 			) {
 			// hotkeys
