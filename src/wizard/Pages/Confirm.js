@@ -19,6 +19,7 @@ const Confirm = () => {
 			slippage: { value: slippage },
 			advanced: { value: advanced },
 			"priority fee": { value: priorityFee },
+			"buy back": { value: buyBack },
 		},
 		config,
 	} = useContext(WizardContext);
@@ -47,7 +48,7 @@ const Confirm = () => {
 					{chalk.gray(tokens.tokenA.symbol)} |{" "}
 					{chalk.greenBright(tradingSize.strategy)}
 				</Text>
-				<Text>Profit: {chalk.bold.greenBright(profit)}</Text>
+				<Text>Profit: {chalk.bold.greenBright(profit)}%</Text>
 				<Text>Slippage: {chalk.bold.greenBright(slippage)}</Text>
 				<Text color="gray"></Text>
 				<Text>
@@ -55,6 +56,9 @@ const Confirm = () => {
 				</Text>
 				<Text>
 					Priority Fee: {chalk.bold.greenBright(priorityFee)}
+				</Text>
+				<Text>
+					Buy Back Re-investment: {chalk.bold.greenBright(buyBack)}%
 				</Text>
 			</Box>
 			{isConfigOk.result ? (
