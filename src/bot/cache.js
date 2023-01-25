@@ -73,7 +73,7 @@ const cache = {
 	tradeHistory: [],
 	performanceOfTxStart: 0,
 	buyBack: 0,
-	swapBack: process.env?.buyBack === "true",
+	swapBack: process.env?.swapBack === "true",
 	availableRoutes: {
 		buy: 0,
 		sell: 0,
