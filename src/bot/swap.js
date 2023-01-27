@@ -161,8 +161,11 @@ const swap = async (jupiter, prism, route, route2, tokenA, tokenB) => {
 
 		return [result, performanceOfTx];
 	} catch (error) {
-		console.log("Swap error: ", error);
-		return [undefined, 0]
+
+		return [
+			{ error: { message: error?.message || "TX failed, Unknown error" } },
+			0,
+		];
 	}
 };
 exports.swap = swap;
