@@ -114,7 +114,7 @@ const getInitialOutAmountWithSlippage = async (
 			outputMint: new PublicKey(outputToken.address),
 			inputAmount: amountToTrade,
 			slippage: 0,
-			forceFeech: true,
+			forceFetch: true,
 		});
 
 		if (routes?.routesInfos?.length > 0) spinner.succeed("Routes computed!");
