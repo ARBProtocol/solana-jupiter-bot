@@ -357,7 +357,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 							console.log("TRADING DISABLED!");
 							cache.hotkeys.r = false;
 						}
-						successSwapHandler(tx, tradeEntry, tokenA, tokenA);
+						successSwapHandler(tx, tradeEntry, tokenA, tokenA, jupiter);
 					}
 				}
 				catch (err){
