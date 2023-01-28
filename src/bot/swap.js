@@ -192,7 +192,7 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB, jupiter) => {
 		const slippage =
 		typeof cache.config.slippage === "number" ? cache.config.slippage : 1;
 		
-		const amountToTrade = Math.floor((tx.outputAmount * tradeEntry.profit) * cache.config.buyBack / 100)
+		const amountToTrade = Math.floor((tx.outputAmount * tradeEntry.profit / 100) * cache.config.buyBack / 100)
 
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(tokenB.address),
