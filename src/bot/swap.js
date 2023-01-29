@@ -215,6 +215,8 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB, jupiter) => {
 		
 		if (result?.outputAmount > 0) {
 			cache.buyBack += result?.outputAmount / 10 ** 6
+			cache.currentBalance.tokenB = cache.currentBalance.tokenB - amountToTrade
+			cache.lastBalance.tokenB = cache.currentBalance.tokenB
 		}
 	}
 };
