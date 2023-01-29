@@ -1,5 +1,6 @@
 import boxen from "boxen";
-import { GlobalState } from "./core";
+import { GlobalState } from "../core";
+import millify from "millify";
 
 export const InfoBox = (state: GlobalState) => {
 	const now = performance.now();
@@ -8,8 +9,11 @@ export const InfoBox = (state: GlobalState) => {
 	const iterationsPerValue =
 		lastIterationTimestamp === 0 ? 0 : rateLimitPer / (now - lastIterationTimestamp);
 
+	const arbProtocolBalance = millify(state.wallet.arbProtocolBalance.toNumber());
+
 	const textBox = boxen(
 		`
+HODL: ${arbProtocolBalance} ARB !
 STATUS: ${state.bot.status.value} (${(
 			(performance.now() - state.bot.status.updatedAt) /
 			1000

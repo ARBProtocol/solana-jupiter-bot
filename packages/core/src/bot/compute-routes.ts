@@ -1,4 +1,4 @@
-import { Jupiter } from "../aggregators/jupiter";
+import { Jupiter } from "../services/aggregators/jupiter";
 import { Store, Token } from "../store";
 import { Queue } from "./queue";
 import { GetStatus, SetStatus } from "./bot";

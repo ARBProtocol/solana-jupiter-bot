@@ -1,4 +1,4 @@
-import { RouteInfo } from "../aggregators/jupiter";
+import { RouteInfo } from "../services/aggregators/jupiter";
 import { Store } from "../store";
 
 import { writeJsonToTempDir } from "../utils";

@@ -1,6 +1,10 @@
 import { JSBI } from "../utils/jsbi";
-import { AmmsToExclude, JupiterToken, RouteInfo } from "../aggregators/jupiter";
-import { PublicKey } from "../web3";
+import {
+	AmmsToExclude,
+	JupiterToken,
+	RouteInfo,
+} from "../services/aggregators/jupiter";
+import { PublicKey } from "../services/web3";
 import { createArray } from "../utils";
 import { BotStatus } from "./bot-status";
 import Decimal from "decimal.js";
@@ -13,10 +17,14 @@ export interface Token extends JupiterToken {
 
 interface Wallet {
 	privateKey: PrivateKey | null;
+	publicKey: PublicKey | null;
 	address: string | null;
-	funds: {
-		tokenA: number;
-		tokenB: number;
+	arbProtocolBalance: Decimal;
+	balance: {
+		[tokenAddress: string]: {
+			jsbi: JSBI;
+			decimal: Decimal;
+		};
 	};
 	stats: {
 		profit: {
@@ -88,7 +96,6 @@ interface Bot {
 	iterationCount: number;
 	backOff: BackOff;
 	queue: Queue;
-	side: "buy" | "sell";
 	currentOutToken?: Token;
 	currentInToken?: Token;
 	initialOutAmount: {
@@ -245,7 +252,6 @@ export const initialState: GlobalState = {
 			maxAllowed: 1,
 		},
 		tokens: {},
-		side: "buy",
 		initialOutAmount: {},
 		prevOutAmount: {},
 		price: {
@@ -333,11 +339,10 @@ export const initialState: GlobalState = {
 	},
 	wallet: {
 		privateKey: null,
+		publicKey: null,
 		address: null,
-		funds: {
-			tokenA: 0,
-			tokenB: 0,
-		},
+		arbProtocolBalance: new Decimal(0),
+		balance: {},
 		stats: {
 			profit: {
 				tokenA: 0,

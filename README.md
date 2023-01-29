@@ -1,3 +1,26 @@
-# THIS IS A VERY RAW DEV VERSION - DO NOT USE 
+# THIS IS A VERY RAW DEV VERSION - DO NOT USE
 
 ![](https://github.com/ARBProtocol/solana-jupiter-bot/blob/dev-1.0.0-alpha/.gifs/very-important-image.jpg)
+
+# install
+
+```bash
+$ git clone -b dev-1.0.0-alpha https://github.com/ARBProtocol/solana-jupiter-bot.git && cd solana-jupiter-bot
+$ npm i
+```
+
+# hacking
+
+```
+  Usage:
+    $ yarn start
+      This will (turbo) build && run the bot.
+      For now it will only run ping-pong strategy for testing purposes.
+      You can play with the setup.ts in the apps/arb-jupiter-bot directory.
+```
+
+# known issues
+
+### install by `yarn` is not working
+
+yarn doesn't recognize symlinked packages that contains version tags like `-alpha`, so you have to use `npm i` instead, then you can use `yarn` to run commands.

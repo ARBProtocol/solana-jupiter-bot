@@ -1,12 +1,6 @@
-import { RouteInfo, SwapSuccess } from "../aggregators/jupiter";
+import { RouteInfo, SwapSuccess } from "../services/aggregators/jupiter";
 import { Store, Token } from "../store";
-import {
-	JSBItoNumber,
-	NumberToJSBI,
-	numberToMin,
-	toDecimal,
-	writeJsonToTempDir,
-} from "../utils";
+import { NumberToJSBI, toDecimal, writeJsonToTempDir } from "../utils";
 import { SetStatus } from "./bot";
 import { calculateTxProfit } from "./calculate-tx-profit";
 import { getSwapResultFromSolscan } from "./get-swap-result-from-solscan";
@@ -22,8 +16,6 @@ export const onSwapSuccess = async (
 	outToken: Token,
 	txUUID: string
 ) => {
-	const txId = swapResult.txid;
-
 	const {
 		address: inputAddress,
 		symbol: inTokenSymbol,

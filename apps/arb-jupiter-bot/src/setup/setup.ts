@@ -47,7 +47,7 @@ export const setup = async () => {
 						},
 					},
 					slippage: {
-						bps: 10,
+						bps: 0,
 					},
 				},
 			},
@@ -61,7 +61,11 @@ export const setup = async () => {
 
 		// start cliui
 		const { onKeyPress } = startCLIUI(bot, {
-			allowClearConsole: false,
+			/**
+			 * This is for testing purposes only,
+			 * by default it's set to true and every custom console.log will be cleared
+			 */
+			allowClearConsole: true,
 		});
 
 		onKeyPress("z", () => console.log("You pressed z, test ok!"));

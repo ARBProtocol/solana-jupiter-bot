@@ -1,6 +1,6 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
-import { sleep } from "../../utils";
+import { sleep } from "../../../utils";
 import { SOLSCAN_API_BASE_URL } from "../constants";
 
 const solscanApi = axios.create({

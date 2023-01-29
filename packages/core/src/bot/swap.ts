@@ -1,6 +1,6 @@
 import { v4 as uuid } from "uuid";
 
-import { Jupiter, RouteInfo } from "../aggregators/jupiter";
+import { Jupiter, RouteInfo } from "../services/aggregators/jupiter";
 import { Store, Token, TradeHistoryEntry } from "../store";
 import { JSBItoNumber } from "../utils";
 import { SetStatus } from "./bot";

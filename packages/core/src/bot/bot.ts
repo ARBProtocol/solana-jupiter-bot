@@ -1,21 +1,24 @@
-import { Jupiter, RouteInfo } from "../aggregators/jupiter";
+import { Jupiter, RouteInfo } from "../services/aggregators/jupiter";
 import { BotStatus, Config, createStore, initialState, Store } from "../store";
 import {
 	defineProperty,
+	getErrorMessage,
+	JSBI,
 	JSBItoNumber,
 	NumberToJSBI,
-	JSBI,
 	sleep,
-	getErrorMessage,
+	toDecimal,
+	shiftAndPush,
 } from "../utils";
 import { backOff } from "./back-off";
 import { ComputeRoutes, computeRoutes } from "./compute-routes";
+import { getBestRoute } from "./get-best-route";
 import { getTokenInfo } from "./get-token-Info";
-import { storeSwapResultInHistory } from "./store-swap-results-in-history";
-import { onReady, onStatusChange } from "./listeners";
+import { onReady } from "./listeners";
 import { onShutdown } from "./listeners/on-shutdown";
 import { createQueue } from "./queue";
 import { start } from "./start";
+import { storeSwapResultInHistory } from "./store-swap-results-in-history";
 import { swap } from "./swap";
 
 // plugin fn type
@@ -44,6 +47,7 @@ export type wrappedComputeRoutes = () => Promise<
 >;
 
 export const createBot = (config: ConfigRequired) => {
+	// TODO: handle multiple aggregators
 	let jupiter: Jupiter | null = null;
 
 	const setJupiter: SetJupiter = (jupiterInstance) => {
@@ -86,11 +90,13 @@ export const createBot = (config: ConfigRequired) => {
 	// );
 
 	const utils = {
+		toDecimal,
 		JSBItoNumber,
 		NumberToJSBI,
 		JSBI,
 		sleep,
 		getErrorMessage,
+		shiftAndPush,
 	};
 
 	const getStatus = withStore((store) => {
@@ -164,11 +170,11 @@ export const createBot = (config: ConfigRequired) => {
 		},
 		withStore,
 		utils,
+		jupiter: {
+			instance: jupiter,
+			getBestRoute,
+		},
 		computeRoutes: wrappedComputeRoutes,
-		// getAndSetInitialOutAmountX: () =>
-		// 	getAndSetInitialOutAmount(store, () =>
-		// 		computeRoutes(store, getStatus, setStatus, jupiter, queue)
-		// 	),
 		onStatus,
 		backOff: () => backOff(store, setStatus),
 		history: { storeSwapResultInHistory },
@@ -184,10 +190,7 @@ export const createBot = (config: ConfigRequired) => {
 	// listeners
 	onReady(bot);
 	onShutdown(bot);
-	onStatusChange(bot);
-
-	// run strategy
-	// arbitrage(bot);
+	// onStatusChange(bot); // logs every status change
 
 	return {
 		...bot,

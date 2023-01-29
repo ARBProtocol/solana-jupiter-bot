@@ -1,13 +1,13 @@
 import { createCustomStore } from "@arb-protocol/core";
 
-type Screen = "main" | "config" | "wallet";
+export type UIScreen = "main" | "config" | "wallet" | "logs";
 
 interface UIState {
 	isUpdating: boolean;
 	updatesCount: number;
 	maxFps?: number;
 	lastUpdateTimestamp?: number;
-	currentScreen: Screen;
+	currentScreen: UIScreen;
 	tradeHistoryTable: {
 		cursor: {
 			x: number;
@@ -23,7 +23,7 @@ const uiState: UIState = {
 	updatesCount: 0,
 	maxFps: 24,
 	lastUpdateTimestamp: 0,
-	currentScreen: "main" as Screen,
+	currentScreen: "main",
 	tradeHistoryTable: {
 		cursor: {
 			x: 0,

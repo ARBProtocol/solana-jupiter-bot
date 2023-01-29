@@ -1,4 +1,4 @@
-import { RouteInfo, SwapError } from "../aggregators/jupiter";
+import { RouteInfo, SwapError } from "../services/aggregators/jupiter";
 import { Store, Token } from "../store";
 
 import { storeSwapResultInHistory } from "./store-swap-results-in-history";

@@ -28,6 +28,10 @@ export const createKeyboardListener = () => {
 		},
 	};
 
+	// debouncing
+	let lastKey: AllowedKeys | null = null;
+	let lastKeyTime = performance.now();
+
 	readline.emitKeypressEvents(process.stdin);
 
 	if (process.stdin.isTTY) {
@@ -40,8 +44,11 @@ export const createKeyboardListener = () => {
 
 		const listener = listeners[key] as Callback;
 
-		if (listener) {
+		if (listener && (key === lastKey ? performance.now() - lastKeyTime > 1000 : true)) {
 			listener();
+
+			lastKey = key;
+			lastKeyTime = performance.now();
 		}
 	});
 

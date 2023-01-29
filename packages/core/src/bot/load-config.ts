@@ -1,7 +1,8 @@
 import { Store } from "../store";
-import { setToken } from "../tokens";
+import { setToken } from "./tokens";
 import { createArray, JSBItoNumber, NumberToJSBI, numberToMin } from "../utils";
 import { SetStatus, ConfigRequired } from "./bot";
+import { createKeypair } from "../services/web3";
 
 export const loadConfig = (
 	store: Store,
@@ -21,9 +22,14 @@ export const loadConfig = (
 		});
 
 		// set wallet
+		const keypair = createKeypair(config.privateKey);
 		store.setState((state) => {
 			state.config.privateKey = config.privateKey;
+
 			state.wallet.privateKey = config.privateKey;
+			state.wallet.publicKey = keypair.publicKey;
+			state.wallet.address = keypair.publicKey.toString();
+
 			// todo: set wallet funds
 		});
 

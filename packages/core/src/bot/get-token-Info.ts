@@ -1,7 +1,7 @@
 import { Address } from "@jup-ag/core";
 import { Store } from "../store";
 import { getErrorMessage } from "../utils";
-import { PublicKey } from "../web3";
+import { PublicKey } from "../services/web3";
 
 // get token info by address
 export const getTokenInfo = (store: Store, address: Address) => {

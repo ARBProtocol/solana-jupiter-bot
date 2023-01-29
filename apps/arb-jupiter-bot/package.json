@@ -18,7 +18,8 @@
 	},
 	"dependencies": {
 		"@arb-protocol/cliui": "*",
-		"@arb-protocol/core": "*"
+		"@arb-protocol/core": "*",
+		"millify": "^5.0.1"
 	},
 	"devDependencies": {
 		"eslint-config-custom": "*",

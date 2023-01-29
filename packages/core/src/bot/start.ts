@@ -3,10 +3,10 @@ import fs from "fs";
 import {
 	createJupiter,
 	getJupiterTokens,
-	JupiterToken,
-} from "../aggregators/jupiter";
+} from "../services/aggregators/jupiter";
+import { validateWallet } from "../services/arb-protocol";
+import { createKeypair, createSolanaConnection } from "../services/web3";
 import { Store, Token } from "../store";
-import { createKeypair, createSolanaConnection } from "../web3";
 import { ConfigRequired, SetJupiter, SetStatus } from "./bot";
 import { loadConfig } from "./load-config";
 import { performanceTest } from "./performance-test";
@@ -65,22 +65,22 @@ export const start = async (
 		const connection = createSolanaConnection({
 			rpcURL: store.getState().config.rpcURL,
 		});
+
+		// create jupiter instance
+		const ammsToExclude = store.getState().config.ammsToExclude;
+
 		// set keypair
-		const keypair = createKeypair(store.getState().config.privateKey);
+		const walletPrivateKey = store.getState().config.privateKey;
+		const keypair = createKeypair(walletPrivateKey);
 
-		// get wallet address
-		const walletAddress = keypair.publicKey.toString();
-
-		// set wallet address
-		store.setState((state) => {
-			state.wallet.address = walletAddress;
+		// validate wallet
+		const arbProtocolBalance = await validateWallet({
+			connection,
+			wallet: keypair.publicKey,
 		});
 
 		// create jupiter instance
 		setStatus("loadingJupiter");
-
-		const ammsToExclude = store.getState().config.ammsToExclude;
-
 		const jupiter = await createJupiter(connection, keypair, ammsToExclude);
 		setJupiter(jupiter);
 		setStatus("jupiterLoaded");
@@ -89,9 +89,12 @@ export const start = async (
 		store.setState((state) => {
 			state.bot.isStarted = true;
 			state.bot.startedAt = Date.now();
+
+			state.wallet.arbProtocolBalance = arbProtocolBalance;
 		});
 		setStatus("ready");
 	} catch (error) {
 		console.error(error);
+		return setStatus("!shutdown");
 	}
 };

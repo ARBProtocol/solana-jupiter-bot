@@ -1,7 +1,7 @@
-import { Event, getTransaction } from "../solscan";
+import { Event, getTransaction } from "../services/solscan";
 import { Store } from "../store";
 
-import { SwapSuccess } from "../aggregators/jupiter";
+import { SwapSuccess } from "../services/aggregators/jupiter";
 import { writeJsonToTempDir } from "../utils";
 
 export const getSwapResultFromSolscan = async (
