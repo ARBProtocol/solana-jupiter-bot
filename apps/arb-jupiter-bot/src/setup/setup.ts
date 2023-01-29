@@ -39,11 +39,11 @@ export const setup = async () => {
 				},
 			},
 			strategy: {
-				tradeAmount: 0.1,
+				tradeAmount: 0.05,
 				rules: {
 					execute: {
 						above: {
-							potentialProfit: 1,
+							potentialProfit: 0.05,
 						},
 					},
 					slippage: {
@@ -61,7 +61,7 @@ export const setup = async () => {
 
 		// start cliui
 		const { onKeyPress } = startCLIUI(bot, {
-			// allowClearConsole: false,
+			allowClearConsole: false,
 		});
 
 		onKeyPress("z", () => console.log("You pressed z, test ok!"));

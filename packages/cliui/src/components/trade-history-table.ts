@@ -53,8 +53,9 @@ export const TradeHistoryTable = (state: GlobalState) => {
 			width: 15,
 			align: "right",
 			formatter: (value) => {
-				if (value === 0) return Number(value);
-				return value > 0 ? chalk.green(value) : chalk.red(value);
+				const v = Number(value);
+				if (v === 0) return v.toFixed(2);
+				return v > 0 ? chalk.green(v.toFixed(2)) : chalk.red(v.toFixed(2));
 			},
 		},
 		{

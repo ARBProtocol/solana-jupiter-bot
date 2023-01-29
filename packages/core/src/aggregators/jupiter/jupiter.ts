@@ -82,9 +82,25 @@ export const createJupiter = async (
 	} catch (e: Error | any) {
 		// check if message property exists
 		if (typeof e === "object" && "message" in e) {
+			// check if error is 403 || 401
+			if (e.message.includes("403") || e.message.includes("401")) {
+				console.error(`
+			ERROR!
+
+			Could not connect with current RPC.
+
+			- The error indicates that you are not authorized to access the RPC.
+			- Please check carefully if you have entered the correct RPC URL.
+			`);
+			}
+
 			// check if error is 503
 			if (e.message.includes("503")) {
-				throw new Error(`Could not connect with current RPC.
+				console.error(`
+			ERROR!
+
+			Could not connect with current RPC.
+
 			- Please check carefully if you have entered the correct RPC URL
 			- Make sure you are connected to the internet
 			- Make sure that the RPC is operational
@@ -102,7 +118,11 @@ export const createJupiter = async (
 
 			// check if error is missing data from RPC with RegEx pattern for "Missing [\w\d]+"
 			if (e.message.match(/Missing [\w\d]+/)) {
-				throw new Error(`Some data is missing from the RPC
+				console.error(`
+			ERROR!
+			
+			Some data is missing from the RPC
+
 			- If error persists, please try to use another RPC
 
 			CURRENT RPC: ${connection.rpcEndpoint}
@@ -110,6 +130,9 @@ export const createJupiter = async (
 			IMPORTANT!
 			NEVER SHARE YOUR PRIVATE KEY WITH ANYONE!`);
 			}
+
+			// exit
+			process.exit(1);
 		}
 
 		throw new Error(`createJupiter: ${e}`);

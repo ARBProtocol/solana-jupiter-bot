@@ -6,8 +6,8 @@ export const onReady = async (bot: Omit<Bot, "loadPlugin">) => {
 	bot.onStatus("ready", async () => {
 		console.log("🔥 onReady FROM SUBSCRIBER <----------------");
 		bot.setStatus("idle");
-		// get initial out amount
-		await bot.getAndSetInitialOutAmountX();
+		// get initial out amount - I'll let the strategy do it
+		// await bot.getAndSetInitialOutAmountX();
 		// await arbitrage(bot);
 		await pingPong(bot);
 	});

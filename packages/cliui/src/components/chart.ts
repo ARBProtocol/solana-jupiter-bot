@@ -1,15 +1,32 @@
-import { GlobalState } from "@arb-protocol/core";
 import * as asciichart from "asciichart";
-export const Chart = (state: GlobalState, chartKeys: Partial<keyof GlobalState["chart"]>[]) => {
+
+import { GlobalState } from "@arb-protocol/core";
+
+export const Chart = ({
+	state,
+	chartKeys,
+	height = 4,
+	entries,
+}: {
+	state: GlobalState;
+	chartKeys: Partial<keyof GlobalState["chart"]>[];
+	height?: number;
+	entries?: number;
+}) => {
 	const chartData = [];
 	const chartConfig = {
-		height: 4,
-		padding: " ".repeat(8),
+		height,
+		// padding: " ".repeat(8),
 		colors: [undefined] as (string | undefined)[],
 	};
 
 	for (const chartKey of chartKeys) {
-		chartData.push(state.chart[chartKey].values);
+		// get last n entries from state.chart[chartKey].values
+		const values = entries
+			? state.chart[chartKey].values.slice(-entries)
+			: state.chart[chartKey].values;
+
+		chartData.push(values);
 
 		const indicators = state.chart[chartKey].indicators;
 

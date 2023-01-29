@@ -1,8 +1,7 @@
 import boxen from "boxen";
 import { GlobalState } from "./core";
-import { UI } from "./cliui";
 
-export const InfoBox = (ui: UI, state: GlobalState) => {
+export const InfoBox = (state: GlobalState) => {
 	const now = performance.now();
 	const { lastIterationTimestamp, rateLimitPer } = state.bot;
 
@@ -24,9 +23,7 @@ SWAP RATE LIMITER: ${state.swaps.rateLimiter.value} / ${state.swaps.rateLimiter.
 			state.swaps.rateLimiter.max
 		}) (active: ${state.swaps.rateLimiter.isActive})
 QUEUE: ${state.bot.queue.count}/${state.bot.queue.maxAllowed}
-ASSET: ${state.config.tokens?.tokenA?.symbol} ${state.wallet.funds.tokenA} / ${
-			state.config.tokens?.tokenB?.symbol
-		} ${state.wallet.funds.tokenB}
+ASSET: ${state.bot.currentInToken?.symbol} / ${state.bot.currentOutToken?.symbol}
 PRICE: ${state.bot.price.current.decimal.toFixed(9)}
 IN AMOUNT: ${state.routes.currentRoute.input.amount.decimal}
 OUT AMOUNT: ${state.routes.currentRoute.output.amount.decimal}
@@ -45,7 +42,5 @@ LAST SWAP TIME: ${(state.swaps.swapTime / 1000).toFixed(2)} s
 		}
 	);
 
-	ui.div(textBox);
-
-	return ui;
+	return textBox;
 };

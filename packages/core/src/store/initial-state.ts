@@ -5,8 +5,10 @@ import { createArray } from "../utils";
 import { BotStatus } from "./bot-status";
 import Decimal from "decimal.js";
 
-interface Token extends JupiterToken {
+export interface Token extends JupiterToken {
 	publicKey?: PublicKey;
+	decimals: number;
+	symbol: string;
 }
 
 interface Wallet {
@@ -76,35 +78,45 @@ interface RateLimiter {
 	perMs: number;
 }
 
-export interface GlobalState {
-	bot: {
-		isStarted: boolean;
-		startedAt: number | null;
-		status: {
-			value: BotStatus;
-			updatedAt: number;
-		};
-		iterationCount: number;
-		backOff: BackOff;
-		queue: Queue;
-		side: "buy" | "sell";
-		currentOutToken: "tokenA" | "tokenB";
-		initialOutAmount: {
-			tokenA: JSBI;
-			tokenB: JSBI;
-		};
-		prevOutAmount: {
-			tokenA: JSBI;
-			tokenB: JSBI;
-		};
-		tokens?: {
-			[tokenAddress: string]: Token;
-		};
-		price: Price;
-		lastIterationTimestamp: number;
-		rateLimit: number;
-		rateLimitPer: number;
+interface Bot {
+	isStarted: boolean;
+	startedAt: number | null;
+	status: {
+		value: BotStatus;
+		updatedAt: number;
 	};
+	iterationCount: number;
+	backOff: BackOff;
+	queue: Queue;
+	side: "buy" | "sell";
+	currentOutToken?: Token;
+	currentInToken?: Token;
+	initialOutAmount: {
+		[tokenAddress: string]: {
+			jsbi: JSBI;
+			decimal: Decimal;
+		};
+	};
+	prevOutAmount: {
+		[tokenAddress: string]: {
+			jsbi: JSBI;
+			decimal: Decimal;
+		};
+	};
+	tokens: {
+		[tokenAddress: string]: Token;
+	};
+	compatibleTokens?: {
+		[tokenAddress: string]: Token;
+	};
+	price: Price;
+	lastIterationTimestamp: number;
+	rateLimit: number;
+	rateLimitPer: number;
+}
+
+export interface GlobalState {
+	bot: Bot;
 	swaps: Swaps;
 	routes: Routes;
 	config: Config;
@@ -147,8 +159,7 @@ export interface Config {
 	rpcURL: string | null;
 	rpcWSS?: string;
 	tokens: {
-		tokenA: Token;
-		tokenB: Token;
+		[tokenAddress: string]: Token;
 	};
 	strategy: StrategyConfig;
 	ammsToExclude?: AmmsToExclude;
@@ -233,16 +244,10 @@ export const initialState: GlobalState = {
 			count: 0,
 			maxAllowed: 1,
 		},
+		tokens: {},
 		side: "buy",
-		currentOutToken: "tokenA",
-		initialOutAmount: {
-			tokenA: JSBI.BigInt(0),
-			tokenB: JSBI.BigInt(0),
-		},
-		prevOutAmount: {
-			tokenA: JSBI.BigInt(0),
-			tokenB: JSBI.BigInt(0),
-		},
+		initialOutAmount: {},
+		prevOutAmount: {},
 		price: {
 			current: {
 				decimal: new Decimal(0),
@@ -312,14 +317,7 @@ export const initialState: GlobalState = {
 	config: {
 		privateKey: null,
 		rpcURL: null,
-		tokens: {
-			tokenA: {
-				address: "",
-			},
-			tokenB: {
-				address: "",
-			},
-		},
+		tokens: {},
 		strategy: {
 			tradeAmount: {
 				jsbi: JSBI.BigInt(0),

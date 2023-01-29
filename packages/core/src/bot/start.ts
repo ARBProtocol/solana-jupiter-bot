@@ -1,14 +1,15 @@
+import fs from "fs";
+
 import {
 	createJupiter,
 	getJupiterTokens,
 	JupiterToken,
 } from "../aggregators/jupiter";
-import { Store } from "../store";
+import { Store, Token } from "../store";
 import { createKeypair, createSolanaConnection } from "../web3";
 import { ConfigRequired, SetJupiter, SetStatus } from "./bot";
 import { loadConfig } from "./load-config";
 import { performanceTest } from "./performance-test";
-import fs from "fs";
 
 export const start = async (
 	store: Store,
@@ -34,13 +35,25 @@ export const start = async (
 			throw new Error("start: tokens are null");
 		}
 		// set tokens
-		const tokensByAddress = tokens.reduce((acc, token) => {
-			acc[token.address] = token;
+		const compatibleTokens = tokens.reduce((acc, token) => {
+			if (token.decimals && token.address && token.symbol) {
+				acc[token.address] = {
+					decimals: token.decimals,
+					symbol: token.symbol,
+					...token,
+				};
+			}
+
 			return acc;
-		}, {} as Record<string, JupiterToken>);
+		}, {} as Record<string, Token>);
+
+		// check if tokens are valid
+		if (!compatibleTokens) {
+			throw new Error("start: compatibleTokens is undefined");
+		}
 
 		store.setState((state) => {
-			state.bot.tokens = tokensByAddress;
+			state.bot.compatibleTokens = compatibleTokens;
 		});
 
 		setStatus("tokensLoaded");
@@ -71,10 +84,6 @@ export const start = async (
 		const jupiter = await createJupiter(connection, keypair, ammsToExclude);
 		setJupiter(jupiter);
 		setStatus("jupiterLoaded");
-
-		if (!tokensByAddress) {
-			throw new Error("start: tokensByAddress is undefined");
-		}
 
 		// set bot status to "idle"
 		store.setState((state) => {

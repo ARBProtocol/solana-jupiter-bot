@@ -47,22 +47,49 @@ export type UI = ReturnType<typeof cliui>;
 // 	return ui;
 // };
 
-export const potentialProfitChart = (ui: UI, state: GlobalState) => {
+export const potentialProfitChart = (state: GlobalState) => {
 	const potentialProfit = state.chart.potentialProfit.values.at(-1);
-	const chartContainer = boxen(Chart(state, ["potentialProfit"]), {
-		title: `Potential Profit ${
-			typeof potentialProfit === "number" ? "~ " + potentialProfit.toFixed(12) : ""
-		}`,
-		titleAlignment: "left",
-		borderStyle: "round",
-		borderColor: potentialProfit ? (potentialProfit > 0 ? "green" : "red") : "gray",
-	});
-	ui.div({
+	const chartContainer = boxen(
+		Chart({
+			state,
+			chartKeys: ["potentialProfit"],
+			height: 6,
+		}),
+		{
+			title: `Potential Profit ${
+				typeof potentialProfit === "number" ? "~ " + potentialProfit.toFixed(12) : ""
+			}`,
+			titleAlignment: "right",
+			borderStyle: "round",
+			borderColor: potentialProfit ? (potentialProfit > 0 ? "green" : "red") : "gray",
+		}
+	);
+	return {
 		text: chartContainer,
 		padding: [0, 0, 0, 0],
-	});
+	};
+};
 
-	return ui;
+export const priceChart = (state: GlobalState) => {
+	const price = state.bot.price.current.decimal.toNumber();
+	const prevPrice = state.chart.price.values.at(-2) || 0;
+	const chartContainer = boxen(
+		Chart({
+			state,
+			chartKeys: ["price"],
+			height: 8,
+		}),
+		{
+			title: `Price ${price.toFixed(12)}`,
+			titleAlignment: "right",
+			borderStyle: "round",
+			borderColor: price > prevPrice ? "green" : price < prevPrice ? "red" : "gray",
+		}
+	);
+	return {
+		text: chartContainer,
+		padding: [0, 0, 0, 0],
+	};
 };
 
 const startStateSubscription = (ui: UI, store: Bot["store"], allowClearConsole: boolean) => {
@@ -145,7 +172,7 @@ const startStateSubscription = (ui: UI, store: Bot["store"], allowClearConsole: 
 	setInterval(() => {
 		const state = store.getState();
 		ui = refreshUI(state, ui, allowClearConsole);
-	}, 1000 / 24);
+	}, 1000 / 12);
 };
 
 interface Config {

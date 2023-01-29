@@ -1,9 +1,15 @@
 import { Jupiter } from "../aggregators/jupiter";
-import { Store } from "../store";
-import { PublicKey } from "../web3";
+import { Store, Token } from "../store";
 import { Queue } from "./queue";
 import { GetStatus, SetStatus } from "./bot";
-import { JSBItoNumber, shiftAndPush, sleep, toDecimal } from "../utils";
+import {
+	JSBI,
+	JSBItoNumber,
+	NumberToJSBI,
+	shiftAndPush,
+	sleep,
+	toDecimal,
+} from "../utils";
 
 const rateLimiter = async (store: Store, setStatus: SetStatus) => {
 	const { lastIterationTimestamp, rateLimit, rateLimitPer } =
@@ -24,17 +30,29 @@ const rateLimiter = async (store: Store, setStatus: SetStatus) => {
 	}
 };
 
-export const computeRoutes = async (
-	store: Store,
-	getStatus: GetStatus,
-	setStatus: SetStatus,
-	jupiter: Jupiter | null,
-	queue: Queue
-) => {
+export const computeRoutes = async ({
+	store,
+	getStatus,
+	setStatus,
+	jupiter,
+	queue,
+	inToken,
+	outToken,
+	tradeAmount,
+	slippageBps,
+}: {
+	store: Store;
+	getStatus: GetStatus;
+	setStatus: SetStatus;
+	jupiter: Jupiter | null;
+	queue: Queue;
+	inToken: Token;
+	outToken: Token;
+	tradeAmount: JSBI | number;
+	slippageBps: number;
+}) => {
 	try {
-		if (getStatus() !== "idle") {
-			throw new Error("computeRoutes: bot is busy");
-		}
+		if (getStatus() !== "idle") throw new Error("computeRoutes: bot is busy");
 
 		await rateLimiter(store, setStatus);
 
@@ -51,32 +69,33 @@ export const computeRoutes = async (
 		// increase queue count
 		queue.increase();
 
-		console.count("computeRoutes");
-
 		// increase iteration count
 		store.setState((state) => {
 			state.bot.iterationCount++;
 		});
 
-		const inputMint = store.getState().config.tokens.tokenA
-			.publicKey as PublicKey;
+		const amount =
+			typeof tradeAmount === "number" ? NumberToJSBI(tradeAmount) : tradeAmount;
 
-		if (!inputMint) throw new Error("computeRoutes: inputMint is null");
+		// check if inToken and outToken are valid
+		if (!inToken?.publicKey) {
+			throw new Error("computeRoutes: inToken publicKey is null");
+		}
+		if (!outToken?.publicKey) {
+			throw new Error("computeRoutes: outToken publicKey is null");
+		}
 
-		const outputMint = store.getState().config.tokens.tokenB
-			.publicKey as PublicKey;
-
-		const amount = store.getState().config.strategy.tradeAmount.jsbi;
-		const slippageBps = store.getState().config.strategy.rules?.slippage.bps;
+		// const amount = store.getState().config.strategy.tradeAmount.jsbi;
+		// const slippageBps = store.getState().config.strategy.rules?.slippage.bps;
 
 		const lookupTimeStart = performance.now();
 
 		const routes = await jupiter.computeRoutes({
-			inputMint,
-			outputMint,
-			amount,
 			forceFetch: true,
-			slippageBps: slippageBps ?? 0, // 1bps = 0.01%
+			inputMint: inToken.publicKey,
+			outputMint: outToken.publicKey,
+			amount,
+			slippageBps, // 1bps = 0.01%
 		});
 
 		const lookupTime = performance.now() - lookupTimeStart;
@@ -106,7 +125,7 @@ export const computeRoutes = async (
 					const { inAmount } = routes.routesInfos[0];
 					state.routes.currentRoute.input.amount.jsbi = inAmount;
 
-					const decimals = state.config.tokens.tokenA.decimals;
+					const decimals = inToken.decimals;
 
 					if (!decimals) throw new Error("computeRoutes: decimals is null");
 
@@ -121,7 +140,7 @@ export const computeRoutes = async (
 					const { outAmount } = routes.routesInfos[0];
 					state.routes.currentRoute.output.amount.jsbi = outAmount;
 
-					const decimals = state.config.tokens.tokenB.decimals;
+					const decimals = outToken.decimals;
 
 					if (!decimals) throw new Error("computeRoutes: decimals is null");
 

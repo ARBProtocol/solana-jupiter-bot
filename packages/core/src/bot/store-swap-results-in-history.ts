@@ -1,8 +1,7 @@
 import { RouteInfo, SwapResult } from "@jup-ag/core";
-import { Store, TradeHistoryEntry } from "../store";
-import { JSBItoNumber } from "../utils";
 
-import fs from "fs";
+import { Store, Token, TradeHistoryEntry } from "../store";
+import { JSBItoNumber, toDecimal, writeJsonToTempDir } from "../utils";
 import { SetStatus } from "./bot";
 
 export const storeSwapResultInHistory = (
@@ -10,10 +9,25 @@ export const storeSwapResultInHistory = (
 	setStatus: SetStatus,
 	route: RouteInfo,
 	swapResult: SwapResult,
-	swapTimestamp: number
+	swapTimestamp: number,
+	inToken: Token,
+	outToken: Token,
+	txUUID: string
 ) => {
-	const { address: inputAddress } = store.getState().config.tokens.tokenA;
-	const { address: outputAddress } = store.getState().config.tokens.tokenB;
+	if (!inToken) throw new Error("inToken not set");
+	if (!outToken) throw new Error("outToken not set");
+
+	const {
+		address: inputAddress,
+		symbol: inTokenSymbol,
+		decimals: inTokenDecimals,
+	} = inToken;
+	const {
+		address: outputAddress,
+		symbol: outTokenSymbol,
+		decimals: outTokenDecimals,
+	} = outToken;
+
 	try {
 		let entry: TradeHistoryEntry = {
 			timestamp: swapTimestamp,
@@ -22,8 +36,8 @@ export const storeSwapResultInHistory = (
 			statusUpdatedAt: performance.now(),
 			inAmount: 0,
 			outAmount: 0,
-			inToken: "dev",
-			outToken: "dev",
+			inToken: inTokenSymbol,
+			outToken: outTokenSymbol,
 			expectedOutAmount: JSBItoNumber(route.outAmount),
 			market: "dev",
 			inTokenAddress: inputAddress,
@@ -45,7 +59,10 @@ export const storeSwapResultInHistory = (
 				status: "error",
 				statusUpdatedAt: performance.now(),
 				error: swapResult.error?.message,
-				inAmount: JSBItoNumber(route.inAmount),
+				inAmount: toDecimal(
+					JSBItoNumber(route.inAmount),
+					inTokenDecimals
+				).toNumber(),
 			};
 		}
 
@@ -55,21 +72,25 @@ export const storeSwapResultInHistory = (
 				txId: swapResult.txid,
 				status: "fetchingResult",
 				statusUpdatedAt: performance.now(),
-				inAmount: swapResult.inputAmount,
-				outAmount: swapResult.outputAmount,
+				inAmount:
+					toDecimal(JSBItoNumber(route.inAmount), inTokenDecimals).toNumber() ||
+					0,
+				outAmount:
+					toDecimal(
+						JSBItoNumber(route.outAmount),
+						outTokenDecimals
+					).toNumber() || 0,
 			};
 		}
 
 		store.setState((state) => {
-			state.tradeHistory[entry.txId] = entry;
+			state.tradeHistory[txUUID] = entry;
 		});
 		setStatus("tradeHistoryUpdated");
 
 		const tradeHistory = store.getState().tradeHistory;
-		fs.writeFileSync(
-			"./temp/history.json",
-			JSON.stringify(tradeHistory, null, 2)
-		);
+
+		writeJsonToTempDir("history", tradeHistory);
 	} catch (error) {
 		console.log("storeSwapResultInHistory error", error);
 	}

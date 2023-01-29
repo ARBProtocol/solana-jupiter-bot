@@ -1,17 +1,25 @@
 import { Address } from "@jup-ag/core";
 import { Store } from "../store";
 import { getErrorMessage } from "../utils";
+import { PublicKey } from "../web3";
 
 // get token info by address
 export const getTokenInfo = (store: Store, address: Address) => {
 	try {
-		const tokens = store.getState().bot.tokens;
+		let token;
+		const tokens = store.getState().bot.compatibleTokens;
 
-		if (!tokens) {
-			throw new Error("Jupiter tokens are not loaded");
+		if (!tokens) throw new Error("compatibleTokens tokens are not loaded");
+
+		token = tokens[address];
+		if (!token) throw new Error("Token not found, address: " + address);
+
+		if (!token.publicKey) {
+			token = {
+				...token,
+				publicKey: new PublicKey(token.address),
+			};
 		}
-
-		const token = tokens[address];
 
 		if (!token) {
 			throw new Error("Token not found, address: " + address);

@@ -1,32 +1,41 @@
 import { RouteInfo, SwapSuccess } from "../aggregators/jupiter";
-import { Store } from "../store";
-import { storeSwapResultInHistory } from "./store-swap-result-in-history";
-import { getSwapResultFromSolscan } from "./get-swap-result-from-solscan";
-import { calculateTxProfit } from "./calculate-tx-profit";
+import { Store, Token } from "../store";
+import {
+	JSBItoNumber,
+	NumberToJSBI,
+	numberToMin,
+	toDecimal,
+	writeJsonToTempDir,
+} from "../utils";
 import { SetStatus } from "./bot";
-import { writeJsonToTempDir } from "../utils";
+import { calculateTxProfit } from "./calculate-tx-profit";
+import { getSwapResultFromSolscan } from "./get-swap-result-from-solscan";
+import { storeSwapResultInHistory } from "./store-swap-results-in-history";
 
 export const onSwapSuccess = async (
 	store: Store,
 	setStatus: SetStatus,
 	route: RouteInfo,
 	swapResult: SwapSuccess,
-	swapTimestamp: number
+	swapTimestamp: number,
+	inToken: Token,
+	outToken: Token,
+	txUUID: string
 ) => {
-	console.log(
-		"🚀 ~ file: onSwapSuccess.ts ~ line 4 ~ onSwapSuccess ~ SwapResult",
-		swapResult
-	);
-
 	const txId = swapResult.txid;
 
-	// save swapResult to {currentTime}.json in ./../temp folder
+	const {
+		address: inputAddress,
+		symbol: inTokenSymbol,
+		decimals: inTokenDecimals,
+	} = inToken;
+	const {
+		address: outputAddress,
+		symbol: outTokenSymbol,
+		decimals: outTokenDecimals,
+	} = outToken;
 
-	try {
-		writeJsonToTempDir(swapTimestamp, swapResult);
-	} catch (error) {
-		console.log(error);
-	}
+	writeJsonToTempDir(swapTimestamp, swapResult);
 
 	// increase swap count & success count
 	store.setState((state) => {
@@ -39,50 +48,74 @@ export const onSwapSuccess = async (
 		state.swaps.successRate = (state.swaps.success / state.swaps.total) * 100;
 	});
 
-	const inputAddress = swapResult.inputAddress.toString();
-	const outputAddress = swapResult.outputAddress.toString();
-
 	const isArbitrageSwap = inputAddress === outputAddress;
-	console.log(
-		"🚀 ~ file: onSwapSuccess.ts ~ line 22 ~ onSwapSuccess ~ isArbitrageSwap",
-		isArbitrageSwap
+
+	const tokens = store.getState().bot.tokens;
+	if (!tokens) throw new Error("tokens not set");
+
+	if (!outToken) throw new Error("outToken not found");
+
+	storeSwapResultInHistory(
+		store,
+		setStatus,
+		route,
+		swapResult,
+		swapTimestamp,
+		inToken,
+		outToken,
+		txUUID
 	);
 
-	storeSwapResultInHistory(store, setStatus, route, swapResult, swapTimestamp);
-
 	const { inAmount, outAmount } = isArbitrageSwap
-		? await getSwapResultFromSolscan(store, swapResult)
+		? await getSwapResultFromSolscan(
+				store,
+				swapResult,
+				inputAddress,
+				outputAddress
+		  )
 		: { inAmount: swapResult.inputAmount, outAmount: swapResult.outputAmount };
 
-	if (!inAmount || !outAmount) {
-		console.log(
-			"🚀 ~ file: onSwapSuccess.ts ~ line 33 ~ onSwapSuccess ~ inAmount || outAmount",
-			Date.now().toLocaleString(),
-			inAmount,
-			outAmount
-		);
-		return;
-	}
+	if (!inAmount || !outAmount) return;
+
+	const prevOutAmount = store.getState().bot.prevOutAmount[outputAddress];
+
+	const outAmountToCompare = prevOutAmount?.decimal;
+	if (!outAmountToCompare) throw new Error("outAmountToCompare not found");
+
+	// calculate tx profit
+	const { profit, profitPercent } = calculateTxProfit(
+		outAmountToCompare,
+		toDecimal(outAmount, outToken.decimals)
+	);
+
+	// set prev out amount
+	console.log(`setting prev out amount for ${outToken.symbol} to ${outAmount}`);
+	store.setState((state) => {
+		state.bot.prevOutAmount[outputAddress] = {
+			jsbi: NumberToJSBI(outAmount),
+			decimal: toDecimal(outAmount, outToken.decimals),
+		};
+	});
 
 	// set tx status to "success"
 	store.setState((state) => {
-		const temp = state.tradeHistory[txId];
-
-		// calculate tx profit
-		const { profit, profitPercent } = calculateTxProfit(inAmount, outAmount);
+		const temp = state.tradeHistory[txUUID];
 
 		if (temp) {
-			state.tradeHistory[txId] = {
+			state.tradeHistory[txUUID] = {
 				...temp,
 				status: "success",
-				inAmount,
-				outAmount,
+				inAmount: toDecimal(inAmount, inTokenDecimals).toNumber() || 0,
+				outAmount: toDecimal(outAmount, outTokenDecimals).toNumber() || 0,
+				inToken: inTokenSymbol,
+				outToken: outTokenSymbol,
 				// DON'T FORGET TO VERIFY THIS COPILOT NONSENSE
 				price: swapResult.outputAmount / swapResult.inputAmount,
-				profit: profit,
-				profitPercent: profitPercent,
+				profit: profit.toNumber(),
+				profitPercent: profitPercent.toNumber(),
 			};
 		}
 	});
+
 	setStatus("tradeHistoryUpdated");
 };

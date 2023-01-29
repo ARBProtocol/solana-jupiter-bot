@@ -1,26 +1,21 @@
-import { PublicKey } from "../web3";
 import { Address } from "../aggregators/jupiter";
 import { Store } from "../store";
 import { getTokenInfo } from "../bot/get-token-Info";
 
-export const setToken = (
-	store: Store,
-	slot: "tokenA" | "tokenB",
-	tokenAddress: Address | null
-) => {
+export const setToken = (store: Store, tokenAddress: Address | null) => {
 	if (!tokenAddress) {
 		throw new Error("setToken: tokenAddress is null");
 	}
 
+	// get stored tokens
+
 	// get additional token info
 	const tokenInfo = getTokenInfo(store, tokenAddress);
 
-	const tokenPublicKey = new PublicKey(tokenAddress);
+	// check decimals
 
 	store.setState((state) => {
-		state.config.tokens[slot] = {
-			...tokenInfo,
-			publicKey: tokenPublicKey,
-		};
+		state.config.tokens[tokenAddress] = { ...tokenInfo };
+		state.bot.tokens[tokenAddress] = { ...tokenInfo };
 	});
 };

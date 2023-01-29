@@ -26,10 +26,12 @@
 		"dotenv": "16.0.3",
 		"immer": "9.0.16",
 		"jsbi": "4.3.0",
+		"uuid": "^9.0.0",
 		"zustand": "4.1.4"
 	},
 	"devDependencies": {
 		"@types/node": "^18.11.10",
+		"@types/uuid": "^9.0.0",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"eslint": "^8.29.0",

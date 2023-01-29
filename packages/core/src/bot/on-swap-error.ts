@@ -1,7 +1,7 @@
 import { RouteInfo, SwapError } from "../aggregators/jupiter";
-import { Store } from "../store";
+import { Store, Token } from "../store";
 
-import { storeSwapResultInHistory } from "./store-swap-result-in-history";
+import { storeSwapResultInHistory } from "./store-swap-results-in-history";
 import { SetStatus } from "./bot";
 import { writeJsonToTempDir } from "../utils";
 
@@ -10,7 +10,10 @@ export const onSwapError = (
 	setStatus: SetStatus,
 	route: RouteInfo,
 	swapResult: SwapError,
-	swapTimestamp: number
+	swapTimestamp: number,
+	inToken: Token,
+	outToken: Token,
+	txUUID: string
 ) => {
 	console.log(
 		"🚀 ~ file: onSwapFail.ts ~ line 5 ~ onSwapFail ~ swapResult",
@@ -34,5 +37,14 @@ export const onSwapError = (
 		state.swaps.successRate = (state.swaps.success / state.swaps.total) * 100;
 	});
 
-	storeSwapResultInHistory(store, setStatus, route, swapResult, swapTimestamp);
+	storeSwapResultInHistory(
+		store,
+		setStatus,
+		route,
+		swapResult,
+		swapTimestamp,
+		inToken,
+		outToken,
+		txUUID
+	);
 };

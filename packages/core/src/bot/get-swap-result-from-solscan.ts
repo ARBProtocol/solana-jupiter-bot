@@ -1,13 +1,14 @@
 import { Event, getTransaction } from "../solscan";
 import { Store } from "../store";
 
-import fs from "fs";
 import { SwapSuccess } from "../aggregators/jupiter";
 import { writeJsonToTempDir } from "../utils";
 
 export const getSwapResultFromSolscan = async (
 	store: Store,
-	swapResult: SwapSuccess
+	swapResult: SwapSuccess,
+	inputAddress: string,
+	outputAddress: string
 ) => {
 	if (!swapResult)
 		throw new Error("getSwapResultFromSolscan: swapResult is null");
@@ -15,9 +16,6 @@ export const getSwapResultFromSolscan = async (
 	const walletAddress = store.getState().wallet.address;
 
 	const { txid: txId } = swapResult;
-
-	const { address: inputAddress } = store.getState().config.tokens.tokenA;
-	const { address: outputAddress } = store.getState().config.tokens.tokenB;
 
 	if (!txId || !inputAddress || !outputAddress) {
 		return { txId: null, inAmount: null, outAmount: null };

@@ -9,10 +9,9 @@ import {
 	getErrorMessage,
 } from "../utils";
 import { backOff } from "./back-off";
-import { computeRoutes } from "./compute-routes";
-import { getAndSetInitialOutAmount } from "./get-and-set-Initial-out-amount";
+import { ComputeRoutes, computeRoutes } from "./compute-routes";
 import { getTokenInfo } from "./get-token-Info";
-import { storeSwapResultInHistory } from "./store-swap-result-in-history";
+import { storeSwapResultInHistory } from "./store-swap-results-in-history";
 import { onReady, onStatusChange } from "./listeners";
 import { onShutdown } from "./listeners/on-shutdown";
 import { createQueue } from "./queue";
@@ -100,13 +99,33 @@ export const createBot = (config: ConfigRequired) => {
 
 	const queue = createQueue(store);
 
-	const wrappedComputeRoutes: wrappedComputeRoutes = () => {
-		return computeRoutes(store, getStatus, setStatus, jupiter, queue);
+	const wrappedComputeRoutes = (
+		params: Omit<
+			Parameters<ComputeRoutes>[0],
+			"store" | "getStatus" | "setStatus" | "jupiter" | "queue"
+		>
+	) => {
+		return computeRoutes({
+			store,
+			getStatus,
+			setStatus,
+			jupiter,
+			queue,
+			...params,
+		});
 	};
 
 	const onStatus = (
 		observedStatus: BotStatus | "*",
-		callback: (status: BotStatus, prevStatus: BotStatus) => void
+		callback: ({
+			store,
+			status,
+			prevStatus,
+		}: {
+			store: Store;
+			status: BotStatus;
+			prevStatus: BotStatus;
+		}) => void
 	) => {
 		const isWildCard = observedStatus === "*";
 		store.subscribe(
@@ -116,16 +135,27 @@ export const createBot = (config: ConfigRequired) => {
 					isWildCard ||
 					(status === observedStatus && prevStatus !== observedStatus)
 				) {
-					callback(status, prevStatus);
+					callback({ store, status, prevStatus });
 				}
 			}
 		);
 	};
 
+	const wrappedSwap = (
+		params?: Pick<Parameters<typeof swap>[0], "route" | "inToken" | "outToken">
+	) => {
+		return swap({
+			store,
+			setStatus,
+			jupiter,
+			...params,
+		});
+	};
+
 	const bot = {
 		start: () => start(store, setStatus, setJupiter, config),
 		store,
-		swap: (route?: RouteInfo) => swap(store, setStatus, jupiter, route),
+		swap: wrappedSwap,
 		queue,
 		getStatus,
 		setStatus,
@@ -135,10 +165,10 @@ export const createBot = (config: ConfigRequired) => {
 		withStore,
 		utils,
 		computeRoutes: wrappedComputeRoutes,
-		getAndSetInitialOutAmountX: () =>
-			getAndSetInitialOutAmount(store, () =>
-				computeRoutes(store, getStatus, setStatus, jupiter, queue)
-			),
+		// getAndSetInitialOutAmountX: () =>
+		// 	getAndSetInitialOutAmount(store, () =>
+		// 		computeRoutes(store, getStatus, setStatus, jupiter, queue)
+		// 	),
 		onStatus,
 		backOff: () => backOff(store, setStatus),
 		history: { storeSwapResultInHistory },

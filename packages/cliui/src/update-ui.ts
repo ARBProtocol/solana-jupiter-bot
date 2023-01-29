@@ -1,7 +1,7 @@
 import { GlobalState } from "./core";
 import { TradeHistoryTable } from "./components/trade-history-table";
 import { uiStore } from "./ui-store";
-import { UI, potentialProfitChart } from "./cliui";
+import { UI, potentialProfitChart, priceChart } from "./cliui";
 import { InfoBox } from "./Info-box";
 import chalk from "chalk";
 
@@ -36,8 +36,9 @@ export const updateUI = (
 	switch (currentScreen) {
 		case "main":
 			// ui = BotStatus(ui, state);
-			ui = InfoBox(ui, state);
-			ui = potentialProfitChart(ui, state);
+			ui.div(InfoBox(state));
+			ui.div(priceChart(state));
+			ui.div(potentialProfitChart(state));
 			ui.div(TradeHistoryTable(state));
 			ui.div(chalk.dim("FPS ~ " + fps.toFixed(2) + " / " + maxFps));
 			break;

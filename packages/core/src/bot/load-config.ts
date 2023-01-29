@@ -32,32 +32,40 @@ export const loadConfig = (
 		 */
 		// set tokens
 		setStatus("loadingStrategy");
-		setToken(store, "tokenA", config.tokens.tokenA.address);
+		setToken(store, config.tokens.tokenA.address);
 
-		// set tokenB if it exists or set to token A
 		if (config.tokens.tokenB) {
-			setToken(store, "tokenB", config.tokens.tokenB.address);
-		} else {
-			setToken(store, "tokenB", config.tokens.tokenA.address);
+			setToken(store, config.tokens.tokenB.address);
 		}
 
 		// get token decimals
-		const tokenADecimals = store.getState().config.tokens.tokenA.decimals;
-		const tokenBDecimals = store.getState().config.tokens.tokenB.decimals;
+		const tokens = store.getState().bot.tokens;
+		if (!tokens) throw new Error("loadConfig: tokens are not set");
 
-		if (!tokenADecimals || !tokenBDecimals) {
-			throw new Error("Token decimals not found");
+		// set input token
+		store.setState((state) => {
+			state.bot.currentInToken = tokens[config.tokens.tokenA.address];
+		});
+
+		const currentInToken = store.getState().bot.currentInToken;
+
+		if (!currentInToken || !currentInToken.decimals) {
+			throw new Error(
+				`Token ${currentInToken?.address} ${currentInToken?.symbol} decimals not found`
+			);
 		}
 
 		// set trade amount
 		const tradeAmount =
 			typeof config.strategy.tradeAmount === "number"
-				? NumberToJSBI(numberToMin(config.strategy.tradeAmount, tokenADecimals))
+				? NumberToJSBI(
+						numberToMin(config.strategy.tradeAmount, currentInToken.decimals)
+				  )
 				: config.strategy.tradeAmount;
 
 		const tradeAmountNumber =
 			typeof config.strategy.tradeAmount === "number"
-				? config.strategy.tradeAmount
+				? numberToMin(config.strategy.tradeAmount, currentInToken.decimals)
 				: JSBItoNumber(config.strategy.tradeAmount);
 
 		// set rules
@@ -122,6 +130,8 @@ export const loadConfig = (
 		setStatus("configLoaded");
 	} catch (error) {
 		setStatus("configError");
+		console.error("loadConfig error", error);
+		setStatus("!shutdown");
 	} finally {
 		setStatus("idle");
 	}

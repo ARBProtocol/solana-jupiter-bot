@@ -1,7 +1,9 @@
-export const calculateTxProfit = (inAmount: number, outAmount: number) => {
-	const profit = outAmount - inAmount;
+import { Decimal } from "decimal.js";
 
-	const profitPercent = profit / inAmount;
+export const calculateTxProfit = (inAmount: Decimal, outAmount: Decimal) => {
+	const profit = outAmount.minus(inAmount);
+
+	const profitPercent = profit.div(inAmount).times(100);
 
 	return { profit, profitPercent };
 };
