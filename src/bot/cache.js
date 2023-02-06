@@ -74,6 +74,10 @@ const cache = {
 	performanceOfTxStart: 0,
 	buyBack: 0,
 	swapBack: process.env?.SWAPBACK === "true",
+	swapBackSl: 
+		process.env?.SWAPBACKSL === undefined
+		? 0
+		: process.env?.SWAPBACKSL,
 	availableRoutes: {
 		buy: 0,
 		sell: 0,
