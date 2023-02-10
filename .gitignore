@@ -118,3 +118,6 @@ temp/*
 # Qodana
 .idea
 qodana.yaml
+
+# Visual Studio Code
+.vscode

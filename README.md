@@ -1,3 +1,187 @@
+
+# 🚨️ WORK IN PROGRESS - DO NOT USE 🚨️
+
+# TLDR
+- Majer refactor - Strategies now use a factory pattern to allow easy creation of new strategies.
+- Functionality has been broken up into smaller reusable methods that can be used to easily build new strategies.
+- No longer reads from globally accessible `cache.js` file
+
+---
+# (Intro) Read This First
+- TODO
+- No longer reads from globally accessible `cache.js` file
+
+Goals
+- Stop use global variables (`cache.js`)
+- Make code more maintanable and easier to test
+- Make it easy to extend the bot and add new strategies
+---
+# Code Explanation
+- TODO
+- Explain the `base` object and its use.
+
+---
+
+# Helpers
+Helpers are a collection of methods available in each strategy and give access to commonly used functinality. Helpers are intended to be used as building blocks in order to reduce the amount of code required to compse new strategies. Their use is not required and anything done using a helpor method can also be done manually.
+
+__NOTES ON IMPOVEMENT:__
+Each method currently requires the `base` object to be passed in. Since these methods are included in the `BaseStrategy` this isn't strictly required since the methods would already have access to the `base` object. The diving force behind this decicion was to make them reusable and make the code slightly clearer when looked at in isolation. However on reflection this probably wasn't the best decision and may be removed. Alternativly, anither thought would be to revove the requirement from the calls and use a decorator to pass in `base`.
+
+## App
+```JS
+base.helpers.app.handleHotkeyForceExecutionPress(base)
+base.helpers.app.handleHotkeyRevertBackSwapPress(base)
+base.helpers.app.measurePerformance(func)
+```
+
+## Exit
+```JS
+base.helpers.exit.exitProcess({ code = 1, message }, cache)
+base.helpers.exit.handleExit(cache)
+base.helpers.exit.logExit(code = 0, error, cache)
+```
+
+## Setup
+```JS
+base.helpers.setup.setConnections(base)
+base.helpers.setup.setInitialTokenBalances(base, multiToken)
+base.helpers.setup.setTokens(base)
+```
+
+## Trade
+
+##### Lifecycle
+```JS
+base.helpers.trade.canStartCycle(base)
+base.helpers.trade.setQueue(base, value)
+base.helpers.trade.setQueueBusy(base)
+base.helpers.trade.setQueueOk(base)
+base.helpers.trade.startCurrentCycle(base)
+base.helpers.trade.updateIterationsPerMin(base)
+```
+
+##### Routes
+```JS
+base.helpers.trade.calculateRouteProfitability(base, baseAmount, route)
+[async] base.helpers.trade.calculateRoutes({base, inputToken, outputToken, amountToTrade, slippage})
+base.helpers.trade.setAvailableRoutesCount(base, routeCount)
+base.helpers.trade.setCurrentCycleRoute(base, routes)
+base.helpers.trade.verifyRoutes(base, routes)
+```
+
+##### Strategy
+```JS
+base.helpers.trade.currentTradeType(base)
+base.helpers.trade.isProfitOrKill(base)
+base.helpers.trade.isSingleToken(base)
+base.helpers.trade.tokenToBuy(base)
+base.helpers.trade.tokenToSell(base)
+```
+
+##### Tokens & Profitability
+```JS
+base.helpers.trade.calculateAmountToTrade(base)
+base.helpers.trade.calculateBaseAmount(base)
+base.helpers.trade.calculateProfit(oldVal, newVal)
+base.helpers.trade.calculateSlippage(base)
+base.helpers.trade.findAndSetMaxProfit(base)
+base.helpers.trade.getMaxProfit(base)
+base.helpers.trade.isMaxProfit(base, simulatedProfit)
+base.helpers.trade.setCurrentCycleSimulatedProfit(base, baseAmount, route)
+base.helpers.trade.setMaxProfit(base, profit)
+```
+
+##### Transaction
+```JS
+base.helpers.transaction.canStartTrade(base)
+base.helpers.transaction.buildTradeEntry(base)
+```
+
+## Validators
+```JS
+base.helpers.validate.strategy(base)
+```
+
+---
+# Create New Strategy
+
+#### Step 1 - Create strategy
+Using the template below...
+##### Strategy template
+```JS
+const exampleStrategy = (base) => {
+	const setup = () => {
+		// INFO: Enter setup code that runs after tokens and connection setup.
+		// i.e. Load Balances
+	};
+
+	const execute = () => {
+		// INFO: Enter stratgy code here.
+	};
+
+	return { setup, execute };
+};
+
+module.exports = exampleStrategy;
+
+```
+
+#### Step 2 - Add strategy to Factory
+Require your new strategy file in `src/bot/strategyFactory.js`
+```JS
+const exampleStrategy = require("./strategies/example");
+```
+
+Add strategy
+```JS
+switch (config.tradingStrategy) {
+	// Add these lines to the Strategy Factory
+	case "example":
+		childStrategy = exampleStrategy;
+		break;
+	// ---
+	default:
+		throw new Error("Invalid trading strategy");
+}
+```
+
+#### Step 3 - Make strategy available to Wizard
+In order to make your new strategy selectable in the Wizard you will need to add a new entry into the `TRADING_STRATEGIES` object found in `src/constants/strategies.js`.
+New entries only require a `label` and `value`.
+
+
+```JS
+const TRADING_STRATEGIES = Object.freeze([
+	// <Existing strategies here>,
+	{ label: "My Super Cool Example Strategy", value: "example" },
+]);
+```
+---
+
+# Questionable Design Decisions
+_[This is a placehoder list. More details to come.]_
+- Is the `init` method really needed?
+- `init` and `start` wrapper code may not be applicable to all new strategies
+- Helpers
+  - Passing in `base` to every helper.
+  - Grouping
+  - Some helpers do too much
+  - Functionality not always clear
+  - Setters don't all return a value
+  - Some take objects some don't (WTF)
+- Data
+  - Maybe use a state management lib
+  - Possibly use file based DB like sql.js instead of temp folder
+  - Naming 🤦️
+- Should have added TypeScript 🤦️
+
+---
+---
+# Original README File 👇️
+---
+
+
 > ⚠️ This bot can lead to loss of your funds, use at your own risk.
 
 > This README is not complete. Try asking on [ARB Discord](https://discord.gg/wcxYzfKNaE) if you have any questions.
