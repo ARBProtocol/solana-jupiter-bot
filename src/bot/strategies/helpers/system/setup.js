@@ -28,8 +28,8 @@ const setupHelpers = {
 
 		const jupiter = await loadJupiter({
 			cluster: base.data.cache.config.network,
-			wallet: wallet,
-			connection: connection,
+			wallet,
+			connection,
 			wrapUnwrapSOL: base.data.cache.wrapUnwrapSOL,
 		});
 
@@ -46,11 +46,6 @@ const setupHelpers = {
 	},
 };
 
-/**
- * Wallet
- */
-
-// function loadTokens(base) {
 function loadTokens(base) {
 	const config = base.data.cache.config;
 	const hasSecondToken =
