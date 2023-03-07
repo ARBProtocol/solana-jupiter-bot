@@ -2,10 +2,6 @@
 	"name": "arb-jupiter-bot",
 	"description": "Arb Jupiter Bot Turborepo",
 	"private": true,
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/ARBProtocol/solana-jupiter-bot.git"
@@ -13,7 +9,7 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build --force": "turbo run build --force",
-		"start": "NODE_ENV=production turbo run build && cd apps/arb-jupiter-bot && yarn start",
+		"start": "turbo run build && NODE_ENV=production pnpm -C ./apps/arb-jupiter-bot start",
 		"trade": "turbo run build && cd apps/arb-jupiter-bot && yarn start",
 		"dev": "cd apps/arb-jupiter-bot && yarn dev",
 		"lint": "turbo run lint",
@@ -22,14 +18,13 @@
 	"engines": {
 		"node": ">=16.0.0"
 	},
-	"dependencies": {
+	"devDependencies": {
 		"@changesets/cli": "^2.26.0",
 		"@manypkg/cli": "^0.19.2",
-		"eslint-plugin-turbo": "^0.0.7",
 		"prettier": "2.8.1",
 		"turbo": "latest"
 	},
-	"packageManager": "npm@9.2.0",
+	"packageManager": "pnpm@7.27.1",
 	"maintainers": [
 		{
 			"name": "Paweł Mioduszewski",

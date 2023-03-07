@@ -23,6 +23,7 @@
 		"axios-retry": "^3.3.1",
 		"bs58": "5.0.0",
 		"cliui": "8.0.1",
+		"decimal.js": "^10.4.2",
 		"dotenv": "16.0.3",
 		"immer": "9.0.16",
 		"jsbi": "4.3.0",
@@ -35,7 +36,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"eslint": "^8.29.0",
-		"eslint-config-custom": "*",
+		"eslint-config-custom": "workspace:*",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-config-standard": "^17.0.0",
 		"eslint-plugin-import": "^2.26.0",
@@ -43,8 +44,9 @@
 		"eslint-plugin-prettier": "^4.2.1",
 		"eslint-plugin-promise": "^6.1.1",
 		"nodemon": "^2.0.20",
+		"prettier": "^2.8.4",
 		"ts-node": "^10.9.1",
-		"tsconfig": "*",
+		"tsconfig": "workspace:*",
 		"typescript": "^4.9.3"
 	},
 	"engines": {

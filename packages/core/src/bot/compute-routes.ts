@@ -168,7 +168,9 @@ export const computeRoutes = async ({
 			CURRENT RPC WS: ${store.getState().config.rpcWSS}
 			
 			IMPORTANT!
-			NEVER SHARE YOUR PRIVATE KEY WITH ANYONE!`);
+			NEVER SHARE YOUR PRIVATE KEY WITH ANYONE!
+			
+			`);
 			}
 		}
 

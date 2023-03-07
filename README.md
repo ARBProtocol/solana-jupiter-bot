@@ -6,7 +6,7 @@
 
 ```bash
 $ git clone -b dev-1.0.0-alpha https://github.com/ARBProtocol/solana-jupiter-bot.git && cd solana-jupiter-bot
-$ npm i
+$ pnpm i
 ```
 
 # hacking
@@ -20,7 +20,3 @@ $ npm i
 ```
 
 # known issues
-
-### install by `yarn` is not working
-
-yarn doesn't recognize symlinked packages that contains version tags like `-alpha`, so you have to use `npm i` instead, then you can use `yarn` to run commands.

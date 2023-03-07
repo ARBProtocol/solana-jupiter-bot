@@ -17,15 +17,23 @@
 		"dev": "nodemon src/index.ts"
 	},
 	"dependencies": {
-		"@arb-protocol/cliui": "*",
-		"@arb-protocol/core": "*",
-		"millify": "^5.0.1"
+		"@arb-protocol/cliui": "workspace:*",
+		"@arb-protocol/core": "workspace:*",
+		"dotenv": "16.0.3",
+		"millify": "^5.0.1",
+		"zod": "^3.21.4"
 	},
 	"devDependencies": {
-		"eslint-config-custom": "*",
+		"@types/node": "^18.11.10",
+		"@typescript-eslint/eslint-plugin": "^5.45.0",
+		"@typescript-eslint/parser": "^5.45.0",
+		"eslint-config-custom": "workspace:*",
 		"nodemon": "^2.0.20",
 		"prettier": "2.8.0",
-		"ts-config": "*"
+		"ts-node": "^10.9.1",
+		"tsconfig": "workspace:*",
+		"tslint": "^6.1.3",
+		"typescript": "^4.9.3"
 	},
 	"engines": {
 		"node": ">=16.0.0"
