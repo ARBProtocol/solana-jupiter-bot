@@ -1,14 +1,9 @@
-import {
-	Jupiter,
-	Amm,
-	Address,
-	SwapResult,
-	TransactionError,
-} from "@jup-ag/core";
+import { Jupiter, Amm, TokenMintAddress, SwapResult } from "@jup-ag/core";
+import { TransactionError } from "@solana/web3.js";
 
 import { Keypair, SolanaConnection } from "../../web3";
 
-export { TOKEN_LIST_URL, Address, RouteInfo } from "@jup-ag/core";
+export { TOKEN_LIST_URL, TokenMintAddress, RouteInfo } from "@jup-ag/core";
 
 export type SwapSuccess = Extract<SwapResult, { txid: string }>;
 
@@ -43,7 +38,7 @@ type ExtensionKeys =
 
 export interface JupiterToken {
 	chainId?: number;
-	address: Address;
+	address: TokenMintAddress;
 	symbol?: string;
 	name?: string;
 	decimals?: number;

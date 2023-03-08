@@ -1,10 +1,10 @@
-import { Address } from "@jup-ag/core";
+import { TokenMintAddress } from "@jup-ag/core";
 import { Store } from "../store";
 import { getErrorMessage } from "../utils";
 import { PublicKey } from "../services/web3";
 
 // get token info by address
-export const getTokenInfo = (store: Store, address: Address) => {
+export const getTokenInfo = (store: Store, address: TokenMintAddress) => {
 	try {
 		let token;
 		const tokens = store.getState().bot.compatibleTokens;

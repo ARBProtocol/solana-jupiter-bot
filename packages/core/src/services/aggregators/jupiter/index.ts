@@ -2,7 +2,7 @@ export {
 	JupiterType as Jupiter,
 	createJupiter,
 	TOKEN_LIST_URL,
-	Address,
+	TokenMintAddress,
 	RouteInfo,
 	AmmsToExclude,
 	JupiterToken,
