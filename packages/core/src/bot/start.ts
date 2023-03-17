@@ -1,4 +1,5 @@
 import fs from "fs";
+import { logger } from "../logger";
 
 import {
 	createJupiter,
@@ -18,6 +19,7 @@ export const start = async (
 	config: ConfigRequired
 ) => {
 	try {
+		logger.info("start: starting bot");
 		// set bot status to "initializing"
 		setStatus("initializing");
 
@@ -93,6 +95,7 @@ export const start = async (
 			state.wallet.arbProtocolBalance = arbProtocolBalance;
 		});
 		setStatus("ready");
+		logger.info("start: bot started");
 	} catch (error) {
 		console.error(error);
 		return setStatus("!shutdown");

@@ -14,7 +14,7 @@ import { backOff } from "./back-off";
 import { ComputeRoutes, computeRoutes } from "./compute-routes";
 import { getBestRoute } from "./get-best-route";
 import { getTokenInfo } from "./get-token-Info";
-import { onReady } from "./listeners";
+import { onReady, onStatusChange } from "./listeners";
 import { onShutdown } from "./listeners/on-shutdown";
 import { createQueue } from "./queue";
 import { start } from "./start";
@@ -190,7 +190,7 @@ export const createBot = (config: ConfigRequired) => {
 	// listeners
 	onReady(bot);
 	onShutdown(bot);
-	// onStatusChange(bot); // logs every status change
+	onStatusChange(bot); // logs every status change
 
 	return {
 		...bot,
