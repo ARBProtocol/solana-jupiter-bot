@@ -1,4 +1,5 @@
 import fs from "fs";
+import { logger } from "../logger";
 
 export const writeJsonToTempDir = (
 	fileName: string | number,
@@ -8,6 +9,6 @@ export const writeJsonToTempDir = (
 		const path = `./temp/${fileName}.json`;
 		fs.writeFileSync(path, JSON.stringify(data, null, 2));
 	} catch (error) {
-		console.log(error);
+		logger.error(error);
 	}
 };

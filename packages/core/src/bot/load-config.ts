@@ -3,6 +3,7 @@ import { setToken } from "./tokens";
 import { createArray, JSBItoNumber, NumberToJSBI, numberToMin } from "../utils";
 import { SetStatus, ConfigRequired } from "./bot";
 import { createKeypair } from "../services/web3";
+import { logger } from "../logger";
 
 export const loadConfig = (
 	store: Store,
@@ -136,7 +137,7 @@ export const loadConfig = (
 		setStatus("configLoaded");
 	} catch (error) {
 		setStatus("configError");
-		console.error("loadConfig error", error);
+		logger.error("loadConfig error", error);
 		setStatus("!shutdown");
 	} finally {
 		setStatus("idle");

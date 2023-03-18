@@ -1,3 +1,4 @@
+import { logger } from "../logger";
 import { RouteInfo, SwapSuccess } from "../services/aggregators/jupiter";
 import { Store, Token } from "../store";
 import { NumberToJSBI, toDecimal, writeJsonToTempDir } from "../utils";
@@ -81,7 +82,9 @@ export const onSwapSuccess = async (
 	);
 
 	// set prev out amount
-	console.log(`setting prev out amount for ${outToken.symbol} to ${outAmount}`);
+	logger.debug(
+		`setting prev out amount for ${outToken.symbol} to ${outAmount}`
+	);
 	store.setState((state) => {
 		state.bot.prevOutAmount[outputAddress] = {
 			jsbi: NumberToJSBI(outAmount),

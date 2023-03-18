@@ -3,6 +3,7 @@ import { Store } from "../store";
 
 import { SwapSuccess } from "../services/aggregators/jupiter";
 import { writeJsonToTempDir } from "../utils";
+import { logger } from "../logger";
 
 export const getSwapResultFromSolscan = async (
 	store: Store,
@@ -40,35 +41,35 @@ export const getSwapResultFromSolscan = async (
 		const outputAddressString = outputAddress.toString();
 
 		if ("unknownTransfers" in tx) {
-			console.log("SOLSCAN - UnknownTransfers found");
+			logger.debug("SOLSCAN - UnknownTransfers found");
 			tx.unknownTransfers.forEach((transfer) => {
 				const tokenRelatedEvents = transfer.event.filter(({ tokenAddress }) => {
-					console.log("SOLSCAN - UnknownTransfers tokenAddress", tokenAddress);
+					logger.debug("SOLSCAN - UnknownTransfers tokenAddress", tokenAddress);
 					return (
 						tokenAddress === inputAddressString ||
 						tokenAddress === outputAddressString
 					);
 				});
 
-				console.log(
+				logger.debug(
 					"🚀 ~ file: getSwapResultFromSolscan.ts:62 ~ tx.unknownTransfers.forEach ~ tokenAddress === inputAddress.toString()",
 					inputAddressString,
 					outputAddressString
 				);
 				result.push(...tokenRelatedEvents);
 			});
-			console.log("SOLSCAN - UnknownTransfers found - DONE", result);
+			logger.debug("SOLSCAN - UnknownTransfers found - DONE", result);
 		}
 
 		if ("innerInstructions" in tx && tx.innerInstructions) {
-			console.log("SOLSCAN - innerInstructions found");
+			logger.debug("SOLSCAN - innerInstructions found");
 			tx.innerInstructions.forEach((instruction) => {
 				const tokenRelatedEvents = instruction.parsedInstructions.filter(
 					(instruction) => {
 						const extra = instruction.extra;
 						if (extra) {
 							const tokenAddress = extra.tokenAddress;
-							console.log(
+							logger.debug(
 								"SOLSCAN - innerInstructions tokenAddress, inputAddress, outputAddress",
 								tokenAddress,
 								inputAddressString,
@@ -87,17 +88,17 @@ export const getSwapResultFromSolscan = async (
 				);
 			});
 
-			console.log("SOLSCAN - innerInstructions found - DONE", result);
+			logger.debug("SOLSCAN - innerInstructions found - DONE", result);
 		}
 
-		console.log("SOLSCAN - result", result);
+		logger.debug("SOLSCAN - result", result);
 
 		if (result.length > 0) {
 			const inAmount = Number(
 				result.find((event) => event.sourceOwner === walletAddress)?.amount
 			);
 
-			console.log(
+			logger.debug(
 				"HERE",
 				result.find((event) => event.sourceOwner === walletAddress)?.amount
 			);
@@ -106,14 +107,14 @@ export const getSwapResultFromSolscan = async (
 				result.find((event) => event.destinationOwner === walletAddress)?.amount
 			);
 
-			console.log(
+			logger.debug(
 				"HERE",
 				result.find((event) => event.destinationOwner === walletAddress)?.amount
 			);
 
 			writeJsonToTempDir("txResult", result);
 
-			console.log(
+			logger.debug(
 				"🚀 ~ file: getSwapResultFromSolscan.ts:46 ~ tx.unknownTransfers.forEach ~ result",
 				result
 			);
@@ -136,7 +137,7 @@ export const getSwapResultFromSolscan = async (
 		}
 	}
 
-	console.error("SOLSCAN - No result found !!!!!!!!!!!!!!!!!!!");
+	logger.error("SOLSCAN - No result found !!!!!!!!!!!!!!!!!!!");
 
 	// set swap status to failed
 	store.setState((state) => {

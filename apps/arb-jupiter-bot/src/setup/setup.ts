@@ -1,7 +1,7 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
 import * as dotenv from "dotenv";
 
-import { createBot } from "@arb-protocol/core";
+import { createBot, logger } from "@arb-protocol/core";
 import { startCLIUI } from "@arb-protocol/cliui";
 
 // It's for testing right now
@@ -33,21 +33,24 @@ export const setup = async () => {
 				},
 				tokenB: {
 					// address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
-					address: "So11111111111111111111111111111111111111112", // SOL
+					// address: "So11111111111111111111111111111111111111112", // SOL
 					// address: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", // USDT
-					// address: "9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh", // ARB
+					address: "9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh", // ARB
+					// address: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", // Bonk
+					// address: "PRSMNsEPqhGVCH1TtWiJqPjJyh2cKrLostPZTNy1o5x", // PRISM
+					// address: "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh", // wBTC
 				},
 			},
 			strategy: {
-				tradeAmount: 0.05,
+				tradeAmount: 0.1,
 				rules: {
 					execute: {
 						above: {
-							potentialProfit: 0.05,
+							potentialProfit: 0.01,
 						},
 					},
 					slippage: {
-						bps: 0,
+						bps: 5,
 					},
 				},
 			},
@@ -65,7 +68,7 @@ export const setup = async () => {
 			 * This is for testing purposes only,
 			 * by default it's set to true and every custom console.log will be cleared
 			 */
-			allowClearConsole: true,
+			allowClearConsole: false,
 		});
 
 		onKeyPress("z", () => console.log("You pressed z, test ok!"));
@@ -83,6 +86,6 @@ export const setup = async () => {
 
 		return bot;
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 	}
 };

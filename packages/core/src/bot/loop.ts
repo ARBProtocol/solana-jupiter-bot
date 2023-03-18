@@ -1,3 +1,4 @@
+import { logger } from "../logger";
 import { Bot } from "./bot";
 
 export const loop = async (
@@ -6,10 +7,9 @@ export const loop = async (
 	{ iterations }: { iterations?: number } = {}
 ) => {
 	const onComputeRoutesError = async () => {
-		console.count("onComputeRoutesError");
-		console.log("🔥 onComputeRoutesError FROM SUBSCRIBER <----------------");
+		logger.info("🔥 onComputeRoutesError FROM SUBSCRIBER <----------------");
 
-		console.log(
+		logger.info(
 			`No best route found, backOff for ${
 				bot.store.getState().bot.backOff.ms / 1000
 			} seconds`
@@ -31,7 +31,7 @@ export const loop = async (
 		try {
 			await strategy();
 		} catch (e) {
-			// console.log("error in strategy", e);
+			logger.error(e, "error in strategy");
 		}
 
 		if (iterations) {

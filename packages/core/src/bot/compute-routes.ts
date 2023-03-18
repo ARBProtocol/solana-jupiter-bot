@@ -10,6 +10,7 @@ import {
 	sleep,
 	toDecimal,
 } from "../utils";
+import { logger } from "../logger";
 
 const rateLimiter = async (store: Store, setStatus: SetStatus) => {
 	const { lastIterationTimestamp, rateLimit, rateLimitPer } =
@@ -113,7 +114,7 @@ export const computeRoutes = async ({
 			throw new Error("computeRoutes: routesInfos is null");
 
 		if (routes.cached) {
-			console.warn("computeRoutes: routes are cached!");
+			logger.warn("computeRoutes: routes are cached!");
 		}
 
 		// store best route
@@ -180,11 +181,11 @@ export const computeRoutes = async ({
 		// todo: more robust error handling for every AMM, so the user can see which AMM is failing
 		const isGooseFxError = parsedError.includes("goosefx");
 		if (isGooseFxError) {
-			console.error(
+			logger.error(
 				"It's probably a GooseFX error, try to exclude it in the config and try again"
 			);
 		}
-		console.error(error);
+		logger.error(error);
 		throw error;
 	} finally {
 		store.setState((state) => {

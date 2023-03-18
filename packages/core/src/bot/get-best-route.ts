@@ -1,3 +1,4 @@
+import { logger } from "../logger";
 import { RouteInfo } from "../services/aggregators/jupiter";
 import { Store } from "../store";
 
@@ -35,6 +36,6 @@ export const getBestRoute = (
 
 		return routesInfos[0];
 	} catch (error) {
-		console.log("getBestRoute: error", error);
+		logger.error("getBestRoute: error", error);
 	}
 };

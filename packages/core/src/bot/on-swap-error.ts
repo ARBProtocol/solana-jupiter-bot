@@ -4,6 +4,7 @@ import { Store, Token } from "../store";
 import { storeSwapResultInHistory } from "./store-swap-results-in-history";
 import { SetStatus } from "./bot";
 import { writeJsonToTempDir } from "../utils";
+import { logger } from "../logger";
 
 export const onSwapError = (
 	store: Store,
@@ -15,7 +16,7 @@ export const onSwapError = (
 	outToken: Token,
 	txUUID: string
 ) => {
-	console.log(
+	logger.info(
 		"🚀 ~ file: onSwapFail.ts ~ line 5 ~ onSwapFail ~ swapResult",
 		swapResult
 	);
@@ -23,7 +24,7 @@ export const onSwapError = (
 	try {
 		writeJsonToTempDir(swapTimestamp, swapResult);
 	} catch (error) {
-		console.log(error);
+		logger.error(error);
 	}
 
 	// increase swap fail count & total count

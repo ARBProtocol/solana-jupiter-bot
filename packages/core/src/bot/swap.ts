@@ -1,4 +1,5 @@
 import { v4 as uuid } from "uuid";
+import { logger } from "../logger";
 
 import { Jupiter, RouteInfo } from "../services/aggregators/jupiter";
 import { Store, Token, TradeHistoryEntry } from "../store";
@@ -37,7 +38,7 @@ export const swap = async ({
 				throw new Error("swap: route does not exist");
 			}
 			route = currentRoute;
-			console.log("🚀 ~ file: swap.ts ~ line 30 ~ route", route);
+			logger.info("🚀 ~ file: swap.ts ~ line 30 ~ route", route);
 		}
 
 		// get inToken & outToken from store if not provided (unsafe)
@@ -145,7 +146,7 @@ export const swap = async ({
 
 		return { isSwapSuccess, swapResult };
 	} catch (error) {
-		console.log("🚀 ~ file: swap.ts:74 ~ error", error);
+		logger.error("🚀 ~ file: swap.ts:74 ~ error", error);
 		setStatus("swapFail");
 		return { error };
 	} finally {

@@ -1,3 +1,4 @@
+import { logger } from "../logger";
 import { Store } from "../store";
 import { sleep } from "../utils";
 import { SetStatus } from "./bot";
@@ -12,7 +13,7 @@ export const backOff = async (store: Store, setStatus: SetStatus) => {
 		backOffState.count >= backOffState.shutdownOnCount
 	) {
 		// log backOff exceeded
-		console.warn(`backOff reached max ${backOffState.shutdownOnCount} retries`);
+		logger.warn(`backOff reached max ${backOffState.shutdownOnCount} retries`);
 		return setStatus("!shutdown");
 	}
 

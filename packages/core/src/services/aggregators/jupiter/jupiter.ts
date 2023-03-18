@@ -1,5 +1,6 @@
 import { Jupiter, Amm, TokenMintAddress, SwapResult } from "@jup-ag/core";
 import { TransactionError } from "@solana/web3.js";
+import { logger } from "../../../logger";
 
 import { Keypair, SolanaConnection } from "../../web3";
 
@@ -79,7 +80,7 @@ export const createJupiter = async (
 		if (typeof e === "object" && "message" in e) {
 			// check if error is 403 || 401
 			if (e.message.includes("403") || e.message.includes("401")) {
-				console.error(`
+				logger.error(`
 			ERROR!
 
 			Could not connect with current RPC.
@@ -91,7 +92,7 @@ export const createJupiter = async (
 
 			// check if error is 503
 			if (e.message.includes("503")) {
-				console.error(`
+				logger.error(`
 			ERROR!
 
 			Could not connect with current RPC.
@@ -113,7 +114,7 @@ export const createJupiter = async (
 
 			// check if error is missing data from RPC with RegEx pattern for "Missing [\w\d]+"
 			if (e.message.match(/Missing [\w\d]+/)) {
-				console.error(`
+				logger.error(`
 			ERROR!
 			
 			Some data is missing from the RPC

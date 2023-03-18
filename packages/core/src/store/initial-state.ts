@@ -260,8 +260,8 @@ export const initialState: GlobalState = {
 				jsbi: JSBI.BigInt(0),
 			},
 		},
-		rateLimit: 1,
-		rateLimitPer: 1000,
+		rateLimit: 0,
+		rateLimitPer: 0,
 		lastIterationTimestamp: 0,
 	},
 	swaps: {

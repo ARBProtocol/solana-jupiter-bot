@@ -10,6 +10,7 @@
 		"build": "turbo run build",
 		"build --force": "turbo run build --force",
 		"start": "turbo run build && NODE_ENV=production pnpm -C ./apps/arb-jupiter-bot start",
+		"start:debug": "turbo run build && NODE_ENV=production LOG_LEVEL=debug pnpm -C ./apps/arb-jupiter-bot start",
 		"trade": "turbo run build && cd apps/arb-jupiter-bot && yarn start",
 		"dev": "cd apps/arb-jupiter-bot && yarn dev",
 		"lint": "turbo run lint",

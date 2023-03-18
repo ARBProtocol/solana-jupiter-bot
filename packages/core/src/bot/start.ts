@@ -97,7 +97,7 @@ export const start = async (
 		setStatus("ready");
 		logger.info("start: bot started");
 	} catch (error) {
-		console.error(error);
+		logger.error(error);
 		return setStatus("!shutdown");
 	}
 };

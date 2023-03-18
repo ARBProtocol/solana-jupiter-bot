@@ -1,3 +1,4 @@
+import { logger } from "../../logger";
 import { Store } from "../../store";
 
 export const swapRateLimiter = async (store: Store) => {
@@ -25,6 +26,6 @@ export const swapRateLimiter = async (store: Store) => {
 		}
 		return false;
 	} catch (error) {
-		console.log("🚀 ~ file: arbitrage.ts:93 ~ strategy ~ error", error);
+		logger.error("🚀 ~ file: arbitrage.ts:93 ~ strategy ~ error", error);
 	}
 };

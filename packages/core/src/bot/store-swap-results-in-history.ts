@@ -1,4 +1,5 @@
 import { RouteInfo, SwapResult } from "@jup-ag/core";
+import { logger } from "../logger";
 
 import { Store, Token, TradeHistoryEntry } from "../store";
 import { JSBItoNumber, toDecimal, writeJsonToTempDir } from "../utils";
@@ -92,6 +93,6 @@ export const storeSwapResultInHistory = (
 
 		writeJsonToTempDir("history", tradeHistory);
 	} catch (error) {
-		console.log("storeSwapResultInHistory error", error);
+		logger.error("storeSwapResultInHistory error", error);
 	}
 };
