@@ -26,6 +26,7 @@ export type Plugin<Bot> = (bot: Bot) => void;
 
 export type ConfigRequired = Omit<Config, "strategy" | "tokens"> & {
 	strategy: {
+		id: Config["strategy"]["id"];
 		tradeAmount: number | JSBI;
 		rules?: Partial<Config["strategy"]["rules"]>;
 	};

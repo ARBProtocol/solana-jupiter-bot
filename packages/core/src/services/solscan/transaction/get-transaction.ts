@@ -1,5 +1,6 @@
 import axios from "axios";
 import axiosRetry from "axios-retry";
+import { logger } from "../../../logger";
 import { sleep } from "../../../utils";
 import { SOLSCAN_API_BASE_URL } from "../constants";
 
@@ -23,7 +24,7 @@ export const getTransaction: GetTransaction = async (
 	count = 0,
 	max = 10
 ) => {
-	console.log("🚀 ~ file: getTransaction.ts:26 ~ txId", txId, count, max);
+	logger.info("🚀 ~ file: getTransaction.ts:26 ~ txId", txId, count, max);
 	try {
 		const url = SOLSCAN_API_BASE_URL + "/transaction/" + txId;
 		const response = await solscanApi.get(url);
@@ -44,7 +45,7 @@ export const getTransaction: GetTransaction = async (
 		if (error && typeof error === "object" && "message" in error) {
 			await sleep(count * 1500);
 
-			console.error("getTransaction", error?.message);
+			logger.error("getTransaction", error?.message);
 		}
 
 		if (count > max) {

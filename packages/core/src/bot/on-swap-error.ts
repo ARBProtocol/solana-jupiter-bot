@@ -16,17 +16,6 @@ export const onSwapError = (
 	outToken: Token,
 	txUUID: string
 ) => {
-	logger.info(
-		"🚀 ~ file: onSwapFail.ts ~ line 5 ~ onSwapFail ~ swapResult",
-		swapResult
-	);
-
-	try {
-		writeJsonToTempDir(swapTimestamp, swapResult);
-	} catch (error) {
-		logger.error(error);
-	}
-
 	// increase swap fail count & total count
 	store.setState((state) => {
 		state.swaps.total++;

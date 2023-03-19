@@ -41,6 +41,10 @@ export const loadConfig = (
 		setStatus("loadingStrategy");
 		setToken(store, config.tokens.tokenA.address);
 
+		store.setState((state) => {
+			state.config.strategy.id = config.strategy.id;
+		});
+
 		if (config.tokens.tokenB) {
 			setToken(store, config.tokens.tokenB.address);
 		}

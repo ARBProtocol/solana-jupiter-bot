@@ -152,6 +152,7 @@ export interface Rules {
 }
 
 export interface StrategyConfig {
+	id: string;
 	tradeAmount: {
 		jsbi: JSBI;
 		number: number;
@@ -325,6 +326,7 @@ export const initialState: GlobalState = {
 		rpcURL: null,
 		tokens: {},
 		strategy: {
+			id: "not-set",
 			tradeAmount: {
 				jsbi: JSBI.BigInt(0),
 				number: 0,

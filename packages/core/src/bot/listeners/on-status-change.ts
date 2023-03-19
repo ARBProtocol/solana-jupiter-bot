@@ -3,8 +3,6 @@ import { logger } from "../../logger";
 
 export const onStatusChange = async (bot: Omit<Bot, "loadPlugin">) => {
 	bot.onStatus("*", async ({ status, prevStatus }) => {
-		logger.debug(
-			`🔥 onStatusChange FROM SUBSCRIBER <---------------- ${prevStatus} -> ${status}`
-		);
+		logger.debug(`STATUS: ${prevStatus} -> ${status}`);
 	});
 };

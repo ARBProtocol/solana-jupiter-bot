@@ -1,6 +1,8 @@
 import { Bot, loop } from "../../bot";
 import { getBestRoute } from "../../bot/get-best-route";
 import { swapRateLimiter } from "../../bot/limiters";
+import { logger } from "../../logger";
+import { JSBI, writeJsonToTempDir } from "../../utils";
 import { setupInitialValues } from "./setup-initial-values";
 
 export const pingPong = async (bot: Omit<Bot, "loadPlugin">) => {
@@ -16,7 +18,7 @@ export const pingPong = async (bot: Omit<Bot, "loadPlugin">) => {
 
 	// switch tokens on swapSuccess status
 	bot.onStatus("swapSuccess", ({ store }) => {
-		console.log("switching tokens!");
+		logger.info("switching tokens!");
 		// switch tokens
 		store.setState((state) => {
 			const currentInToken = state.bot.currentInToken;
@@ -121,25 +123,49 @@ export const pingPong = async (bot: Omit<Bot, "loadPlugin">) => {
 
 		if (!threshold) throw new Error("pingPong: threshold is undefined");
 
-		if (threshold && potentialProfit > threshold) {
+		if (potentialProfit > threshold) {
 			// check if swap rate limiter is active
 			const isLimiterActive = await swapRateLimiter(bot.store);
 
-			if (!isLimiterActive) {
-				bot.store.setState((state) => {
-					state.swaps.rateLimiter.value++;
-				});
+			try {
+				if (!isLimiterActive) {
+					// This is not working in jup v4 (read only)
+					// bestRoute.otherAmountThreshold = prevOutAmount.jsbi;
 
-				// execute swap
-				bot.swap({
-					inToken: currentInToken,
-					outToken: currentOutToken,
-					route: bestRoute,
-				});
+					const customBestRoute = { ...bestRoute };
+					customBestRoute.otherAmountThreshold = prevOutAmount.jsbi;
+
+					// calculate auto slippage known as "ProfitOrKIll" strategy
+					// auto slippage should prevent loss by requiring at least previous out amount of the output token
+					const outAmount = bot.utils.JSBItoNumber(bestRoute.outAmount);
+					const outAmountAsDecimal = bot.utils.toDecimal(
+						outAmount,
+						currentOutToken.decimals
+					);
+
+					const diff = outAmountAsDecimal.minus(prevOutAmount.decimal);
+					const autoSlippage = diff.div(prevOutAmount.decimal).times(100);
+					const autoSlippageBps = autoSlippage.times(100).round().toNumber();
+
+					customBestRoute.slippageBps = autoSlippageBps;
+
+					// execute swap
+					await bot.swap({
+						inToken: currentInToken,
+						outToken: currentOutToken,
+						route: customBestRoute,
+					});
+
+					bot.store.setState((state) => {
+						state.swaps.rateLimiter.value++;
+					});
+				}
+			} catch (error) {
+				logger.error(error);
 			}
 		}
 	};
 
 	// loop
-	loop(bot, strategy);
+	await loop(bot, strategy);
 };
