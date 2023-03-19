@@ -1,8 +1,9 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
 import * as dotenv from "dotenv";
 
-import { createBot, logger } from "@arb-protocol/core";
+import { createBot, logger, ConfigRequired } from "@arb-protocol/core";
 import { startCLIUI } from "@arb-protocol/cliui";
+import fs from "fs";
 
 // It's for testing right now
 export const setup = async () => {
@@ -10,53 +11,61 @@ export const setup = async () => {
 		// load .env file
 		dotenv.config();
 
+		// fs get config.json
+		const config: ConfigRequired = JSON.parse(fs.readFileSync("./config.json", "utf8"));
+
 		// create bot
 		const bot = createBot({
+			...config,
 			privateKey: process.env.SOLANA_WALLET_PRIVATE_KEY as string,
 			rpcURL: process.env.DEFAULT_RPC as string,
-			ammsToExclude: {
-				GooseFX: true,
-				Serum: true,
-			},
-			backOff: {
-				enabled: true,
-				shutdownOnCount: 3,
-			},
-			// rpcWSS: (process.env.DEFAULT_RPC_WSS as string) || undefined,
-			tokens: {
-				tokenA: {
-					address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
-					// address: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", // USDT
-					// address: "CDJWUqTcYTVAKXAVXoQZFes5JUFc7owSeq7eMQcDSbo5", // renBTC
-					// address: "So11111111111111111111111111111111111111112", // SOL
-					// address: "9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh", // ARB
-				},
-				tokenB: {
-					// address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
-					// address: "So11111111111111111111111111111111111111112", // SOL
-					// address: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", // USDT
-					address: "9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh", // ARB
-					// address: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", // Bonk
-					// address: "PRSMNsEPqhGVCH1TtWiJqPjJyh2cKrLostPZTNy1o5x", // PRISM
-					// address: "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh", // wBTC
-				},
-			},
-			strategy: {
-				tradeAmount: 0.1,
-				rules: {
-					execute: {
-						above: {
-							potentialProfit: 0.01,
-						},
-					},
-					slippage: {
-						bps: 5,
-					},
-				},
-			},
-			// rpcWSS:
-			// 	"wss://silent-convincing-night.solana-mainnet.quiknode.pro/1b47blahblahblah40e4/",
 		});
+		// const bot = createBot({
+		// 	privateKey: process.env.SOLANA_WALLET_PRIVATE_KEY as string,
+		// 	rpcURL: process.env.DEFAULT_RPC as string,
+		// 	ammsToExclude: {
+		// 		GooseFX: true,
+		// 		Serum: true,
+		// 	},
+		// 	backOff: {
+		// 		enabled: true,
+		// 		shutdownOnCount: 3,
+		// 	},
+		// 	// rpcWSS: (process.env.DEFAULT_RPC_WSS as string) || undefined,
+		// 	tokens: {
+		// 		tokenA: {
+		// 			address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
+		// 			// address: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", // USDT
+		// 			// address: "CDJWUqTcYTVAKXAVXoQZFes5JUFc7owSeq7eMQcDSbo5", // renBTC
+		// 			// address: "So11111111111111111111111111111111111111112", // SOL
+		// 			// address: "9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh", // ARB
+		// 		},
+		// 		tokenB: {
+		// 			// address: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", // USDC
+		// 			// address: "So11111111111111111111111111111111111111112", // SOL
+		// 			// address: "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB", // USDT
+		// 			address: "9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh", // ARB
+		// 			// address: "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", // Bonk
+		// 			// address: "PRSMNsEPqhGVCH1TtWiJqPjJyh2cKrLostPZTNy1o5x", // PRISM
+		// 			// address: "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh", // wBTC
+		// 		},
+		// 	},
+		// 	strategy: {
+		// 		tradeAmount: 0.1,
+		// 		rules: {
+		// 			execute: {
+		// 				above: {
+		// 					potentialProfit: 0.01,
+		// 				},
+		// 			},
+		// 			slippage: {
+		// 				bps: 5,
+		// 			},
+		// 		},
+		// 	},
+		// 	// rpcWSS:
+		// 	// 	"wss://silent-convincing-night.solana-mainnet.quiknode.pro/1b47blahblahblah40e4/",
+		// });
 
 		if (!bot) throw new Error("Bot failed to start");
 

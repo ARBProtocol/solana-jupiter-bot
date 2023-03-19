@@ -3,23 +3,24 @@
 	"amsToExclude": ["GoseFX", "Serum"],
 	"tokens": {
 		"tokenA": {
-			"address": "0x0000000000000000000000000000000000000000"
+			"address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
 		},
 		"tokenB": {
-			"address": "0x0000000000000000000000000000000000000000"
+			"address": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
 		}
 	},
 	"backOff": {
 		"enabled": true,
 		"shutdownOnCount": 3,
-		"ms": 10000
+		"ms": 60000
 	},
 	"strategy": {
-		"tradeAmount": 500,
+		"id": "ping-pong",
+		"tradeAmount": 0.15,
 		"rules": {
 			"execute": {
 				"above": {
-					"potentialProfit": 1
+					"potentialProfit": 0.01
 				}
 			},
 			"slippage": {

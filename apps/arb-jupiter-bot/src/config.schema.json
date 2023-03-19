@@ -53,6 +53,10 @@
 		"strategy": {
 			"type": "object",
 			"properties": {
+				"id": {
+					"description": "This id will be used to run trading strategy.\nBuilt-in: `ping-pong`, `arbitrage`",
+					"type": "string"
+				},
 				"tradeAmount": {
 					"type": "number"
 				},
