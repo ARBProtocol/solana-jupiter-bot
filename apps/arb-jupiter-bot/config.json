@@ -29,6 +29,6 @@
 		}
 	},
 	"cliui": {
-		"allowClearConsole": false
+		"allowClearConsole": true
 	}
 }

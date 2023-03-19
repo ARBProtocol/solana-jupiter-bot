@@ -12,7 +12,11 @@ export const setup = async () => {
 		dotenv.config();
 
 		// fs get config.json
-		const config: ConfigRequired = JSON.parse(fs.readFileSync("./config.json", "utf8"));
+		const config: ConfigRequired & {
+			cliui: {
+				allowClearConsole?: boolean;
+			};
+		} = JSON.parse(fs.readFileSync("./config.json", "utf8"));
 
 		// create bot
 		const bot = createBot({
@@ -77,7 +81,7 @@ export const setup = async () => {
 			 * This is for testing purposes only,
 			 * by default it's set to true and every custom console.log will be cleared
 			 */
-			allowClearConsole: false,
+			allowClearConsole: config.cliui?.allowClearConsole,
 		});
 
 		onKeyPress("z", () => console.log("You pressed z, test ok!"));
