@@ -1,0 +1,22 @@
+{
+  "tokens": {
+    "tokenA": {
+      "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    },
+    "tokenB": {
+      "address": "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+    }
+  },
+  "strategy": {
+    "id": "ping-pong",
+    "tradeAmount": 1,
+    "rules": {
+      "execute": {
+        "above": {
+          "potentialProfit": 1
+        }
+      }
+    }
+  },
+  "backOff": {}
+}
