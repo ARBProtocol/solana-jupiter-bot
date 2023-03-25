@@ -2,8 +2,6 @@ import { logger } from "../logger";
 import { RouteInfo } from "../services/aggregators/jupiter";
 import { Store } from "../store";
 
-import { writeJsonToTempDir } from "../utils";
-
 export const getBestRoute = (
 	store: Store,
 	routes?: {
@@ -17,8 +15,6 @@ export const getBestRoute = (
 			throw new Error("getBestRoute: routesInfos is null");
 
 		const { routesInfos } = routes;
-
-		writeJsonToTempDir("routes", routesInfos[0]);
 
 		if (routesInfos.length === 0)
 			throw new Error("getBestRoute: routes is empty");

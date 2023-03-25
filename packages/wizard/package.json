@@ -24,9 +24,9 @@
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"eslint": "^8.29.0",
-		"eslint-config-custom": "0.0.0",
+		"eslint-config-custom": "1.0.0-alpha.1",
 		"ts-node": "^10.9.1",
-		"tsconfig": "undefined",
+		"tsconfig": "1.0.0-alpha.1",
 		"typescript": "5.0.2"
 	}
 }

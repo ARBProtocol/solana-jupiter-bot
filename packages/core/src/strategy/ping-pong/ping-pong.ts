@@ -2,7 +2,6 @@ import { Bot, loop } from "../../bot";
 import { getBestRoute } from "../../bot/get-best-route";
 import { swapRateLimiter } from "../../bot/limiters";
 import { logger } from "../../logger";
-import { JSBI, writeJsonToTempDir } from "../../utils";
 import { setupInitialValues } from "./setup-initial-values";
 
 export const pingPong = async (bot: Omit<Bot, "loadPlugin">) => {

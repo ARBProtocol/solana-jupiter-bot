@@ -28,7 +28,7 @@ export const onSwapSuccess = async (
 		decimals: outTokenDecimals,
 	} = outToken;
 
-	writeJsonToTempDir(swapTimestamp, swapResult);
+	// writeJsonToTempDir(swapTimestamp, swapResult);
 
 	// increase swap count & success count
 	store.setState((state) => {

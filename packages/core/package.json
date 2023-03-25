@@ -38,7 +38,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"eslint": "^8.29.0",
-		"eslint-config-custom": "workspace:*",
+		"eslint-config-custom": "1.0.0-alpha.1",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-config-standard": "^17.0.0",
 		"eslint-plugin-import": "^2.26.0",
@@ -48,7 +48,7 @@
 		"nodemon": "^2.0.20",
 		"prettier": "^2.8.4",
 		"ts-node": "^10.9.1",
-		"tsconfig": "workspace:*",
+		"tsconfig": "1.0.0-alpha.1",
 		"typescript": "5.0.2"
 	},
 	"engines": {

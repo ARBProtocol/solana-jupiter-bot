@@ -3,8 +3,6 @@ import { Store, Token } from "../store";
 
 import { storeSwapResultInHistory } from "./store-swap-results-in-history";
 import { SetStatus } from "./bot";
-import { writeJsonToTempDir } from "../utils";
-import { logger } from "../logger";
 
 export const onSwapError = (
 	store: Store,

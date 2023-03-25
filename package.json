@@ -14,16 +14,11 @@
 		"trade": "turbo run build && cd apps/arb-jupiter-bot && yarn start",
 		"dev": "cd apps/arb-jupiter-bot && yarn dev",
 		"lint": "turbo run lint",
-		"format": "prettier --write \"**/*.{ts,tsx,md}\""
+		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
+		"postinstall": "manypkg check"
 	},
 	"engines": {
 		"node": ">=16.0.0"
-	},
-	"devDependencies": {
-		"@changesets/cli": "^2.26.0",
-		"@manypkg/cli": "^0.19.2",
-		"prettier": "2.8.1",
-		"turbo": "latest"
 	},
 	"packageManager": "pnpm@7.27.1",
 	"maintainers": [
@@ -31,5 +26,11 @@
 			"name": "Paweł Mioduszewski",
 			"email": "pmioduszewski@dobrebranie.pl"
 		}
-	]
+	],
+	"dependencies": {
+		"@changesets/cli": "^2.26.0",
+		"@manypkg/cli": "^0.20.0",
+		"prettier": "^2.8.4",
+		"turbo": "latest"
+	}
 }
