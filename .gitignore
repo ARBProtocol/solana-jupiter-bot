@@ -34,3 +34,7 @@ yarn-error.log*
 
 # dist
 dist
+
+# Bot config
+apps/arb-jupiter-bot/config.json
+packages/wizard/config.json

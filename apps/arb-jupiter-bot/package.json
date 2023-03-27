@@ -14,11 +14,13 @@
 		"build": "tsc",
 		"lint": "eslint --ext .ts src",
 		"start": "node dist/index.js",
+		"wizard": "node dist/run-wizard.js",
 		"dev": "nodemon src/index.ts"
 	},
 	"dependencies": {
 		"@arb-protocol/cliui": "1.0.0-alpha.1",
 		"@arb-protocol/core": "1.0.0-alpha.1",
+		"@arb-protocol/wizard": "1.0.0-alpha.1",
 		"dotenv": "16.0.3",
 		"file-stream-rotator": "^1.0.0",
 		"millify": "^5.0.1"

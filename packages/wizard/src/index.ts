@@ -24,22 +24,10 @@ type Token = {
 	tags: string[];
 };
 
-const main = async () => {
+export const runWizard = async () => {
 	console.log();
+
 	intro("Welcome to Arb-Solana-Bot Config Wizard!");
-
-	const experienceLevel = await select({
-		message: "What is your experience level?",
-		options: [
-			{ value: "beginner", label: "Beginner" },
-			{ value: "intermediate", label: "Intermediate" },
-		],
-	});
-
-	if (isCancel(experienceLevel)) {
-		cancel("Operation cancelled");
-		return process.exit(0);
-	}
 
 	const loadingTokens = spinner();
 	loadingTokens.start("Loading tokens...");
@@ -54,6 +42,19 @@ const main = async () => {
 	}
 
 	loadingTokens.stop(`Loaded ${jupiterTokens.length} tokens`);
+
+	const experienceLevel = await select({
+		message: "What is your experience level?",
+		options: [
+			{ value: "beginner", label: "Beginner" },
+			{ value: "intermediate", label: "Intermediate" },
+		],
+	});
+
+	if (isCancel(experienceLevel)) {
+		cancel("Operation cancelled");
+		return process.exit(0);
+	}
 
 	const tokenASymbol = await text({
 		message: "What is the token A?",
@@ -229,8 +230,12 @@ const main = async () => {
 		return process.exit(0);
 	}
 
-	type Config = Omit<ConfigRequired, "privateKey" | "ammsToExclude" | "rpcURL">;
+	type Config = Omit<ConfigRequired, "privateKey" | "ammsToExclude" | "rpcURL"> & {
+		$schema: string;
+	};
+
 	const config: Config = {
+		$schema: "./src/config.schema.json",
 		tokens: {
 			tokenA: { address: tokenA?.address },
 			tokenB: { address: tokenB?.address },
@@ -252,4 +257,4 @@ const main = async () => {
 	outro("Config generated");
 };
 
-main().catch(console.error);
+// main().catch(console.error);
