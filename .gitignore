@@ -16,6 +16,7 @@ build
 # misc
 .DS_Store
 *.pem
+*.bak
 
 # debug
 npm-debug.log*
@@ -36,5 +37,5 @@ yarn-error.log*
 dist
 
 # Bot config
-apps/arb-jupiter-bot/config.json
+apps/arb-solana-bot/config.json
 packages/wizard/config.json

@@ -1,5 +1,5 @@
 {
-	"name": "@arb-protocol/arb-jupiter-bot",
+	"name": "@arb-protocol/arb-solana-bot",
 	"version": "1.0.0-alpha.1",
 	"license": "MIT",
 	"description": "Arb Jupiter Bot | Solana Trading Bot",

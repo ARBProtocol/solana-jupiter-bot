@@ -1,5 +1,5 @@
 {
-	"name": "arb-jupiter-bot",
+	"name": "arb-solana-bot",
 	"description": "Arb Jupiter Bot Turborepo",
 	"private": true,
 	"repository": {
@@ -9,11 +9,11 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build --force": "turbo run build --force",
-		"start": "turbo run build && NODE_ENV=production pnpm -C ./apps/arb-jupiter-bot start",
-		"wizard": "turbo run build && NODE_ENV=production pnpm -C ./apps/arb-jupiter-bot wizard",
-		"start:debug": "turbo run build && NODE_ENV=production DEBUG=true LOG_LEVEL=debug pnpm -C ./apps/arb-jupiter-bot start",
-		"trade": "turbo run build && cd apps/arb-jupiter-bot && yarn start",
-		"dev": "cd apps/arb-jupiter-bot && yarn dev",
+		"start": "turbo run build && NODE_ENV=production pnpm -C ./apps/arb-solana-bot start",
+		"wizard": "turbo run build && NODE_ENV=production pnpm -C ./apps/arb-solana-bot wizard",
+		"start:debug": "turbo run build && NODE_ENV=production DEBUG=true LOG_LEVEL=debug pnpm -C ./apps/arb-solana-bot start",
+		"trade": "turbo run build && cd apps/arb-solana-bot && yarn start",
+		"dev": "cd apps/arb-solana-bot && yarn dev",
 		"lint": "turbo run lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
 		"postinstall": "manypkg check"

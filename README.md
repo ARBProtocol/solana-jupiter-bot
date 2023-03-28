@@ -17,11 +17,11 @@ $ pnpm i
       This will (turbo) build && run the bot.
 
     OR
-    $ cd apps/arb-jupiter-bot && yarn|npm|pnpm start
+    $ cd apps/arb-solana-bot && yarn|npm|pnpm start
       This will run the bot.
 
       For now it will only run ping-pong strategy for testing purposes.
-      You can play with the setup.ts in the apps/arb-jupiter-bot directory.
+      You can play with the setup.ts in the apps/arb-solana-bot directory.
 ```
 
 # known issues
