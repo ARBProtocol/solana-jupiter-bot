@@ -105,5 +105,5 @@
 			}
 		}
 	},
-	"required": ["ammsToExclude", "backOff", "tokens", "strategy", "cliui"]
+	"required": ["backOff", "tokens", "strategy", "cliui"]
 }
