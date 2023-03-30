@@ -12,7 +12,7 @@ export const start = async () => {
 		dotenv.config();
 
 		// if there is no config.json file, run the wizard that will generate one
-		if (!fs.existsSync("./config.json")) runWizard();
+		if (!fs.existsSync("./config.json")) await runWizard();
 
 		// fs get config.json
 		const config: ConfigRequired & {
@@ -38,6 +38,9 @@ export const start = async () => {
 			 */
 			allowClearConsole: config.cliui?.allowClearConsole,
 		});
+
+		// start bot
+		await bot.start();
 	} catch (error) {
 		logger.error(error);
 	}
