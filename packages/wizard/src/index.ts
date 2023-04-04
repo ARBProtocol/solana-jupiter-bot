@@ -134,6 +134,16 @@ export const runWizard = async () => {
 				if (slippage > 100) return "Please enter a number less than 100";
 			},
 		});
+
+		if (isCancel(slippage)) {
+			cancel("Operation cancelled");
+			return process.exit(0);
+		}
+
+		if (!slippage) {
+			cancel("Slippage is invalid");
+			return process.exit(1);
+		}
 	}
 
 	const tradeAmount = await text({
@@ -230,8 +240,9 @@ export const runWizard = async () => {
 		return process.exit(0);
 	}
 
-	type Config = Omit<ConfigRequired, "privateKey" | "ammsToExclude" | "rpcURL"> & {
+	type Config = Omit<ConfigRequired, "privateKey" | "rpcURL"> & {
 		$schema: string;
+		cliui: { allowClearConsole: boolean };
 	};
 
 	const config: Config = {
@@ -243,12 +254,18 @@ export const runWizard = async () => {
 		strategy: {
 			id: "ping-pong",
 			tradeAmount: parseFloat(tradeAmount),
-			rules: { execute: { above: { potentialProfit: parseFloat(profitThreshold) } } },
+			rules: {
+				execute: { above: { potentialProfit: parseFloat(profitThreshold) } },
+				slippage: slippage ? { bps: parseInt((parseFloat(slippage) * 100).toFixed(0)) } : undefined,
+			},
 		},
 		backOff: {
 			enabled: features?.includes("backOff"),
 			ms: (backOffTime && parseInt(backOffTime) * 1000) || undefined,
 			shutdownOnCount: (backOffShutdownOnCount && parseInt(backOffShutdownOnCount)) || undefined,
+		},
+		cliui: {
+			allowClearConsole: true,
 		},
 	};
 
@@ -257,4 +274,5 @@ export const runWizard = async () => {
 	outro("Config generated");
 };
 
+// development only
 // main().catch(console.error);
