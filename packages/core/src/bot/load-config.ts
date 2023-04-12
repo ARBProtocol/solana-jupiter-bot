@@ -14,6 +14,13 @@ export const loadConfig = (
 		// set bot status to "loadingConfig"
 		setStatus("loadingConfig");
 
+		// check if config is valid
+		if (!config) {
+			throw new Error("loadConfig: config is undefined");
+		}
+
+		// TODO: check if config is valid, maybe use zod?
+
 		// set RPC
 		store.setState((state) => {
 			state.config.rpcURL = config.rpcURL;
