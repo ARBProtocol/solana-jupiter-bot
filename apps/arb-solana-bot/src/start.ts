@@ -8,6 +8,22 @@ import fs from "fs";
 
 export const start = async () => {
 	try {
+		// if there is no .env file, throw error
+		if (!fs.existsSync("./.env")) {
+			console.log(`
+			No .env file found!
+
+			# What to do?
+			- copy .env.example to .env
+			- fill in the values correctly
+
+			----
+			[CTRL]+[C] to exit
+			
+			`);
+			throw new Error(`No .env file found!`);
+		}
+
 		// load .env file
 		dotenv.config();
 
