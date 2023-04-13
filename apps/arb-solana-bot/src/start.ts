@@ -30,6 +30,9 @@ export const start = async () => {
 		// if there is no config.json file, run the wizard that will generate one
 		if (!fs.existsSync("./config.json")) await runWizard();
 
+		// if there is no temp directory, create it
+		if (!fs.existsSync("./temp")) fs.mkdirSync("./temp");
+
 		// fs get config.json
 		const config: ConfigRequired & {
 			cliui: {
