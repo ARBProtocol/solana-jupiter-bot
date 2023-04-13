@@ -118,7 +118,7 @@ export const pingPong = async (bot: Omit<Bot, "loadPlugin">) => {
 
 		// execute swap if potential profit is above threshold
 		const threshold =
-			getState().config.strategy.rules?.execute?.above?.potentialProfit;
+			getState().config.strategy.rules.execute?.above?.potentialProfit;
 
 		if (!threshold) throw new Error("pingPong: threshold is undefined");
 
@@ -148,6 +148,8 @@ export const pingPong = async (bot: Omit<Bot, "loadPlugin">) => {
 
 					customBestRoute.slippageBps = autoSlippageBps;
 
+					logger.debug(`autoSlippage: ${autoSlippageBps} bps`);
+
 					// execute swap
 					await bot.swap({
 						inToken: currentInToken,
@@ -157,6 +159,7 @@ export const pingPong = async (bot: Omit<Bot, "loadPlugin">) => {
 
 					bot.store.setState((state) => {
 						state.swaps.rateLimiter.value++;
+						state.config.strategy.rules.slippage.bps = autoSlippageBps;
 					});
 				}
 			} catch (error) {

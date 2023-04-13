@@ -90,6 +90,7 @@ export const loadConfig = (
 		const rules = {
 			execute: {},
 			slippage: {
+				enableAutoSlippage: false,
 				bps: 0,
 			},
 		};

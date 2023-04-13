@@ -32,6 +32,18 @@ PRICE: ${state.bot.price.current.decimal.toFixed(9)}
 IN AMOUNT: ${state.routes.currentRoute.input.amount.decimal}
 OUT AMOUNT: ${state.routes.currentRoute.output.amount.decimal}
 TRADE AMOUNT: ${state.config.strategy.tradeAmount.number}
+PROFIT THRESHOLD: ${state.config.strategy.rules.execute.above?.potentialProfit} %
+SLIPPAGE: ${
+			state.config.strategy.rules?.slippage?.enableAutoSlippage
+				? `AUTO (${
+						state.config.strategy.rules?.slippage?.bps
+							? state.config.strategy.rules?.slippage?.bps / 100 + " %"
+							: ""
+				  }%)`
+				: state.config.strategy.rules?.slippage?.bps
+				? (state.config.strategy.rules?.slippage?.bps / 100).toFixed(2) + " %"
+				: ""
+		}
 SUCCESS: ${state.swaps.success} / FAIL: ${state.swaps.fail} / TOTAL: ${
 			state.swaps.total
 		} / SUCCESS RATE: ${state.swaps.successRate}

@@ -147,6 +147,7 @@ export interface Rules {
 		};
 	};
 	slippage: {
+		enableAutoSlippage: boolean;
 		bps: number;
 	};
 }
@@ -157,7 +158,7 @@ export interface StrategyConfig {
 		jsbi: JSBI;
 		number: number;
 	};
-	rules?: Rules;
+	rules: Rules;
 }
 
 type PrivateKey = string;
@@ -334,6 +335,7 @@ export const initialState: GlobalState = {
 			rules: {
 				execute: {},
 				slippage: {
+					enableAutoSlippage: false,
 					bps: 0,
 				},
 			},

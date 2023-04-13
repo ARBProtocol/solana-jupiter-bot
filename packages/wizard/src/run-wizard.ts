@@ -235,7 +235,7 @@ export const runWizard = async () => {
 		message: "Confirm config?",
 	});
 
-	if (isCancel(confirmConfig)) {
+	if (isCancel(confirmConfig) || !confirmConfig) {
 		cancel("Operation cancelled");
 		return process.exit(0);
 	}
@@ -256,7 +256,12 @@ export const runWizard = async () => {
 			tradeAmount: parseFloat(tradeAmount),
 			rules: {
 				execute: { above: { potentialProfit: parseFloat(profitThreshold) } },
-				slippage: slippage ? { bps: parseInt((parseFloat(slippage) * 100).toFixed(0)) } : undefined,
+				slippage: slippage
+					? {
+							bps: parseInt((parseFloat(slippage) * 100).toFixed(0)),
+							enableAutoSlippage: slippageStrategy === "auto",
+					  }
+					: undefined,
 			},
 		},
 		backOff: {
