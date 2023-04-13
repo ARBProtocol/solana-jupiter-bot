@@ -5,6 +5,7 @@ import { UI, potentialProfitChart, priceChart } from "./cliui";
 import { InfoBox } from "./components/Info-box";
 import chalk from "chalk";
 import { TopBar } from "./components/top-bar";
+import { miniMode } from "./mini-mode";
 
 export const updateUI = (
 	ui: UI,
@@ -57,6 +58,8 @@ export const updateUI = (
 			});
 			ui.div(state.wallet.address || "There is no wallet address in the state");
 			break;
+		case "mini":
+			ui.div(miniMode(state));
 		// case "logs":
 		// TODO: maybe Pino logs (separate thread)
 	}

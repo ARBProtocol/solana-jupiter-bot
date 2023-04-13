@@ -1,6 +1,6 @@
 import { createCustomStore } from "@arb-protocol/core";
 
-export type UIScreen = "main" | "config" | "wallet" | "logs";
+export type UIScreen = "main" | "config" | "wallet" | "logs" | "mini";
 
 interface UIState {
 	isUpdating: boolean;

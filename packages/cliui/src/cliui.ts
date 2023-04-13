@@ -29,7 +29,8 @@ const refreshUI = (store: Bot["store"], ui: UI, allowClearConsole: boolean) => {
 	// uiStore.setState((uiState) => {
 	// 	uiState.lastOutput = uiOutput;
 	// });
-	if (allowClearConsole) console.clear();
+	const currentScreen = uiStore.getState().currentScreen;
+	if (allowClearConsole && currentScreen !== "mini") console.clear();
 	console.log(uiOutput);
 
 	return ui;
@@ -110,9 +111,14 @@ const setCurrentScreen = ({
 
 const startStateSubscription = (ui: UI, store: Bot["store"], allowClearConsole: boolean) => {
 	// screens management
-	keyboard.onKeyPress("m", () =>
-		setCurrentScreen({ screenKey: "main", ui, store, allowClearConsole })
-	);
+	keyboard.onKeyPress("m", () => {
+		const currentScreen = uiStore.getState().currentScreen;
+		if (currentScreen === "main") {
+			setCurrentScreen({ screenKey: "mini", ui, store, allowClearConsole });
+		} else {
+			setCurrentScreen({ screenKey: "main", ui, store, allowClearConsole });
+		}
+	});
 
 	keyboard.onKeyPress("c", () =>
 		setCurrentScreen({ screenKey: "config", ui, store, allowClearConsole })
