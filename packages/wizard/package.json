@@ -20,7 +20,7 @@
 	"dependencies": {
 		"@arb-protocol/core": "1.0.0-alpha.1",
 		"@clack/prompts": "^0.6.3",
-		"@jup-ag/core": "4.0.0-beta.15",
+		"@jup-ag/core": "4.0.0-beta.16",
 		"axios": "1.1.3"
 	},
 	"devDependencies": {
