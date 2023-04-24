@@ -60,6 +60,8 @@ export const pingPong = async (bot: Omit<Bot, "loadPlugin">) => {
 
 		// get slippage
 		const slippageBps = getState().config.strategy.rules?.slippage.bps || 0;
+		const enableAutoSlippage =
+			getState().config.strategy.rules?.slippage.enableAutoSlippage || false;
 
 		/**
 		 * JUPITER
@@ -128,38 +130,50 @@ export const pingPong = async (bot: Omit<Bot, "loadPlugin">) => {
 
 			try {
 				if (!isLimiterActive) {
-					// This is not working in jup v4 (read only)
-					// bestRoute.otherAmountThreshold = prevOutAmount.jsbi;
+					let route = bestRoute;
 
-					const customBestRoute = { ...bestRoute };
-					customBestRoute.otherAmountThreshold = prevOutAmount.jsbi;
+					/**
+					 * Auto slippage
+					 */
 
-					// calculate auto slippage known as "ProfitOrKIll" strategy
-					// auto slippage should prevent loss by requiring at least previous out amount of the output token
-					const outAmount = bot.utils.JSBItoNumber(bestRoute.outAmount);
-					const outAmountAsDecimal = bot.utils.toDecimal(
-						outAmount,
-						currentOutToken.decimals
-					);
+					if (enableAutoSlippage) {
+						// This is not working in jup v4 (read only)
+						// bestRoute.otherAmountThreshold = prevOutAmount.jsbi;
 
-					const diff = outAmountAsDecimal.minus(prevOutAmount.decimal);
-					const autoSlippage = diff.div(prevOutAmount.decimal).times(100);
-					const autoSlippageBps = autoSlippage.times(100).round().toNumber();
+						const customBestRoute = { ...bestRoute };
+						customBestRoute.otherAmountThreshold = prevOutAmount.jsbi;
 
-					customBestRoute.slippageBps = autoSlippageBps;
+						// calculate auto slippage known as "ProfitOrKIll" strategy
+						// auto slippage should prevent loss by requiring at least previous out amount of the output token
+						const outAmount = bot.utils.JSBItoNumber(bestRoute.outAmount);
+						const outAmountAsDecimal = bot.utils.toDecimal(
+							outAmount,
+							currentOutToken.decimals
+						);
 
-					logger.debug(`autoSlippage: ${autoSlippageBps} bps`);
+						const diff = outAmountAsDecimal.minus(prevOutAmount.decimal);
+						const autoSlippage = diff.div(prevOutAmount.decimal).times(100);
+						const autoSlippageBps = autoSlippage.times(100).round().toNumber();
+
+						customBestRoute.slippageBps = autoSlippageBps;
+
+						// overwrite standard best route
+						route = customBestRoute;
+						logger.debug(`autoSlippage: ${autoSlippageBps} bps`);
+					}
 
 					// execute swap
 					await bot.swap({
 						inToken: currentInToken,
 						outToken: currentOutToken,
-						route: customBestRoute,
+						route,
 					});
 
 					bot.store.setState((state) => {
 						state.swaps.rateLimiter.value++;
-						state.config.strategy.rules.slippage.bps = autoSlippageBps;
+						if (enableAutoSlippage) {
+							state.config.strategy.rules.slippage.bps = route.slippageBps;
+						}
 					});
 				}
 			} catch (error) {
