@@ -18,6 +18,7 @@ export type BotStatus =
 	| "loadingTokens"
 	| "tokensLoaded"
 	| "tokensError"
+	| "sadWallet"
 	| "loadingStrategy"
 	| "strategyLoaded"
 	| "strategyError"

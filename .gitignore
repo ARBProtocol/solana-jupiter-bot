@@ -36,6 +36,9 @@ yarn-error.log*
 # dist
 dist
 
+# VSCodeCounter
+.VSCodeCounter
+
 # Bot config
 apps/arb-solana-bot/config.json
 packages/wizard/config.json

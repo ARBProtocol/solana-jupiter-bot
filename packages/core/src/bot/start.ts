@@ -76,9 +76,11 @@ export const start = async (
 		const keypair = createKeypair(walletPrivateKey);
 
 		// validate wallet
-		const arbProtocolBalance = await validateWallet({
+		await validateWallet({
 			connection,
 			wallet: keypair.publicKey,
+			store,
+			setStatus,
 		});
 
 		// create jupiter instance
@@ -91,8 +93,6 @@ export const start = async (
 		store.setState((state) => {
 			state.bot.isStarted = true;
 			state.bot.startedAt = Date.now();
-
-			state.wallet.arbProtocolBalance = arbProtocolBalance;
 		});
 		setStatus("ready");
 		logger.info("start: bot started");
