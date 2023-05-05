@@ -85,9 +85,14 @@ export const start = async (
 
 		// create jupiter instance
 		setStatus("loadingJupiter");
-		const jupiter = await createJupiter(connection, keypair, ammsToExclude);
-		setJupiter(jupiter);
-		setStatus("jupiterLoaded");
+		let jupiter;
+		try {
+			jupiter = await createJupiter(connection, keypair, ammsToExclude);
+			setJupiter(jupiter);
+			setStatus("jupiterLoaded");
+		} catch (error) {
+			setStatus("jupiterFailedToLoad");
+		}
 
 		// set bot status to "idle"
 		store.setState((state) => {

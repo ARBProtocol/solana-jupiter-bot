@@ -3,6 +3,7 @@ export type BotStatus =
 	| "initializing"
 	| "loadingJupiter"
 	| "jupiterLoaded"
+	| "jupiterFailedToLoad"
 	| "ready"
 	| "error"
 	| "swapping"
