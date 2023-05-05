@@ -6,6 +6,23 @@ import { InfoBox } from "./components/Info-box";
 import chalk from "chalk";
 import { TopBar } from "./components/top-bar";
 import { miniMode } from "./mini-mode";
+import { StatusBox } from "./components/status-box";
+
+// Combine 2 side by side (it will be used for 2x InfoBox)
+const DoubleColumn = (column1: string, column2: string) => {
+	const column1Lines = column1.split("\n");
+	const column2Lines = column2.split("\n");
+	const linesCount = Math.max(column1Lines.length, column2Lines.length);
+	const column1Width = column1Lines.reduce((max, line) => Math.max(max, line.length), 0);
+	const column2Width = column2Lines.reduce((max, line) => Math.max(max, line.length), 0);
+	const result = [];
+	for (let i = 0; i < linesCount; i++) {
+		const line1 = column1Lines[i] || "";
+		const line2 = column2Lines[i] || "";
+		result.push(line1.padEnd(column1Width) + "  " + line2.padStart(column2Width));
+	}
+	return result.join("\n");
+};
 
 export const updateUI = (
 	ui: UI,
@@ -35,7 +52,8 @@ export const updateUI = (
 	switch (currentScreen) {
 		case "main":
 			ui.div(TopBar({ currentScreen }));
-			ui.div(InfoBox(state));
+			ui.div("");
+			ui.div(DoubleColumn(StatusBox(state), InfoBox(state)));
 			ui.div(priceChart(state));
 			ui.div(potentialProfitChart(state));
 			ui.div(TradeHistoryTable(state));
@@ -69,5 +87,6 @@ export const updateUI = (
 	});
 
 	const uiOutput = ui.toString();
+
 	return { ui, uiOutput };
 };
