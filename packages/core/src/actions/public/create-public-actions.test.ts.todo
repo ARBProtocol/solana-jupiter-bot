@@ -1,0 +1,44 @@
+import { describe, expect, it } from "vitest";
+
+import { initialState } from "../../store";
+import { createPublicActions } from "./create-public-actions";
+import { PingPongStrategy } from "../../strategies";
+import { JupiterAggregator } from "../../jupiter-aggregator";
+import { createBot } from "../../index";
+
+describe("createPublicActions", () => {
+	const bot = createBot({
+		strategies: [PingPongStrategy],
+		aggregator: JupiterAggregator,
+		config: {
+			wallets: [""],
+			rpcURLs: [""],
+		},
+	});
+
+	if (!bot) {
+		throw new Error("Bot not created");
+	}
+
+	it("should create a custom store with the initial state", () => {
+		const { store } = createPublicActions(bot);
+		expect(store.getState()).toEqual(initialState);
+	});
+
+	it("should create a logger with the specified file path", () => {
+		const { logger } = createPublicActions(bot);
+		expect(logger).toBeDefined();
+	});
+
+	it("should create a starter function with the bot and setStatus", () => {
+		const { start } = createPublicActions(bot);
+		expect(start).toBeDefined();
+		// Add more assertions here to test the start function
+	});
+
+	it("should create a setStatus function with the custom store", () => {
+		const { setStatus } = createPublicActions(bot);
+		expect(setStatus).toBeDefined();
+		// Add more assertions here to test the setStatus function
+	});
+});

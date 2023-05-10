@@ -1,3 +1,4 @@
-export { createBot, Bot, ConfigRequired } from "./bot";
-export { loadPlugin } from "./plugin-loader";
-export { loop } from "./loop";
+export { createBot } from "./create-bot";
+export type { Bot, CreateBotParams } from "./create-bot";
+export { createPublicBot } from "./create-public-bot";
+export type { PublicBot } from "./create-public-bot";

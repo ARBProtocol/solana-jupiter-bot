@@ -7,3 +7,6 @@ export * from "./shift-and-push";
 export * from "./to-decimal";
 export * from "./number-to-min";
 export * from "./write-json-to-temp-dir";
+export * from "./types";
+export * from "./thing-to-multi";
+export * from "./parse-error";

@@ -1,4 +1,5 @@
 {
 	"name": "tsconfig",
-	"version": "1.0.0-alpha.1"
+	"private": true,
+	"version": "2.0.0-alpha.1"
 }

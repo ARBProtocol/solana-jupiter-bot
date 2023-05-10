@@ -12,7 +12,7 @@ import {
 } from "@clack/prompts";
 import { TOKEN_LIST_URL } from "@jup-ag/core";
 import axios from "axios";
-import { ConfigRequired } from "@arb-protocol/core";
+import { Config as BotConfig } from "@arb-protocol/core";
 
 type Token = {
 	address: string;
@@ -27,7 +27,12 @@ type Token = {
 export const runWizard = async () => {
 	console.log();
 
-	intro("Welcome to Arb-Solana-Bot Config Wizard!");
+	let welcomeMsg = ["Welcome to Arb-Solana-Bot v2.0.0-alpha.1 Config Wizard!\n"];
+	welcomeMsg.push("This wizard will help you generate a config.json file\n");
+	welcomeMsg.push("Due to problems found during testing, ");
+	welcomeMsg.push("only the ping-pong strategy is currently available... Sorry!\n");
+	welcomeMsg.push("Arbitrage strategy and more coming soon... Stay tuned!");
+	intro(welcomeMsg.join("\n     "));
 
 	const loadingTokens = spinner();
 	loadingTokens.start("Loading tokens...");
@@ -125,7 +130,7 @@ export const runWizard = async () => {
 	if (slippageStrategy === "fixed") {
 		slippage = await text({
 			message: "What is the slippage?",
-			placeholder: "0.5 %",
+			placeholder: "0.5",
 			validate: (value) => {
 				if (value.length === 0) return "Please enter a slippage";
 				const slippage = parseFloat(value);
@@ -163,7 +168,7 @@ export const runWizard = async () => {
 	}
 
 	const profitThreshold = await text({
-		message: "What is the profit threshold? / Execute tx when profit is above {x} %",
+		message: "What is the profit threshold? / Execute tx when expected profit is above {x} %",
 		placeholder: "0.42",
 		validate: (value) => {
 			if (value.length === 0) return "Please enter a profit threshold";
@@ -179,12 +184,26 @@ export const runWizard = async () => {
 	}
 
 	let backOffTime, backOffShutdownOnCount, features;
+	let priorityFeeMicroLamports: number | undefined;
+	let pendingTransactionsLimiter = 1;
+	let executionRateLimiter = {
+		max: 1,
+		timeWindowMs: 20_000,
+	};
+	let iterationsRateLimiter = {
+		max: 1,
+		timeWindowMs: 5000,
+	};
 
 	if (experienceLevel !== "beginner") {
 		features = await multiselect({
-			message: "What features do you want to enable?",
+			message: "What features do you want to setup?",
 			options: [
 				{ value: "backOff", label: "Back off - wait on failure, shutdown on max failure count" },
+				{ value: "priorityFeeMicroLamports", label: "Priority fee in µLamports" },
+				{ value: "pendingTransactionsLimiter", label: "Pending transactions limiter" },
+				{ value: "executionRateLimiter", label: "Execution rate limiter" },
+				{ value: "iterationsRateLimiter", label: "Iterations rate" },
 			],
 			required: false,
 		});
@@ -229,6 +248,172 @@ export const runWizard = async () => {
 				return process.exit(0);
 			}
 		}
+
+		// Priority fee
+		if (features.includes("priorityFeeMicroLamports")) {
+			const priorityFeeMicroLamportsValue = await text({
+				message: "What is the priority fee in µLamports?",
+				placeholder: "500",
+				validate: (value) => {
+					if (value.length === 0) return "Please enter a priority fee";
+					const priorityFeeMicroLamportsValue = parseInt(value);
+					if (isNaN(priorityFeeMicroLamportsValue)) return "Please enter a valid number";
+					if (priorityFeeMicroLamportsValue < 0) return "Please enter a positive number";
+				},
+			});
+
+			if (isCancel(priorityFeeMicroLamports)) {
+				cancel("Operation cancelled");
+				return process.exit(0);
+			}
+
+			if (typeof priorityFeeMicroLamportsValue === "string") {
+				priorityFeeMicroLamports = parseInt(priorityFeeMicroLamportsValue);
+			}
+		}
+
+		// Pending transactions limiter
+		if (features.includes("pendingTransactionsLimiter")) {
+			const pendingTransactionsLimiterValue = await text({
+				message: "What is the pending transactions limit (at the same time)?",
+				placeholder: "1",
+				validate: (value) => {
+					if (value.length === 0) return "Please enter a pending transactions limit";
+					const pendingTransactionsLimiterValue = parseInt(value);
+					if (isNaN(pendingTransactionsLimiterValue)) return "Please enter a valid number";
+					if (pendingTransactionsLimiterValue < 0) return "Please enter a positive number";
+				},
+			});
+
+			if (isCancel(pendingTransactionsLimiterValue)) {
+				cancel("Operation cancelled");
+				return process.exit(0);
+			}
+
+			if (typeof pendingTransactionsLimiterValue === "string") {
+				pendingTransactionsLimiter = parseInt(pendingTransactionsLimiterValue);
+			}
+		}
+
+		// Execution rate limiter
+		if (features.includes("executionRateLimiter")) {
+			const executionRateLimiterTimeWindowMs = await text({
+				message: "What is the execution rate limit time window (in seconds)?",
+				placeholder: "20",
+				validate: (value) => {
+					if (value.length === 0) return "Please enter a execution rate limit time window";
+					const executionRateLimiterTimeWindowMs = parseInt(value);
+					if (isNaN(executionRateLimiterTimeWindowMs)) return "Please enter a valid number";
+					if (executionRateLimiterTimeWindowMs < 0) return "Please enter a positive number";
+				},
+			});
+
+			const executionRateLimiterMax = await text({
+				message: `What is the execution rate limit (max per ${
+					executionRateLimiterTimeWindowMs as string
+				} sec)?`,
+				placeholder: "1",
+				validate: (value) => {
+					if (value.length === 0) return "Please enter a execution rate limit";
+					const executionRateLimiterMax = parseInt(value);
+					if (isNaN(executionRateLimiterMax)) return "Please enter a valid number";
+					if (executionRateLimiterMax < 0) return "Please enter a positive number";
+				},
+			});
+
+			if (isCancel(executionRateLimiterTimeWindowMs) || isCancel(executionRateLimiterMax)) {
+				cancel("Operation cancelled");
+				return process.exit(0);
+			}
+
+			if (
+				typeof executionRateLimiterTimeWindowMs === "string" &&
+				typeof executionRateLimiterMax === "string"
+			) {
+				executionRateLimiter = {
+					max: parseInt(executionRateLimiterMax),
+					timeWindowMs: parseInt(executionRateLimiterTimeWindowMs) * 1000,
+				};
+			}
+		}
+
+		if (features.includes("iterationsRateLimiter")) {
+			const iterationsRateLimiterTimeWindowMs = await text({
+				message: "What is the iterations rate time window (in seconds)?",
+				placeholder: "5",
+				validate: (value) => {
+					if (value.length === 0) return "Please enter a iterations rate time window";
+					const iterationsRateLimiterTimeWindowMs = parseInt(value);
+					if (isNaN(iterationsRateLimiterTimeWindowMs)) return "Please enter a valid number";
+					if (iterationsRateLimiterTimeWindowMs < 0) return "Please enter a positive number";
+				},
+			});
+
+			const iterationsRateLimiterMax = await text({
+				message: `What is the iterations rate limit (max per ${
+					iterationsRateLimiterTimeWindowMs as string
+				} sec)?`,
+				placeholder: "1",
+				validate: (value) => {
+					if (value.length === 0) return "Please enter a iterations rate limit";
+					const iterationsRateLimiterMax = parseInt(value);
+					if (isNaN(iterationsRateLimiterMax)) return "Please enter a valid number";
+					if (iterationsRateLimiterMax < 0) return "Please enter a positive number";
+				},
+			});
+
+			if (isCancel(iterationsRateLimiterTimeWindowMs) || isCancel(iterationsRateLimiterMax)) {
+				cancel("Operation cancelled");
+				return process.exit(0);
+			}
+
+			if (
+				typeof iterationsRateLimiterTimeWindowMs === "string" &&
+				typeof iterationsRateLimiterMax === "string"
+			) {
+				iterationsRateLimiter = {
+					max: parseInt(iterationsRateLimiterMax),
+					timeWindowMs: parseInt(iterationsRateLimiterTimeWindowMs) * 1000,
+				};
+			}
+		}
+	}
+
+	// Arb Protocol BuyBack
+	const arbProtocolBuyBack = await confirm({
+		message:
+			"[Arb Protocol BuyBack]\n" +
+			"·   Support Arb Protocol by $ARB accumulation ONLY on profitable trades?".padStart(8, " "),
+	});
+
+	if (isCancel(arbProtocolBuyBack)) {
+		cancel("Operation cancelled");
+		return process.exit(0);
+	}
+
+	let arbProtocolBuyBackProfitPercent: number | undefined;
+	if (arbProtocolBuyBack) {
+		const arbProtocolBuyBackValue = await text({
+			message:
+				"[Arb Protocol BuyBack]\n" +
+				"·   How much % of profit do you want to BuyBack into $ARB? (experimental)",
+			initialValue: "5",
+			validate: (value) => {
+				if (value.length === 0) return "Please enter a valid number";
+				const arbProtocolBuyBackValue = parseInt(value);
+				if (isNaN(arbProtocolBuyBackValue)) return "Please enter a valid number";
+				if (arbProtocolBuyBackValue <= 0) return "Please enter a positive number";
+			},
+		});
+
+		if (isCancel(arbProtocolBuyBackValue)) {
+			cancel("Operation cancelled");
+			return process.exit(0);
+		}
+
+		if (typeof arbProtocolBuyBackValue === "string") {
+			arbProtocolBuyBackProfitPercent = parseInt(arbProtocolBuyBackValue);
+		}
 	}
 
 	const confirmConfig = await confirm({
@@ -240,44 +425,70 @@ export const runWizard = async () => {
 		return process.exit(0);
 	}
 
-	type Config = Omit<ConfigRequired, "privateKey" | "rpcURL"> & {
+	type Config = Omit<BotConfig, "rpcURLs" | "rpcWSSs" | "wallets"> & {
 		$schema: string;
-		cliui: { allowClearConsole: boolean };
+		tui: { allowClearConsole: boolean };
+		strategy: {
+			id: string;
+			amount: number;
+			executeAboveExpectedProfitPercent: number;
+			priorityFeeMicroLamports?: number;
+			slippage: {
+				bps: number;
+				enableAutoSlippage: boolean;
+			};
+			tokens: string[];
+		};
 	};
 
 	const config: Config = {
 		$schema: "./src/config.schema.json",
-		tokens: {
-			tokenA: { address: tokenA?.address },
-			tokenB: { address: tokenB?.address },
-		},
 		strategy: {
 			id: "ping-pong",
-			tradeAmount: parseFloat(tradeAmount),
-			rules: {
-				execute: { above: { potentialProfit: parseFloat(profitThreshold) } },
-				slippage: slippage
-					? {
-							bps: parseInt((parseFloat(slippage) * 100).toFixed(0)),
-							enableAutoSlippage: slippageStrategy === "auto",
-					  }
-					: undefined,
+			amount: parseFloat(tradeAmount),
+			executeAboveExpectedProfitPercent: parseFloat(profitThreshold),
+			slippage: {
+				bps: parseInt((parseFloat(slippage) * 100).toFixed(0)),
+				enableAutoSlippage: slippageStrategy === "auto",
 			},
+			tokens: [tokenA.address, tokenB.address],
+			priorityFeeMicroLamports:
+				features?.includes("priorityFeeMicroLamports") && priorityFeeMicroLamports
+					? priorityFeeMicroLamports
+					: undefined,
 		},
-		backOff: {
-			enabled: features?.includes("backOff"),
-			ms: (backOffTime && parseInt(backOffTime) * 1000) || undefined,
-			shutdownOnCount: (backOffShutdownOnCount && parseInt(backOffShutdownOnCount)) || undefined,
-		},
-		cliui: {
+		maxConcurrent: 1,
+		tui: {
 			allowClearConsole: true,
+		},
+		limiters: {
+			transactions: {
+				pending: {
+					enabled: true,
+					max: pendingTransactionsLimiter,
+				},
+				executionRate: {
+					enabled: true,
+					max: executionRateLimiter?.max,
+					timeWindowMs: executionRateLimiter?.timeWindowMs,
+				},
+			},
+			iterationsRate: {
+				enabled: true,
+				max: iterationsRateLimiter?.max,
+				timeWindowMs: iterationsRateLimiter?.timeWindowMs,
+			},
 		},
 	};
 
+	if (arbProtocolBuyBack && arbProtocolBuyBackProfitPercent) {
+		config.arbProtocolBuyBack = {
+			enabled: true,
+			profitPercent: arbProtocolBuyBackProfitPercent,
+		};
+	}
+
 	fs.writeFileSync("./config.json", JSON.stringify(config, null, 2), "utf8");
 
-	outro("Config generated");
+	outro("Config generated, happy trading!");
 };
-
-// development only
-// main().catch(console.error);

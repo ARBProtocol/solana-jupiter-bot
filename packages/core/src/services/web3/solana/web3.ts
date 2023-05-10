@@ -1,1 +1,2 @@
-export { Connection, Commitment, Keypair, PublicKey } from "@solana/web3.js";
+export { Connection, Keypair, PublicKey } from "@solana/web3.js";
+export type { Commitment } from "@solana/web3.js";

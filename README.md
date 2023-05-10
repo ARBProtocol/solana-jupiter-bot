@@ -1,6 +1,6 @@
 > ⚠️ This bot can lead to loss of your funds, use at your own risk.
 
-> WIP - THIS IS A VERY RAW DEV VERSION
+> WIP - WIP - WIP - WIP -- 2.0.0-alpha.1 -- WIP - WIP - WIP - WIP
 
 [![](https://img.shields.io/badge/License-MIT-brightgreen)](#license)
 [![Twitter](https://img.shields.io/twitter/follow/ArbProtocol.svg?style=social&label=ArbProtocol)](https://twitter.com/ArbProtocol)
@@ -44,7 +44,7 @@ $ cd apps/arb-solana-bot && yarn|npm|pnpm start
 
 # Project info
 
-> For now it will only run ping-pong strategy for testing purposes.
+> For now it will only run ping-pong strategy.
 
 Written in TypeScript. [Turborepo](https://turbo.build/) is used to manage this project as a monorepo.
 The project is split into /apps and /packages.

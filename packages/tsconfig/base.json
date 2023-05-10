@@ -2,17 +2,17 @@
 	"$schema": "https://json.schemastore.org/tsconfig",
 	"display": "Default",
 	"compilerOptions": {
-		"target": "ES6",
-		"module": "CommonJS",
-		"moduleResolution": "node",
-		"declarationMap": false,
-		"inlineSources": false,
-		"isolatedModules": false,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
+		"target": "ES2022",
+		"module": "ES2022",
+		"skipLibCheck": false,
 		"strict": true,
-		"skipLibCheck": true,
-		"noUncheckedIndexedAccess": true
+		"forceConsistentCasingInFileNames": true,
+		"esModuleInterop": true,
+		"moduleResolution": "node",
+		"isolatedModules": true,
+		"incremental": false,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitAny": true
 	},
 	"exclude": ["node_modules"]
 }

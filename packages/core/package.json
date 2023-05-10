@@ -1,6 +1,6 @@
 {
 	"name": "@arb-protocol/core",
-	"version": "1.0.0-alpha.1",
+	"version": "2.0.0-alpha.1",
 	"license": "MIT",
 	"description": "Core for @arb-protocol/arb-solana-bot",
 	"repository": {
@@ -8,13 +8,15 @@
 		"url": "https://github.com/ARBProtocol/solana-jupiter-bot.git"
 	},
 	"main": "dist/index.js",
-	"types": "src/index.ts",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
 	"files": [
 		"dist"
 	],
 	"scripts": {
-		"build": "tsc",
-		"lint": "eslint --ext .ts src"
+		"build": "tsup src/index.ts --format cjs,esm --dts",
+		"lint": "tsc",
+		"test": "vitest dev"
 	},
 	"dependencies": {
 		"@jup-ag/core": "4.0.0-beta.18",
@@ -25,9 +27,13 @@
 		"cliui": "8.0.1",
 		"decimal.js": "^10.4.2",
 		"dotenv": "16.0.3",
+		"fp-ts": "^2.14.0",
 		"immer": "9.0.16",
 		"jsbi": "4.3.0",
 		"pino": "^8.11.0",
+		"piscina": "^3.2.0",
+		"socket.io": "^4.6.1",
+		"ulidx": "^1.0.0",
 		"uuid": "^9.0.0",
 		"zod": "^3.21.4",
 		"zustand": "4.1.4"
@@ -38,18 +44,20 @@
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"eslint": "^8.29.0",
-		"eslint-config-custom": "1.0.0-alpha.1",
-		"eslint-config-prettier": "^8.5.0",
+		"eslint-config-custom": "2.0.0-alpha.1",
+		"eslint-config-prettier": "^8.8.0",
 		"eslint-config-standard": "^17.0.0",
 		"eslint-plugin-import": "^2.26.0",
-		"eslint-plugin-n": "^15.5.1",
+		"eslint-plugin-n": "^16.0.0",
 		"eslint-plugin-prettier": "^4.2.1",
 		"eslint-plugin-promise": "^6.1.1",
-		"nodemon": "^2.0.20",
+		"nodemon": "^2.0.22",
 		"prettier": "^2.8.4",
 		"ts-node": "^10.9.1",
-		"tsconfig": "1.0.0-alpha.1",
-		"typescript": "5.0.2"
+		"tsconfig": "2.0.0-alpha.1",
+		"tsup": "^6.7.0",
+		"typescript": "5.0.2",
+		"vitest": "^0.31.1"
 	},
 	"engines": {
 		"node": ">=16.0.0"

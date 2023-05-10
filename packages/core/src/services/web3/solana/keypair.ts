@@ -1,7 +1,7 @@
 import bs58 from "bs58";
 import { Keypair } from "./web3";
 
-export const createKeypair = (privateKey: string | null) => {
+export const createKeypair = (privateKey: string) => {
 	if (!privateKey) {
 		throw new Error("createKeypair: privateKey is null");
 	}

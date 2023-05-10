@@ -1,0 +1,42 @@
+{
+  "$schema": "./src/config.schema.json",
+  "strategy": {
+    "id": "ping-pong",
+    "amount": 0.5,
+    "executeAboveExpectedProfitPercent": 0.01,
+    "slippage": {
+      "bps": 0,
+      "enableAutoSlippage": true
+    },
+    "tokens": [
+      "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB",
+      "4k3Dyjzvzp8eMZWUXbBCjEvwSkkk59S5iCNLY3QrkX6R"
+    ]
+  },
+  "maxConcurrent": 1,
+  "tui": {
+    "allowClearConsole": true
+  },
+  "limiters": {
+    "transactions": {
+      "pending": {
+        "enabled": true,
+        "max": 1
+      },
+      "executionRate": {
+        "enabled": true,
+        "max": 1,
+        "timeWindowMs": 20000
+      }
+    },
+    "iterationsRate": {
+      "enabled": true,
+      "max": 1,
+      "timeWindowMs": 5000
+    }
+  },
+  "arbProtocolBuyBack": {
+    "enabled": true,
+    "profitPercent": 5
+  }
+}

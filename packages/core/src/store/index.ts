@@ -1,3 +1,3 @@
-export * from "./store";
-export * from "./initial-state";
-export * from "./bot-status";
+export type { GlobalStore, Store } from "./create-store";
+export { createStore } from "./create-store";
+export { initialState } from "./initial-state";

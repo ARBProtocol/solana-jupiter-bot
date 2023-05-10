@@ -1,10 +1,10 @@
 import { Jupiter, Amm, TokenMintAddress, SwapResult } from "@jup-ag/core";
 import { TransactionError } from "@solana/web3.js";
-import { logger } from "../../../logger";
 
 import { Keypair, SolanaConnection } from "../../web3";
 
-export { TOKEN_LIST_URL, TokenMintAddress, RouteInfo } from "@jup-ag/core";
+export { TOKEN_LIST_URL } from "@jup-ag/core";
+export type { TokenMintAddress, RouteInfo } from "@jup-ag/core";
 
 export type SwapSuccess = Extract<SwapResult, { txid: string }>;
 
@@ -75,12 +75,13 @@ export const createJupiter = async (
 		});
 
 		return jupiter;
-	} catch (e: Error | any) {
-		// check if message property exists
-		if (typeof e === "object" && "message" in e) {
-			// check if error is 403 || 401
-			if (e.message.includes("403") || e.message.includes("401")) {
-				logger.error(`
+	} catch (e: Error | unknown) {
+		if (e instanceof Error) {
+			// check if message property exists
+			if (typeof e === "object" && "message" in e) {
+				// check if error is 403 || 401
+				if (e.message.includes("403") || e.message.includes("401")) {
+					console.error(`
 			ERROR!
 
 			Could not connect with current RPC.
@@ -88,11 +89,11 @@ export const createJupiter = async (
 			- The error indicates that you are not authorized to access the RPC.
 			- Please check carefully if you have entered the correct RPC URL.
 			`);
-			}
+				}
 
-			// check if error is 503
-			if (e.message.includes("503")) {
-				logger.error(`
+				// check if error is 503
+				if (e.message.includes("503")) {
+					console.error(`
 			ERROR!
 
 			Could not connect with current RPC.
@@ -110,25 +111,26 @@ export const createJupiter = async (
 			IMPORTANT!
 			NEVER SHARE YOUR PRIVATE KEY WITH ANYONE!
 			`);
-			}
+				}
 
-			// check if error is missing data from RPC with RegEx pattern for "Missing [\w\d]+"
-			if (e.message.match(/Missing [\w\d]+/)) {
-				logger.error(`
+				// check if error is missing data from RPC with RegEx pattern for "Missing [\w\d]+"
+				if (e.message.match(/Missing [\w\d]+/)) {
+					console.error(`
 			ERROR!
-			
+
 			Some data is missing from the RPC
 
 			- If error persists, please try to use another RPC
 
 			CURRENT RPC: ${connection.rpcEndpoint}
-			
+
 			IMPORTANT!
 			NEVER SHARE YOUR PRIVATE KEY WITH ANYONE!`);
-			}
+				}
 
-			// exit
-			process.exit(1);
+				// exit
+				process.exit(1);
+			}
 		}
 
 		throw new Error(`createJupiter: ${e}`);

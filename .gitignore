@@ -42,3 +42,9 @@ dist
 # Bot config
 apps/arb-solana-bot/config.json
 packages/wizard/config.json
+
+# .log
+*.log
+**/*.log
+apps/arb-solana-bot-dev/bot.log
+apps/arb-solana-bot/bot.log

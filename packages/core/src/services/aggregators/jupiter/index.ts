@@ -1,7 +1,6 @@
-export {
+export { createJupiter, TOKEN_LIST_URL } from "./jupiter";
+export type {
 	JupiterType as Jupiter,
-	createJupiter,
-	TOKEN_LIST_URL,
 	TokenMintAddress,
 	RouteInfo,
 	AmmsToExclude,

@@ -7,20 +7,19 @@ import { SolanaConnection } from "./connection";
 
 export const getTokenBalance = async ({
 	connection,
-	wallet,
-	token,
+	walletAddress,
+	tokenMint,
 }: {
 	connection: SolanaConnection;
-	wallet: PublicKey;
-	token: PublicKey | string;
+	walletAddress: string;
+	tokenMint: string;
 }) => {
 	let tokenBalance = 0;
 
-	const mint = typeof token === "string" ? new PublicKey(token) : token;
-
-	const accountInfo = await connection.getParsedTokenAccountsByOwner(wallet, {
-		mint,
-	});
+	const accountInfo = await connection.getParsedTokenAccountsByOwner(
+		new PublicKey(walletAddress),
+		{ mint: new PublicKey(tokenMint) }
+	);
 
 	if (accountInfo.value.length > 0) {
 		for (const account of accountInfo.value) {

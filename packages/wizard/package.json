@@ -1,6 +1,6 @@
 {
 	"name": "@arb-protocol/wizard",
-	"version": "1.0.0-alpha.1",
+	"version": "2.0.0-alpha.1",
 	"license": "MIT",
 	"description": "In-terminal config wizard for @arb-protocol/solana-jupiter-bot",
 	"repository": {
@@ -8,17 +8,18 @@
 		"url": "https://github.com/ARBProtocol/solana-jupiter-bot.git"
 	},
 	"main": "dist/index.js",
-	"types": "src/index.ts",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
 	"files": [
 		"dist"
 	],
 	"scripts": {
 		"dev": "ts-node src/index.ts",
-		"build": "tsc",
+		"build": "tsup src --format cjs,esm --dts",
 		"lint": "eslint --ext .ts src"
 	},
 	"dependencies": {
-		"@arb-protocol/core": "1.0.0-alpha.1",
+		"@arb-protocol/core": "2.0.0-alpha.1",
 		"@clack/prompts": "^0.6.3",
 		"@jup-ag/core": "4.0.0-beta.18",
 		"axios": "1.1.3"
@@ -28,9 +29,10 @@
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"eslint": "^8.29.0",
-		"eslint-config-custom": "1.0.0-alpha.1",
+		"eslint-config-custom": "2.0.0-alpha.1",
 		"ts-node": "^10.9.1",
-		"tsconfig": "1.0.0-alpha.1",
+		"tsconfig": "2.0.0-alpha.1",
+		"tsup": "^6.7.0",
 		"typescript": "5.0.2"
 	}
 }

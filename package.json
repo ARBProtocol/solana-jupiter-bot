@@ -1,6 +1,6 @@
 {
 	"name": "arb-solana-bot",
-	"description": "Arb Jupiter Bot Turborepo",
+	"description": "Arb Solana Bot Turborepo",
 	"private": true,
 	"repository": {
 		"type": "git",
@@ -9,14 +9,17 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build --force": "turbo run build --force",
-		"start": "turbo run build && cross-env NODE_ENV=production pnpm -C ./apps/arb-solana-bot start",
-		"wizard": "turbo run build && cross-env NODE_ENV=production pnpm -C ./apps/arb-solana-bot wizard",
+		"start": "turbo run build && cross-env NODE_ENV=production LOG_LEVEL=error pnpm -C ./apps/arb-solana-bot start",
 		"start:debug": "turbo run build && cross-env NODE_ENV=production DEBUG=true LOG_LEVEL=debug pnpm -C ./apps/arb-solana-bot start",
+		"wizard": "turbo run build && cross-env NODE_ENV=production pnpm -C ./apps/arb-solana-bot wizard",
 		"trade": "turbo run build && cd apps/arb-solana-bot && yarn start",
-		"dev": "cd apps/arb-solana-bot && yarn dev",
+		"dev": "cd apps/arb-solana-bot && pnpm dev",
 		"lint": "turbo run lint",
 		"format": "prettier --write \"**/*.{ts,tsx,md}\"",
-		"postinstall": "manypkg check"
+		"postinstall": "manypkg check",
+		"clean": "git clean -xdf node_modules && pnpm recursive exec -- git clean -xdf node_modules dist",
+		"clean:workspaces": "turbo clean",
+		"publish-packages": "turbo run lint build && changeset version && changeset publish"
 	},
 	"engines": {
 		"node": ">=16.0.0"
@@ -33,6 +36,6 @@
 		"@manypkg/cli": "^0.20.0",
 		"cross-env": "^7.0.3",
 		"prettier": "^2.8.4",
-		"turbo": "latest"
+		"turbo": "^1.10.1"
 	}
 }
