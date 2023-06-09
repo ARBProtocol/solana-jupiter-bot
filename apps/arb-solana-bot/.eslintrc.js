@@ -1,8 +1,13 @@
 module.exports = {
-	root: true,
-	// This tells ESLint to load the config from the package `eslint-config-custom`
-	extends: ["custom"],
-	rules: {
-		"turbo/no-undeclared-env-vars": "off",
+	env: {
+		es2021: true,
+		node: true,
 	},
+	extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "turbo", "prettier"],
+	parser: "@typescript-eslint/parser",
+	parserOptions: {
+		ecmaVersion: "latest",
+		sourceType: "module",
+	},
+	plugins: ["@typescript-eslint"],
 };

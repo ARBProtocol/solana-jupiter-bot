@@ -123,13 +123,8 @@ export const start = async () => {
 
 		// Terminal User Interface
 		startTUI(bot, {
-			/**
-			 * allowClearConsole
-			 * This is for testing purposes only,
-			 * by default it's set to true and every custom console.log will be cleared on every frame
-			 */
-			// allowClearConsole: config?.tui?.allowClearConsole ?? true,
-			// allowClearConsole: false,
+			/** Default true */
+			allowClearConsole: config?.tui?.allowClearConsole,
 			fps: 8,
 		});
 
