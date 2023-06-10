@@ -1,15 +1,17 @@
 import { createLogger } from "src/actions/public/create-logger";
 
 export const setupExitHandlers = () => {
-	process.on("SIGTERM", async () => {
+	process.on("SIGTERM", () => {
 		console.log("SIGTERM");
+		process.exit(0);
 	});
 
-	process.on("SIGINT", async () => {
+	process.on("SIGINT", () => {
 		console.log("SIGINT");
+		process.exit(0);
 	});
 
-	process.on("exit", async (code) => {
+	process.on("exit", (code) => {
 		const logger = createLogger("./bot.log");
 		const msg = "MAIN THREAD EXIT! CODE: " + code;
 		console.error(msg);

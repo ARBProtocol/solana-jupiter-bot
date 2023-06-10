@@ -1,6 +1,6 @@
 {
 	"name": "@arb-protocol/arb-solana-bot",
-	"version": "2.0.0-alpha.1",
+	"version": "2.0.0-alpha.2",
 	"license": "MIT",
 	"description": "Arb Solana Bot | Trading Bot",
 	"repository": {
@@ -20,9 +20,9 @@
 		"dev": "ts-node src/index.ts"
 	},
 	"dependencies": {
-		"@arb-protocol/core": "2.0.0-alpha.1",
-		"@arb-protocol/tui": "2.0.0-alpha.1",
-		"@arb-protocol/wizard": "2.0.0-alpha.1",
+		"@arb-protocol/core": "2.0.0-alpha.2",
+		"@arb-protocol/tui": "2.0.0-alpha.2",
+		"@arb-protocol/wizard": "2.0.0-alpha.2",
 		"@jup-ag/core": "4.0.0-beta.18",
 		"axios": "1.1.3",
 		"cross-env": "^7.0.3",

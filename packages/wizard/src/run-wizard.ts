@@ -27,7 +27,7 @@ type Token = {
 export const runWizard = async () => {
 	console.log();
 
-	let welcomeMsg = ["Welcome to Arb-Solana-Bot v2.0.0-alpha.1 Config Wizard!\n"];
+	let welcomeMsg = ["Welcome to Arb-Solana-Bot v2.0.0-alpha.2 Config Wizard!\n"];
 	welcomeMsg.push("This wizard will help you generate a config.json file\n");
 	welcomeMsg.push("Due to problems found during testing, ");
 	welcomeMsg.push("only the ping-pong strategy is currently available... Sorry!\n");
