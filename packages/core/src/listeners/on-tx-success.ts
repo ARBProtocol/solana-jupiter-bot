@@ -73,9 +73,8 @@ export const onTxSuccess = async (
 			return;
 		}
 
-		// FIXME: change this to 0.05 after testing
 		const arbTxAmountDec = profitMulti.uiValue.decimal.mul(
-			arbBuyBackProfitPercent
+			arbBuyBackProfitPercent / 100
 		);
 
 		bot.logger.debug(
