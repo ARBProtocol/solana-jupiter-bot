@@ -67,11 +67,12 @@ export const StrategyBox = (bot: Bot, state: GlobalState) => {
 			: 0
 	} % \n\n`;
 	// Profit
-	const pp = state.strategies.current.profitPercent || 0;
+	const unrealizedPP = state.strategies.current.unrealizedProfitPercent || 0;
+	const pp = unrealizedPP > 0 ? 0 : state.strategies.current.profitPercent || 0;
 	const ppBgColor = pp > 0 ? "bgGreen" : pp < 0 ? "bgRed" : "bgBlack";
 	const ppColor = pp > 0 ? "black" : pp < 0 ? "white" : "white";
 	output += `·Profit %: ${chalk[ppBgColor][ppColor](pp?.toFixed(8))} ${chalk.dim(
-		state.strategies.current.unrealizedProfitPercent.toFixed(8)
+		unrealizedPP.toFixed(8)
 	)}\n\n`;
 
 	if (bot.strategies[0]?.uiHook?.value) {
