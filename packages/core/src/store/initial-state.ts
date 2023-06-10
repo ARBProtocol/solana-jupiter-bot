@@ -93,7 +93,7 @@ export const initialState: GlobalState = {
 				current: 0,
 				enabled: true,
 				max: 1,
-				timeWindowMs: 20000,
+				timeWindowMs: 5000,
 				active: false,
 				activatedAtRel: 0,
 			},

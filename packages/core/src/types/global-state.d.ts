@@ -186,7 +186,7 @@ export type GlobalState = {
 				max: number;
 				/**
 				 * Time window in which the maximum number of transactions can be processed.
-				 * @default 20 * 1000 // === 20 seconds
+				 * @default 250 * 1000 // === 5 seconds
 				 */
 				timeWindowMs: number;
 				/** Relative time*/

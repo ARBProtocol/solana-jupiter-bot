@@ -125,7 +125,7 @@ export const start = async () => {
 		startTUI(bot, {
 			/** Default true */
 			allowClearConsole: config?.tui?.allowClearConsole,
-			fps: 8,
+			fps: process.env.TUI_FPS ? parseInt(process.env.TUI_FPS) : 5,
 		});
 
 		await bot.start();
