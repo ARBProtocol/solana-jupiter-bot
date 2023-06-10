@@ -19,7 +19,8 @@
 		"postinstall": "manypkg check",
 		"clean": "git clean -xdf node_modules && pnpm recursive exec -- git clean -xdf node_modules dist",
 		"clean:workspaces": "turbo clean",
-		"publish-packages": "turbo run lint build && changeset version && changeset publish"
+		"publish-packages": "turbo run lint build && changeset version && changeset publish",
+		"create-standalone": "./scripts/create-standalone-version.sh"
 	},
 	"engines": {
 		"node": ">=16.0.0"

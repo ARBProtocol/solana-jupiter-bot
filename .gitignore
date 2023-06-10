@@ -48,3 +48,5 @@ packages/wizard/config.json
 **/*.log
 apps/arb-solana-bot-dev/bot.log
 apps/arb-solana-bot/bot.log
+
+*.zip
