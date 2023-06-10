@@ -86,6 +86,7 @@ export const initLimiters = (bot: PublicBot) => {
 							performance.now();
 					});
 
+					bot.setStatus("limiters:transactions:pending:activated");
 					bot.logger.debug(
 						`limiters:transactions:pending: ACTIVATED by pending transactions ${pendingTransactions} >= ${state.limiters.transactions.pending.max} max`
 					);
@@ -133,6 +134,7 @@ export const initLimiters = (bot: PublicBot) => {
 						performance.now();
 				});
 
+				bot.setStatus("limiters:executionRate:activated");
 				bot.logger.debug(
 					`limiters:transactions:executionRate: ACTIVATED by ${transactionsInTimeWindow}/${maxTxPerWindow} transactions max reached within ${timeWindow}ms time window`
 				);
@@ -180,7 +182,7 @@ export const initLimiters = (bot: PublicBot) => {
 						state.limiters.iterationsRate.active = true;
 						state.limiters.iterationsRate.activatedAtRel = performance.now();
 					});
-
+					bot.setStatus("limiters:iterationsRate:activated");
 					bot.logger.debug(
 						`limiters:iterationsRate: ACTIVATED by ${iterationPerWindow}/${maxPerWindow} iterations max reached within ${
 							bot.store.getState().limiters.iterationsRate.timeWindowMs

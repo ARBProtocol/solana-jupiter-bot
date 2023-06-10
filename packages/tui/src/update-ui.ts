@@ -47,7 +47,7 @@ export const updateUI = (
 	ui: UI;
 	uiOutput: string;
 } => {
-	const { isUpdating, maxFps, lastUpdateTimestamp } = uiStore.getState();
+	const { isUpdating, lastUpdateTimestamp } = uiStore.getState();
 
 	if (isUpdating) return { ui, uiOutput: ui.toString() };
 
@@ -105,9 +105,7 @@ export const updateUI = (
 			ui.div(state.wallets[0]?.address || "Missing wallet address in the state");
 			break;
 		case "mini":
-			console.log("mini ui not implemented yet");
 			break;
-		// ui.div(miniMode(state));
 		case "logs":
 			console.log("logs ui not implemented yet");
 			break;

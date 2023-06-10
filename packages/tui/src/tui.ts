@@ -2,23 +2,25 @@ import boxen from "./lib/boxen";
 import cliui from "cliui";
 import open from "open";
 
-// import { Chart } from "./components";
 import { Bot, GlobalState, GlobalStore } from "./core";
 import { createKeyboardListener } from "./hotkeys/hotkeys";
 import { UIScreen, uiStore } from "./ui-store";
 import { updateUI } from "./update-ui";
 import { Chart } from "./components/chart";
+import { miniMode } from "./mini-mode";
+import chalk from "chalk";
 
 // Keyboard Listener
 const keyboard = createKeyboardListener();
 
-const render = (bot: Bot, store: GlobalStore, ui: UI, allowClearConsole: boolean) => {
+const render = (bot: Bot, store: GlobalStore, ui: UI) => {
 	const state = store.getState();
 	const { ui: newUI, uiOutput } = updateUI(bot, ui, state);
 	ui = newUI;
 
-	const currentScreen = uiStore.getState().currentScreen;
-	if (allowClearConsole && currentScreen !== "mini") console.clear();
+	const uiState = uiStore.getState();
+
+	if (uiState.allowClearConsole && uiState.currentScreen !== "mini") console.clear();
 	console.log(uiOutput);
 
 	return ui;
@@ -81,48 +83,51 @@ const setCurrentScreen = ({
 	screenKey,
 	ui,
 	store,
-	allowClearConsole,
 }: {
 	bot: Bot;
 	screenKey: UIScreen;
 	ui: UI;
 	store: GlobalStore;
-	allowClearConsole: boolean;
 }) => {
 	uiStore.setState((uiState) => {
 		uiState.currentScreen = screenKey;
 	});
-	render(bot, store, ui, allowClearConsole);
+	render(bot, store, ui);
 };
 
-const startStateSubscription = (
-	bot: Bot,
-	ui: UI,
-	store: GlobalStore,
-	allowClearConsole: boolean,
-	fps: number
-) => {
+const startStateSubscription = (bot: Bot, ui: UI, store: GlobalStore, fps: number) => {
 	// screens management
 	keyboard.onKeyPress("m", () => {
 		const currentScreen = uiStore.getState().currentScreen;
 		if (currentScreen === "main") {
-			setCurrentScreen({ bot, screenKey: "mini", ui, store, allowClearConsole });
+			setCurrentScreen({ bot, screenKey: "mini", ui, store });
+
+			// disable allowClearConsole
+			uiStore.setState((uiState) => {
+				uiState.allowClearConsole = false;
+			});
+
+			console.log();
+			console.log("Entering mini mode. Press 'm' to exit.");
+			console.log();
+			console.log(chalk.hex("#00c4fd")("WARNING: THIS IS EXPERIMENTAL FEATURE! WIP!"));
+			console.log();
 		} else {
-			setCurrentScreen({ bot, screenKey: "main", ui, store, allowClearConsole });
+			setCurrentScreen({ bot, screenKey: "main", ui, store });
+
+			// enable allowClearConsole
+			uiStore.setState((uiState) => {
+				uiState.allowClearConsole = true;
+			});
+			console.log("Exiting mini mode.");
 		}
 	});
 
-	keyboard.onKeyPress("c", () =>
-		setCurrentScreen({ bot, screenKey: "config", ui, store, allowClearConsole })
-	);
+	keyboard.onKeyPress("c", () => setCurrentScreen({ bot, screenKey: "config", ui, store }));
 
-	keyboard.onKeyPress("w", () =>
-		setCurrentScreen({ bot, screenKey: "wallet", ui, store, allowClearConsole })
-	);
+	keyboard.onKeyPress("w", () => setCurrentScreen({ bot, screenKey: "wallet", ui, store }));
 
-	keyboard.onKeyPress("l", () =>
-		setCurrentScreen({ bot, screenKey: "logs", ui, store, allowClearConsole })
-	);
+	keyboard.onKeyPress("l", () => setCurrentScreen({ bot, screenKey: "logs", ui, store }));
 
 	// table navigation
 	keyboard.onKeyPress("up", () => {
@@ -130,7 +135,7 @@ const startStateSubscription = (
 			uiState.tradeHistoryTable.cursor.y -= uiState.tradeHistoryTable.cursor.y > 0 ? 1 : 0;
 		});
 
-		render(bot, store, ui, allowClearConsole);
+		render(bot, store, ui);
 	});
 	// keyboard.onKeyPress("down", () => {
 	// 	const entriesCount = Object.keys(store.getState().tradeHistory).length;
@@ -146,38 +151,27 @@ const startStateSubscription = (
 			uiState.tradeHistoryTable.cursor.x -= uiState.tradeHistoryTable.cursor.x > 0 ? 1 : 0;
 		});
 
-		render(bot, store, ui, allowClearConsole);
+		render(bot, store, ui);
 	});
 	keyboard.onKeyPress("right", () => {
 		uiStore.setState((uiState) => {
 			uiState.tradeHistoryTable.cursor.x += uiState.tradeHistoryTable.cursor.x < 7 ? 1 : 0;
 		});
 
-		render(bot, store, ui, allowClearConsole);
+		render(bot, store, ui);
 	});
 
 	// TODO: refresh UI when users changes focus with keyboard
 
-	// uiStore.subscribe((state) => state, 		(state) => {
-	// 	const { ui: newUI, uiOutput } = updateUI(ui, state);
-	// 	ui = newUI;
-	// 	if (uiOutput !== uiPrevOutput) {
-	// 		uiPrevOutput = uiOutput;
-	// 		if (allowClearConsole) console.clear();
-	// 		console.log(uiOutput);
-	// 	}
-	// }
-	// );
+	// init subscribers for mini mode
+	miniMode(store);
 
-	// subscribe version
-	// store.subscribe(
-	// 	(state) => state,
-	// 	(state) => {
-	// 		ui = refreshUI(store, ui, allowClearConsole);
-	// 	}
-	// );
-
-	setInterval(() => render(bot, store, ui, allowClearConsole), 1000 / fps);
+	// render loop
+	setInterval(() => {
+		if (uiStore.getState().currentScreen !== "mini") {
+			render(bot, store, ui);
+		}
+	}, 1000 / fps);
 };
 
 interface Config {
@@ -195,6 +189,10 @@ export const startTUI = (bot: Bot, { allowClearConsole = true, fps = 10 }: Confi
 			process.exit(1);
 		}
 
+		uiStore.setState((uiState) => {
+			uiState.allowClearConsole = allowClearConsole;
+		});
+
 		ui = cliui({ width: 140 });
 
 		keyboard.onKeyPress("ctrl+s", () => {
@@ -211,14 +209,9 @@ export const startTUI = (bot: Bot, { allowClearConsole = true, fps = 10 }: Confi
 			bot.setStatus("bot:stop");
 			console.log("Exiting by user request...");
 			process.exit(0); // TODO: improve exit UX
-
-			// Emergency exit
-			setTimeout(() => {
-				process.exit(1);
-			}, 15000);
 		});
 
-		startStateSubscription(bot, ui, bot.store, allowClearConsole, fps);
+		startStateSubscription(bot, ui, bot.store, fps);
 	} catch (error) {
 		console.log(`Error initializing UI: `, error);
 		throw error;

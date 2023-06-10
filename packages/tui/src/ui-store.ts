@@ -4,6 +4,7 @@ export type UIScreen = "main" | "config" | "wallet" | "logs" | "mini";
 
 interface UIState {
 	isUpdating: boolean;
+	allowClearConsole: boolean;
 	updatesCount: number;
 	maxFps?: number;
 	lastUpdateTimestamp?: number;
@@ -20,10 +21,11 @@ interface UIState {
 
 const uiState: UIState = {
 	isUpdating: false,
+	allowClearConsole: true,
 	updatesCount: 0,
 	maxFps: 24,
 	lastUpdateTimestamp: 0,
-	currentScreen: "main",
+	currentScreen: (process.env.TUI_INITIAL_SCREEN as UIScreen) || "main",
 	tradeHistoryTable: {
 		cursor: {
 			x: 0,
