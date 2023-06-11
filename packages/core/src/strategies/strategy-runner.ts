@@ -1,7 +1,3 @@
-/**
- * https://snyk.io/blog/nodejs-how-even-quick-async-functions-can-block-the-event-loop-starve-io/
- */
-
 import EventEmitter from "node:events";
 import { PublicBot } from "src/bot";
 // import { Server } from "socket.io";
@@ -13,23 +9,9 @@ import { RunningStrategy, Strategy, UnknownStrategy } from "src/types/strategy";
 
 // TODO: handle errors when something goes wrong multiple time in a row stop the bot or pause for a while
 
-/**
- * StrategyRunner.run -> Strategy.run -> StrategyResults -> StrategyRunner.reporter
- *
- * Bot should:
- * - intercept Aggregator methods
- * - inject logic before/after Aggregator methods
- * - limit max
- *
- * Strategy should:
- * - get routes
- * - decide on routes
- * - make trades
- * - report results
- */
-
 export const StrategyRunner = (bot: PublicBot, maxConcurrent: number) => {
 	const emitter = new EventEmitter();
+
 	// const io = new Server(1337);
 
 	const scheduledStrategies: {
@@ -112,7 +94,7 @@ export const StrategyRunner = (bot: PublicBot, maxConcurrent: number) => {
 			!cancelled &&
 			liveStrategies.value < maxConcurrent &&
 			scheduledStrategies.length > 0 &&
-			bot.store.getState().limiters.iterationsRate.active === false
+			bot.limiters.iterationsRate.shouldAllow(performance.now())
 		);
 	};
 
@@ -225,6 +207,7 @@ export const StrategyRunner = (bot: PublicBot, maxConcurrent: number) => {
 			 * this is to allow for multiple strategies to run at the same time
 			 */
 			strategy.run(strategy.runtime.id, bot, finisher);
+
 			bot.setStatus("bot:launched");
 		}
 	}
@@ -254,16 +237,8 @@ export const StrategyRunner = (bot: PublicBot, maxConcurrent: number) => {
 			}ms`
 		);
 
-		// bot.logger.debug(`runner: strategy finished in ${time}ms`);
-
-		// strategy.runtime.result = [results];
-		// strategy.runtime.done = true;
-		// strategy.runtime.doneAt = performance.now();
-
 		liveStrategies.decrement();
 
-		//  add to finishedStrategies
-		// finishedStrategies.push(strategy);
 		emitter.emit("strategy:finished");
 		bot.logger.debug("strategyRunner:finisher: done");
 	};

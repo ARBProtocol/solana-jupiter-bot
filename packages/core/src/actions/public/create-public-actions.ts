@@ -7,6 +7,7 @@ import { initialState } from "src/store/initial-state";
 import { createOnStatusChange } from "./on-status-change";
 import { createBlockchainDataProviders } from "./create-blockchain-data-providers";
 import { createReporters } from "./create-reporters";
+import { createLimiters } from "./create-limiters";
 
 export const createPublicActions = (config: CreateBotParams) => {
 	const store = createStore(initialState);
@@ -21,6 +22,7 @@ export const createPublicActions = (config: CreateBotParams) => {
 		aggregators: createAggregators(config.aggregators, store, logger),
 		dataProviders: createBlockchainDataProviders(config.dataProviders),
 		...createReporters(store, logger),
+		limiters: createLimiters(store),
 	};
 
 	return {
