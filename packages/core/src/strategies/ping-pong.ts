@@ -531,8 +531,6 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 				);
 				process.exit(1);
 			}
-
-			done(this);
 		} catch (error) {
 			const parsedError = parseError(error);
 			bot.logger.error(
@@ -542,7 +540,8 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 				},
 				`PingPongStrategy:run:error ${parsedError?.message}`
 			);
-			bot.setStatus("!shutdown");
+		} finally {
+			done(this);
 		}
 	},
 };
