@@ -1,6 +1,6 @@
 import fs from "fs";
-import { createLogger } from "src/actions/public/create-logger";
 import { parseError } from "./parse-error";
+import { logger } from "src/logger";
 
 export const writeJsonToTempDir = (
 	fileName: string | number,
@@ -11,7 +11,7 @@ export const writeJsonToTempDir = (
 		fs.writeFileSync(path, JSON.stringify(data, null, 2));
 	} catch (error) {
 		const parsedError = parseError(error);
-		createLogger("./bot.log").error(
+		logger.error(
 			{
 				message: parsedError?.message,
 				stack: parsedError?.stack,

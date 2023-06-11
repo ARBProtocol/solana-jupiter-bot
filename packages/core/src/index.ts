@@ -22,6 +22,7 @@ export { createCache } from "./actions/public/create-cache";
 
 export { createStore } from "./store";
 export { createLogger } from "./actions/public/create-logger";
+export { logger } from "./logger";
 export { createPublicBot as createBot } from "./bot";
 
 export * from "./utils/extend-bot";

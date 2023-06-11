@@ -10,3 +10,4 @@ export * from "./write-json-to-temp-dir";
 export * from "./types";
 export * from "./thing-to-multi";
 export * from "./parse-error";
+export * from "./create-temp-dir";

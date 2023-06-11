@@ -1,9 +1,7 @@
 import Decimal from "decimal.js";
 import JSBI from "jsbi";
 import { parseError } from "./parse-error";
-import { createLogger } from "src/actions/public/create-logger";
-
-const logger = createLogger("./bot.log");
+import { logger } from "../logger";
 
 // TODO: use better naming (?)
 

@@ -1,5 +1,4 @@
 import { createStore } from "../../store";
-import { createLogger } from "./create-logger";
 import { createSetStatus } from "./create-set-status";
 import { createAggregators as createAggregators } from "./create-aggregators";
 import { CreateBotParams } from "src/bot";
@@ -8,11 +7,11 @@ import { createOnStatusChange } from "./on-status-change";
 import { createBlockchainDataProviders } from "./create-blockchain-data-providers";
 import { createReporters } from "./create-reporters";
 import { createLimiters } from "./create-limiters";
+import { logger } from "src/logger";
 
 export const createPublicActions = (config: CreateBotParams) => {
 	const store = createStore(initialState);
 	const setStatus = createSetStatus(store);
-	const logger = createLogger(`./bot.log`);
 
 	const publicActions = {
 		logger,

@@ -1,8 +1,10 @@
 /* eslint-disable turbo/no-undeclared-env-vars */
 import pino from "pino";
+import { createTempDir } from "src/utils";
 
-export const createLogger = (logPath: string) =>
-	pino(
+export const createLogger = (logPath: string) => {
+	createTempDir();
+	return pino(
 		{
 			level: process.env.LOG_LEVEL || "info",
 			formatters: {
@@ -15,5 +17,6 @@ export const createLogger = (logPath: string) =>
 		},
 		pino.destination(logPath)
 	);
+};
 
 export type Logger = ReturnType<typeof createLogger>;

@@ -6,7 +6,7 @@ import {
 	PublicKey,
 	createCache,
 	createKeypair,
-	createLogger,
+	logger,
 	createSolanaConnection,
 	parseError,
 } from "@arb-protocol/core";
@@ -14,8 +14,6 @@ import { isMainThread, workerData } from "worker_threads";
 import axios from "axios";
 
 import { Jupiter, SwapResult, TOKEN_LIST_URL, RouteInfo } from "@jup-ag/core";
-
-const logger = createLogger("./bot.log");
 
 const RoutesCache = createCache<RouteInfo[]>();
 

@@ -1,6 +1,6 @@
 import { parseError } from "src/utils";
-import { createLogger } from "../actions/public/create-logger";
 import { BaseError } from "./base";
+import { logger } from "src/logger";
 
 export class UnhandledError extends BaseError {
 	override name = "UnhandledError";
@@ -14,7 +14,6 @@ export class UnhandledError extends BaseError {
 
 	static handle(error: unknown, details?: string): void {
 		const parsedError = parseError(error);
-		const logger = createLogger("./bot.log");
 		logger.error("UNHANDLED ERROR: " + parsedError?.message);
 
 		if (parsedError?.stack) {
