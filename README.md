@@ -1,6 +1,6 @@
 > ⚠️ This bot can lead to loss of your funds, use at your own risk.
 
-> WIP - WIP - WIP - WIP -- 2.0.0-alpha.2 -- WIP - WIP - WIP - WIP
+> WIP - WIP - WIP - WIP -- 2.0.0-alpha.3 -- WIP - WIP - WIP - WIP
 
 [![](https://img.shields.io/badge/License-MIT-brightgreen)](#license)
 [![Twitter](https://img.shields.io/twitter/follow/ArbProtocol.svg?style=social&label=ArbProtocol)](https://twitter.com/ArbProtocol)
@@ -87,7 +87,7 @@ CLI - Interactive (UI) for the bot. It is used to display bot status and control
 
 Common tsconfig base for all packages.
 
-### eslint-config-custom
+### @arb-protocol/eslint-config
 
 Common eslint config base for all packages.
 

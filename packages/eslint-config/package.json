@@ -1,6 +1,6 @@
 {
-	"name": "eslint-config-custom",
-	"version": "2.0.0-alpha.2",
+	"name": "@arb-protocol/eslint-config",
+	"version": "2.0.0-alpha.3",
 	"main": "index.js",
 	"private": true,
 	"license": "MIT",

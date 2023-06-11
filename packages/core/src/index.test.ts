@@ -76,7 +76,7 @@ test("exports actions", () => {
 		      "append": true,
 		      "destroyed": false,
 		      "fd": 40,
-		      "file": "./bot.log",
+		      "file": "./temp/bot.log",
 		      "maxLength": 0,
 		      "maxWrite": 16384,
 		      "minLength": 0,

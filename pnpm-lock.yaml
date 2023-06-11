@@ -27,13 +27,13 @@ importers:
   apps/arb-solana-bot:
     dependencies:
       '@arb-protocol/core':
-        specifier: 2.0.0-alpha.1
+        specifier: 2.0.0-alpha.3
         version: link:../../packages/core
       '@arb-protocol/tui':
-        specifier: 2.0.0-alpha.1
+        specifier: 2.0.0-alpha.3
         version: link:../../packages/tui
       '@arb-protocol/wizard':
-        specifier: 2.0.0-alpha.1
+        specifier: 2.0.0-alpha.3
         version: link:../../packages/wizard
       '@jup-ag/core':
         specifier: 4.0.0-beta.18
@@ -145,6 +145,9 @@ importers:
         specifier: 4.1.4
         version: 4.1.4(immer@9.0.16)(react@18.2.0)
     devDependencies:
+      '@arb-protocol/eslint-config':
+        specifier: 2.0.0-alpha.3
+        version: link:../eslint-config
       '@types/node':
         specifier: ^18.11.10
         version: 18.14.6
@@ -160,9 +163,6 @@ importers:
       eslint:
         specifier: ^8.29.0
         version: 8.35.0
-      eslint-config-custom:
-        specifier: 2.0.0-alpha.1
-        version: link:../eslint-config-custom
       eslint-config-prettier:
         specifier: ^8.8.0
         version: 8.8.0(eslint@8.35.0)
@@ -191,7 +191,7 @@ importers:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@18.14.6)(typescript@5.0.2)
       tsconfig:
-        specifier: 2.0.0-alpha.1
+        specifier: 2.0.0-alpha.3
         version: link:../tsconfig
       tsup:
         specifier: ^6.7.0
@@ -203,7 +203,7 @@ importers:
         specifier: ^0.31.1
         version: 0.31.1
 
-  packages/eslint-config-custom:
+  packages/eslint-config:
     dependencies:
       eslint:
         specifier: ^8.29.0
@@ -275,8 +275,11 @@ importers:
         version: 3.11.0
     devDependencies:
       '@arb-protocol/core':
-        specifier: 2.0.0-alpha.1
+        specifier: 2.0.0-alpha.3
         version: link:../core
+      '@arb-protocol/eslint-config':
+        specifier: 2.0.0-alpha.3
+        version: link:../eslint-config
       '@types/ansi-align':
         specifier: ^3.0.0
         version: 3.0.0
@@ -289,6 +292,9 @@ importers:
       '@types/node':
         specifier: ^18.11.10
         version: 18.14.6
+      '@types/node-fetch':
+        specifier: ^2.6.4
+        version: 2.6.4
       '@typescript-eslint/eslint-plugin':
         specifier: ^5.45.0
         version: 5.54.1(@typescript-eslint/parser@5.54.1)(eslint@8.35.0)(typescript@5.0.2)
@@ -298,14 +304,11 @@ importers:
       eslint:
         specifier: ^8.29.0
         version: 8.35.0
-      eslint-config-custom:
-        specifier: 2.0.0-alpha.1
-        version: link:../eslint-config-custom
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@18.14.6)(typescript@5.0.2)
       tsconfig:
-        specifier: 2.0.0-alpha.1
+        specifier: 2.0.0-alpha.3
         version: link:../tsconfig
       tsup:
         specifier: ^6.7.0
@@ -317,7 +320,7 @@ importers:
   packages/wizard:
     dependencies:
       '@arb-protocol/core':
-        specifier: 2.0.0-alpha.1
+        specifier: 2.0.0-alpha.3
         version: link:../core
       '@clack/prompts':
         specifier: ^0.6.3
@@ -329,6 +332,9 @@ importers:
         specifier: 1.1.3
         version: 1.1.3
     devDependencies:
+      '@arb-protocol/eslint-config':
+        specifier: 2.0.0-alpha.3
+        version: link:../eslint-config
       '@types/node':
         specifier: ^18.11.10
         version: 18.15.9
@@ -341,14 +347,11 @@ importers:
       eslint:
         specifier: ^8.29.0
         version: 8.35.0
-      eslint-config-custom:
-        specifier: 2.0.0-alpha.1
-        version: link:../eslint-config-custom
       ts-node:
         specifier: ^10.9.1
         version: 10.9.1(@types/node@18.15.9)(typescript@5.0.2)
       tsconfig:
-        specifier: 2.0.0-alpha.1
+        specifier: 2.0.0-alpha.3
         version: link:../tsconfig
       tsup:
         specifier: ^6.7.0
@@ -2799,6 +2802,13 @@ packages:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
     dev: false
 
+  /@types/node-fetch@2.6.4:
+    resolution: {integrity: sha512-1ZX9fcN4Rvkvgv4E6PAY5WXUFWFcRWxZa3EW83UjycOB9ljJCedb2CupIP4RZMEwF/M3eTcCihbBRgwtGbg5Rg==}
+    dependencies:
+      '@types/node': 18.16.13
+      form-data: 3.0.1
+    dev: true
+
   /@types/node@12.20.55:
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
     dev: false
@@ -3415,7 +3425,6 @@ packages:
 
   /asynckit@0.4.0:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
-    dev: false
 
   /atomic-sleep@1.0.0:
     resolution: {integrity: sha512-kNOjDqAh7px0XWNI+4QbzoiR/nTkHAWNud2uvnJquD1/x5a7EQZMJT0AczqK0Qn67oY/TTQ1LbUKajZpp3I9tQ==}
@@ -3879,7 +3888,6 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       delayed-stream: 1.0.0
-    dev: false
 
   /commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -4145,7 +4153,6 @@ packages:
   /delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
-    dev: false
 
   /depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
@@ -4566,7 +4573,7 @@ packages:
       eslint-plugin-import: 2.27.5(@typescript-eslint/parser@5.59.6)(eslint-import-resolver-typescript@3.5.3)(eslint@8.35.0)
       get-tsconfig: 4.4.0
       globby: 13.1.3
-      is-core-module: 2.11.0
+      is-core-module: 2.12.1
       is-glob: 4.0.3
       synckit: 0.8.5
     transitivePeerDependencies:
@@ -4632,7 +4639,7 @@ packages:
       eslint-import-resolver-node: 0.3.7
       eslint-module-utils: 2.7.4(@typescript-eslint/parser@5.59.6)(eslint-import-resolver-node@0.3.7)(eslint-import-resolver-typescript@3.5.3)(eslint@8.35.0)
       has: 1.0.3
-      is-core-module: 2.11.0
+      is-core-module: 2.12.1
       is-glob: 4.0.3
       minimatch: 3.1.2
       object.values: 1.1.6
@@ -5106,6 +5113,15 @@ packages:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
     dependencies:
       is-callable: 1.2.7
+
+  /form-data@3.0.1:
+    resolution: {integrity: sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==}
+    engines: {node: '>= 6'}
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      mime-types: 2.1.35
+    dev: true
 
   /form-data@4.0.0:
     resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
@@ -6136,14 +6152,12 @@ packages:
   /mime-db@1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
     engines: {node: '>= 0.6'}
-    dev: false
 
   /mime-types@2.1.35:
     resolution: {integrity: sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==}
     engines: {node: '>= 0.6'}
     dependencies:
       mime-db: 1.52.0
-    dev: false
 
   /mimic-fn@2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
@@ -6414,14 +6428,14 @@ packages:
     dependencies:
       call-bind: 1.0.2
       define-properties: 1.2.0
-      es-abstract: 1.21.1
+      es-abstract: 1.21.2
     dev: false
 
   /object.hasown@1.1.2:
     resolution: {integrity: sha512-B5UIT3J1W+WuWIU55h0mjlwaqxiE5vYENJXIXZ4VFe05pNYrkKuK0U/6aFcb0pKywYJh7IhfoqUfKVmrJJHZHw==}
     dependencies:
       define-properties: 1.2.0
-      es-abstract: 1.21.1
+      es-abstract: 1.21.2
     dev: false
 
   /object.values@1.1.6:
@@ -6685,7 +6699,7 @@ packages:
         optional: true
     dependencies:
       lilconfig: 2.1.0
-      ts-node: 10.9.1(@types/node@18.15.9)(typescript@5.0.2)
+      ts-node: 10.9.1(@types/node@18.14.6)(typescript@5.0.2)
       yaml: 1.10.2
     dev: true
 
@@ -7011,7 +7025,7 @@ packages:
     resolution: {integrity: sha512-iMDbmAWtfU+MHpxt/I5iWI7cY6YVEZUQ3MBgPQ++XD1PELuJHIl82xBmObyP2KyQmkNB2dsqF7seoQQiAn5yDQ==}
     hasBin: true
     dependencies:
-      is-core-module: 2.11.0
+      is-core-module: 2.12.1
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
     dev: false
