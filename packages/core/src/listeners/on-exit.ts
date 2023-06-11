@@ -14,18 +14,19 @@ export const setupExitHandlers = () => {
 	process.on("exit", (code) => {
 		const msg = "MAIN THREAD EXIT! CODE: " + code;
 		console.error(msg);
-		logger.error(msg);
+		logger && logger.error(msg);
 
 		if (code !== 0) {
 			const stack = new Error().stack;
 			console.error(`TIME: ${new Date().toLocaleString()} (${Date.now()})`);
 			console.error(`STACK TRACE:\n${stack}`);
-			logger.error(
-				{
-					stack,
-				},
-				"STACK TRACE"
-			);
+			logger &&
+				logger.error(
+					{
+						stack,
+					},
+					"STACK TRACE"
+				);
 		}
 	});
 };

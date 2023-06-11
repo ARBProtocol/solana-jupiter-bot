@@ -5,6 +5,7 @@ import {
 	createBot,
 	extendBot,
 	plugins,
+	sleep,
 } from "@arb-protocol/core";
 import { startTUI } from "@arb-protocol/tui";
 import { runWizard } from "@arb-protocol/wizard";
@@ -46,10 +47,9 @@ export const start = async () => {
 			# What to do?
 			- copy .env.example to .env
 			- fill in the values correctly
-			----
-			[CTRL]+[C] to exit
 			`);
-			throw new Error(`No .env file found!`);
+			await sleep(1000); // wait for logger
+			process.exit(1);
 		}
 		// load .env file
 		dotenv.config();
@@ -130,6 +130,7 @@ export const start = async () => {
 
 		await bot.start();
 	} catch (error) {
-		console.log(error);
+		console.error(error);
+		process.exit(1);
 	}
 };
