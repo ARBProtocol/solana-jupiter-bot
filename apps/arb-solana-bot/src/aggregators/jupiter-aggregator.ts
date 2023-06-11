@@ -10,7 +10,7 @@ import {
 	createSolanaConnection,
 	parseError,
 } from "@arb-protocol/core";
-import { isMainThread, workerData } from "worker_threads";
+import { isMainThread } from "worker_threads";
 import axios from "axios";
 
 import { Jupiter, SwapResult, TOKEN_LIST_URL, RouteInfo } from "@jup-ag/core";
@@ -74,7 +74,6 @@ const JupiterAggregator: Aggregator<Jupiter> = {
 				};
 			}
 
-			//TODO: handle errors
 			this.instance = aggregator;
 
 			return { success: true, aggregatorId: this.id };
