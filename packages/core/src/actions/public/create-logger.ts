@@ -1,4 +1,3 @@
-/* eslint-disable turbo/no-undeclared-env-vars */
 import pino from "pino";
 import { createTempDir } from "src/utils";
 

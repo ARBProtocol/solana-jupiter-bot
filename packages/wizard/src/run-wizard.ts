@@ -14,6 +14,8 @@ import { TOKEN_LIST_URL } from "@jup-ag/core";
 import axios from "axios";
 import { Config as BotConfig } from "@arb-protocol/core";
 
+// TODO: refactor this madness :)
+
 type Token = {
 	address: string;
 	chainId: number;
@@ -183,7 +185,7 @@ export const runWizard = async () => {
 		return process.exit(0);
 	}
 
-	let backOffTime, backOffShutdownOnCount, features;
+	let features;
 	let priorityFeeMicroLamports: number | undefined;
 	let pendingTransactionsLimiter = 1;
 	let executionRateLimiter = {
@@ -199,7 +201,6 @@ export const runWizard = async () => {
 		features = await multiselect({
 			message: "What features do you want to setup?",
 			options: [
-				{ value: "backOff", label: "Back off - wait on failure, shutdown on max failure count" },
 				{ value: "priorityFeeMicroLamports", label: "Priority fee in µLamports" },
 				{ value: "pendingTransactionsLimiter", label: "Pending transactions limiter" },
 				{ value: "executionRateLimiter", label: "Execution rate limiter" },
@@ -211,42 +212,6 @@ export const runWizard = async () => {
 		if (isCancel(features)) {
 			cancel("Operation cancelled");
 			return process.exit(0);
-		}
-
-		if (features.includes("backOff")) {
-			backOffTime = await text({
-				message:
-					"[BackOff Feature 1/2] What is the back off time? / Wait {x} seconds before retrying",
-				placeholder: "60",
-				validate: (value) => {
-					if (value.length === 0) return "Please enter a back off time";
-					const backOffTime = parseInt(value);
-					if (isNaN(backOffTime)) return "Please enter a valid number";
-					if (backOffTime < 0) return "Please enter a positive number";
-				},
-			});
-
-			if (isCancel(backOffTime)) {
-				cancel("Operation cancelled");
-				return process.exit(0);
-			}
-
-			backOffShutdownOnCount = await text({
-				message:
-					"[BackOff Feature 2/2] What is the shutdown on count? / Shutdown after {x} failures",
-				placeholder: "3",
-				validate: (value) => {
-					if (value.length === 0) return "Please enter a back off shutdown on count";
-					const backOffShutdownOnCount = parseInt(value);
-					if (isNaN(backOffShutdownOnCount)) return "Please enter a valid number";
-					if (backOffShutdownOnCount < 0) return "Please enter a positive number";
-				},
-			});
-
-			if (isCancel(backOffShutdownOnCount)) {
-				cancel("Operation cancelled");
-				return process.exit(0);
-			}
 		}
 
 		// Priority fee
