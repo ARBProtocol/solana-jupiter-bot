@@ -1,21 +1,42 @@
 > ⚠️ This bot can lead to loss of your funds, use at your own risk.
 
-> WIP - WIP - WIP - WIP -- 2.0.0-alpha.3 -- WIP - WIP - WIP - WIP
+> WIP - WIP - WIP - WIP -- 2.0.0-alpha.4 -- WIP - WIP - WIP - WIP
 
 [![](https://img.shields.io/badge/License-MIT-brightgreen)](#license)
 [![Twitter](https://img.shields.io/twitter/follow/ArbProtocol.svg?style=social&label=ArbProtocol)](https://twitter.com/ArbProtocol)
 [![Discord](https://img.shields.io/discord/985095351293845514?logo=discord&logoColor=white&style=flat-square)](https://discord.gg/wcxYzfKNaE)
 
-![](https://github.com/ARBProtocol/solana-jupiter-bot/blob/dev-1.0.0-alpha/.gifs/very-important-image.jpg)
+# install (production)
 
-# install
+For most users it is recommended to use the .zip release. You can find them on our discord.
+
+```bash
+$ pnpm create-standalone
+
+# unzip the file
+# cd into the unzipped folder
+
+# use any package manager you like to install dependencies
+$ yarn|npm|pnpm install
+
+# * build should be done automatically, but if it's not, run:
+$ yarn|npm|pnpm build
+
+# run the bot
+$ yarn|npm|pnpm start
+
+# use the wizard to update config.json file
+$ yarn|npm|pnpm wizard
+```
+
+# install (development)
 
 ```bash
 # if you don't have pnpm installed
 $ npm i -g pnpm
 
 # clone the repo and install dependencies
-$ git clone -b dev-1.0.0-alpha https://github.com/ARBProtocol/solana-jupiter-bot.git
+$ git clone -b 2.0.0-alpha https://github.com/ARBProtocol/solana-jupiter-bot.git
 $ cd solana-jupiter-bot
 $ pnpm i
 ```
@@ -63,11 +84,9 @@ Recommended Terminal:
 
 ## /apps
 
-### arb-solana-bot
+### @arb-protocol/arb-solana-bot
 
 This is the main bot app that combines all packages together.
-
-> Currently using packages only locally. Because of that, you need to build the packages first! Packages will be published to npm in the future, so you will be able to use them directly downloading only this directory.
 
 ## /packages
 
@@ -77,17 +96,19 @@ The core of the bot. Contains main logic and default strategies. This core provi
 Currently the bot utilizes 1 aggregator: [Jupiter](https://jup.ag/) Core.
 The goal here is to make it as `headless` as possible. There are plans to include [PRISM](https://prism.ag/) aggregator.
 
-### @arb-protocol/cliui
+### @arb-protocol/tui
 
-CLI - Interactive (UI) for the bot. It is used to display bot status and control it.
+TUI - Interactive Terminal User Interface for the bot. It is used to display bot status and control it.
 
 ### @arb-protocol/wizard
 
-### ts-config
+Wizard is used to create config.json file, which is used to configure the bot.
+
+### @arb-protocol/ts-config (private)
 
 Common tsconfig base for all packages.
 
-### @arb-protocol/eslint-config
+### @arb-protocol/eslint-config (private)
 
 Common eslint config base for all packages.
 

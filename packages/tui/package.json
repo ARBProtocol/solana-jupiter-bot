@@ -1,6 +1,6 @@
 {
 	"name": "@arb-protocol/tui",
-	"version": "2.0.0-alpha.3",
+	"version": "2.0.0-alpha.4",
 	"license": "MIT",
 	"description": "Terminal user interface for @arb-protocol/solana-jupiter-bot",
 	"repository": {
@@ -36,8 +36,8 @@
 		"type-fest": "^3.11.0"
 	},
 	"devDependencies": {
-		"@arb-protocol/core": "2.0.0-alpha.3",
-		"@arb-protocol/eslint-config": "2.0.0-alpha.3",
+		"@arb-protocol/core": "2.0.0-alpha.4",
+		"@arb-protocol/eslint-config": "2.0.0-alpha.4",
 		"@types/ansi-align": "^3.0.0",
 		"@types/asciichart": "^1.5.6",
 		"@types/gradient-string": "^1.1.2",
@@ -47,7 +47,7 @@
 		"@typescript-eslint/parser": "^5.45.0",
 		"eslint": "^8.29.0",
 		"ts-node": "^10.9.1",
-		"tsconfig": "2.0.0-alpha.3",
+		"tsconfig": "2.0.0-alpha.4",
 		"tsup": "^6.7.0",
 		"typescript": "5.0.2"
 	}
