@@ -15,8 +15,8 @@
 		"postinstall": "tsup src --format cjs,esm --dts",
 		"build": "tsup src --format cjs,esm --dts",
 		"lint": "tsc --noEmit --skipLibCheck",
-		"start": "cross-env NODE_ENV=production LOG_LEVEL=error node dist/index.js",
-		"start:debug": "cross-env NODE_ENV=production LOG_LEVEL=debug node dist/index.js",
+		"start": "cross-env NODE_ENV=production LOG_ENABLED=true LOG_LEVEL=error node dist/index.js",
+		"start:debug": "cross-env NODE_ENV=dev LOG_ENABLED=true LOG_LEVEL=debug node dist/index.js",
 		"wizard": "node dist/run-wizard.js",
 		"dev": "ts-node src/index.ts"
 	},

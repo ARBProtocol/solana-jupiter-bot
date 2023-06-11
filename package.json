@@ -9,9 +9,9 @@
 	"scripts": {
 		"build": "turbo run build",
 		"build --force": "turbo run build --force",
-		"start": "turbo run build && cross-env NODE_ENV=production LOG_LEVEL=error pnpm -C ./apps/arb-solana-bot start",
-		"start:mini": "turbo run build && cross-env NODE_ENV=production LOG_LEVEL=error TUI_INITIAL_SCREEN=mini pnpm -C ./apps/arb-solana-bot start",
-		"start:debug": "turbo run build && cross-env NODE_ENV=production DEBUG=true LOG_LEVEL=debug pnpm -C ./apps/arb-solana-bot start",
+		"start": "turbo run build && pnpm -C ./apps/arb-solana-bot start",
+		"start:mini": "turbo run build && cross-env TUI_INITIAL_SCREEN=mini pnpm -C ./apps/arb-solana-bot start",
+		"start:debug": "turbo run build && -C ./apps/arb-solana-bot start:debug",
 		"wizard": "turbo run build && cross-env NODE_ENV=production pnpm -C ./apps/arb-solana-bot wizard",
 		"trade": "turbo run build && cd apps/arb-solana-bot && yarn start",
 		"dev": "cd apps/arb-solana-bot && pnpm dev",

@@ -12,7 +12,7 @@ export const createLogger = (logPath: string) => {
 					level: label,
 				}),
 			},
-			enabled: Boolean(process.env.DEBUG),
+			enabled: Boolean(process.env.LOG_ENABLED),
 			base: null,
 		},
 		pino.destination(logPath)
