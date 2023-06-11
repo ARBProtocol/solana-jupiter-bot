@@ -9,7 +9,7 @@ import { createReporters } from "./create-reporters";
 import { createLimiters } from "./create-limiters";
 import { logger } from "src/logger";
 
-export const createPublicActions = (config: CreateBotParams) => {
+export const createPublicActions = (params: CreateBotParams) => {
 	const store = createStore(initialState);
 	const setStatus = createSetStatus(store);
 
@@ -18,10 +18,10 @@ export const createPublicActions = (config: CreateBotParams) => {
 		store,
 		setStatus,
 		onStatusChange: createOnStatusChange(store),
-		aggregators: createAggregators(config.aggregators, store, logger),
-		dataProviders: createBlockchainDataProviders(config.dataProviders),
+		aggregators: createAggregators(params.aggregators, store, logger),
+		dataProviders: createBlockchainDataProviders(params.dataProviders),
 		...createReporters(store, logger),
-		limiters: createLimiters(store),
+		limiters: createLimiters(store, params.config),
 	};
 
 	return {

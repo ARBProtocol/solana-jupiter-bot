@@ -224,5 +224,18 @@ export type GlobalState = {
 			 */
 			enabled: boolean;
 		};
+		aggregators: {
+			errorsRate: {
+				current: number;
+				max: number;
+				timeWindowMs: number;
+				/** Relative time*/
+				activatedAtRel: number;
+				active: boolean;
+				enabled: boolean;
+				cooldownMs: number;
+				cooldownUntilRel: number;
+			};
+		};
 	};
 };

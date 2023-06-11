@@ -102,9 +102,11 @@ const startStateSubscription = (bot: Bot, ui: UI, store: GlobalStore, fps: numbe
 		if (currentScreen === "main") {
 			setCurrentScreen({ bot, screenKey: "mini", ui, store });
 
-			// disable allowClearConsole
 			uiStore.setState((uiState) => {
+				// disable allowClearConsole
 				uiState.allowClearConsole = false;
+				// disable screen rotation
+				uiState.enableScreenRotator = false;
 			});
 
 			console.log();
@@ -115,9 +117,11 @@ const startStateSubscription = (bot: Bot, ui: UI, store: GlobalStore, fps: numbe
 		} else {
 			setCurrentScreen({ bot, screenKey: "main", ui, store });
 
-			// enable allowClearConsole
 			uiStore.setState((uiState) => {
+				// enable allowClearConsole
 				uiState.allowClearConsole = true;
+				// enable screen rotation
+				uiState.enableScreenRotator = true;
 			});
 			console.log("Exiting mini mode.");
 		}
@@ -163,6 +167,9 @@ const startStateSubscription = (bot: Bot, ui: UI, store: GlobalStore, fps: numbe
 
 	// TODO: refresh UI when users changes focus with keyboard
 
+	// init screen rotator
+	screenRotator({ bot, ui, store });
+
 	// init subscribers for mini mode
 	miniMode(store);
 
@@ -178,6 +185,28 @@ interface Config {
 	allowClearConsole?: boolean;
 	fps?: number;
 }
+
+const screenRotator = ({ bot, ui, store }: { bot: Bot; ui: UI; store: GlobalStore }) => {
+	let interval: NodeJS.Timeout;
+
+	const rotateMain = () => {
+		interval = setInterval(() => {
+			const state = uiStore.getState();
+
+			if (!state.enableScreenRotator) return;
+
+			const currentScreen = state.currentScreen;
+			if (currentScreen === "main") {
+				setCurrentScreen({ bot, screenKey: "main:agg", ui, store });
+			}
+			if (currentScreen === "main:agg") {
+				setCurrentScreen({ bot, screenKey: "main", ui, store });
+			}
+		}, 1000 * 5);
+	};
+
+	rotateMain();
+};
 
 export const startTUI = (bot: Bot, { allowClearConsole = true, fps = 10 }: Config = {}) => {
 	let ui;

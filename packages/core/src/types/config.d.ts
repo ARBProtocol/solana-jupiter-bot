@@ -24,6 +24,14 @@ export interface Config {
 			max: number;
 			timeWindowMs: number;
 		};
+		aggregators?: {
+			errorsRate: {
+				enabled: boolean;
+				max: number;
+				cooldownMs: number;
+				timeWindowMs: number;
+			};
+		};
 	};
 	arbProtocolBuyBack?: {
 		enabled: boolean;

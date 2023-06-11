@@ -283,6 +283,17 @@ export const createAggregator = (
 					});
 
 					if ("unknown" in result.error) {
+						// update stats
+						store.setState((state) => {
+							if (state.stats.aggregators[this.id]) {
+								// @ts-expect-error FIXME: fix this
+								state.stats.aggregators[this.id].errors.unknown.value++;
+								// @ts-expect-error FIXME: fix this
+								state.stats.aggregators[this.id].errors.unknown.updatedAtRel =
+									performance.now();
+							}
+						});
+
 						const msg = `internalAggregator:computeRoutes:unknown ${result.error?.message}`;
 						logger.error(
 							{
@@ -294,6 +305,18 @@ export const createAggregator = (
 					}
 
 					if (result.error.missingData) {
+						// update stats
+						store.setState((state) => {
+							if (state.stats.aggregators[this.id]) {
+								// @ts-expect-error FIXME: fix this
+								state.stats.aggregators[this.id].errors.missingData.value++;
+								// @ts-expect-error FIXME: fix this
+								state.stats.aggregators[
+									this.id
+								].errors.missingData.updatedAtRel = performance.now();
+							}
+						});
+
 						logger.error(
 							"internalAggregator:computeRoutes:missingData - restart or change RPC"
 						);
@@ -301,11 +324,33 @@ export const createAggregator = (
 					}
 
 					if (result.error.rpc429) {
+						// update stats
+						store.setState((state) => {
+							if (state.stats.aggregators[this.id]) {
+								// @ts-expect-error FIXME: fix this
+								state.stats.aggregators[this.id].errors.rpc429.value++;
+								// @ts-expect-error FIXME: fix this
+								state.stats.aggregators[this.id].errors.rpc429.updatedAtRel =
+									performance.now();
+							}
+						});
+
 						logger.error("internalAggregator:computeRoutes:rpc429");
 						throw new Error("internalAggregator: Too many requests");
 					}
 
 					if (result.error.rpc500) {
+						// update stats
+						store.setState((state) => {
+							if (state.stats.aggregators[this.id]) {
+								// @ts-expect-error FIXME: fix this
+								state.stats.aggregators[this.id].errors.rpcOther.value++;
+								// @ts-expect-error FIXME: fix this
+								state.stats.aggregators[this.id].errors.rpcOther.updatedAtRel =
+									performance.now();
+							}
+						});
+
 						logger.error("internalAggregator:computeRoutes:rpc500");
 						throw new Error("internalAggregator: Internal server error");
 					}

@@ -7,6 +7,7 @@ import { StatusBox } from "./components/status-box";
 import { StrategyBox } from "./components/strategy-box";
 import { TradeHistoryTable } from "./components/trade-history-table";
 import stripAnsi from "./lib/strip-ansi";
+import { AggregatorBox } from "./components/aggregator-box";
 
 const isDevMode = process.env.NODE_ENV !== "production";
 
@@ -71,6 +72,25 @@ export const updateUI = (
 			ui.div(TopBar({ currentScreen }));
 			ui.div("");
 			ui.div(DoubleColumn(StatusBox(state), StrategyBox(bot, state)));
+			ui.div("");
+			ui.div(priceChart(state));
+			ui.div(expectedProfitChart(state));
+			ui.div(TradeHistoryTable(state));
+			ui.div(
+				`${chalk.dim("FPS ~ " + fps.toFixed(2))} ${isDevMode ? chalk.red(" DEV MODE") : ""} ${
+					isDevMode
+						? chalk.dim(
+								`| USED MEM ~ ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(0)} MB`
+						  )
+						: ""
+				} ${chalk.dim("UPTIME: " + getProcessUptime())}`
+			);
+			break;
+		case "main:agg":
+			ui.div("");
+			ui.div(TopBar({ currentScreen }));
+			ui.div("");
+			ui.div(DoubleColumn(StatusBox(state), AggregatorBox(bot, state)));
 			ui.div("");
 			ui.div(priceChart(state));
 			ui.div(expectedProfitChart(state));

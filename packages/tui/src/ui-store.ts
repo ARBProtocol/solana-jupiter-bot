@@ -1,10 +1,11 @@
 import { createStore } from "@arb-protocol/core";
 
-export type UIScreen = "main" | "config" | "wallet" | "logs" | "mini";
+export type UIScreen = "main" | "config" | "wallet" | "logs" | "mini" | "main:agg";
 
 interface UIState {
 	isUpdating: boolean;
 	allowClearConsole: boolean;
+	enableScreenRotator: boolean;
 	updatesCount: number;
 	maxFps?: number;
 	lastUpdateTimestamp?: number;
@@ -22,6 +23,7 @@ interface UIState {
 const uiState: UIState = {
 	isUpdating: false,
 	allowClearConsole: true,
+	enableScreenRotator: (process.env.TUI_INITIAL_SCREEN as UIScreen) !== "mini",
 	updatesCount: 0,
 	maxFps: 24,
 	lastUpdateTimestamp: 0,

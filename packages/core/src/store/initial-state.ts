@@ -106,5 +106,17 @@ export const initialState: GlobalState = {
 			active: false,
 			activatedAtRel: 0,
 		},
+		aggregators: {
+			errorsRate: {
+				enabled: true,
+				current: 0,
+				active: false,
+				max: 2,
+				activatedAtRel: 0,
+				cooldownMs: 10000,
+				cooldownUntilRel: 0,
+				timeWindowMs: 10000,
+			},
+		},
 	},
 };

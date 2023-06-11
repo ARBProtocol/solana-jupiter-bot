@@ -36,31 +36,31 @@ export const StatusBox = (state: GlobalState) => {
 	output += "\n" + chalk.bold("LIMITERS") + "\n";
 
 	if (state.limiters.transactions.pending.enabled) {
-		const isTriggered = state.limiters.transactions.pending.active;
-		output += `${isTriggered ? chalk.red("▌") : chalk.hex("#A48BF9")("▌")}Pending Transactions: ${
+		const isActive = state.limiters.transactions.pending.active;
+		output += `${isActive ? chalk.red("▌") : chalk.hex("#A48BF9")("▌")}Pending Transactions: ${
 			state.stats.global.transactions.pending.value
 		} /${state.limiters.transactions.pending.max}${chalk.dim("tx")}       ${
-			isTriggered ? chalk.bgHex("#A48BF9").bold(" ACTIVE ") : ""
+			isActive ? chalk.bgHex("#A48BF9").bold(" ACTIVE ") : ""
 		}\n`;
 	}
 
 	if (state.limiters.transactions.executionRate.enabled) {
-		const isTriggered = state.limiters.transactions.executionRate.active;
+		const isActive = state.limiters.transactions.executionRate.active;
 
-		output += `${isTriggered ? chalk.red("▌") : chalk.hex("#ef8bce")("▌")}Execution Rate: ${
+		output += `${isActive ? chalk.red("▌") : chalk.hex("#ef8bce")("▌")}Execution Rate: ${
 			state.limiters.transactions.executionRate.current
 		} /${state.limiters.transactions.executionRate.max}${chalk.dim("tx")} ~ ${chalk.dim(
 			(state.limiters.transactions.executionRate.timeWindowMs / 1000).toString() + "s"
-		)}       ${isTriggered ? chalk.bgHex("#ef8bce").bold(" ACTIVE ") : ""}\n`;
+		)}       ${isActive ? chalk.bgHex("#ef8bce").bold(" ACTIVE ") : ""}\n`;
 	}
 
 	if (state.limiters.iterationsRate.enabled) {
-		const isTriggered = state.limiters.iterationsRate.active;
-		output += `${isTriggered ? chalk.red("▌") : chalk.hex("#8968f7")("▌")}Iterations Rate: ${
+		const isActive = state.limiters.iterationsRate.active;
+		output += `${isActive ? chalk.red("▌") : chalk.hex("#8968f7")("▌")}Iterations Rate: ${
 			state.limiters.iterationsRate.current
 		} /${state.limiters.iterationsRate.max}${chalk.dim("i")} ~ ${chalk.dim(
 			(state.limiters.iterationsRate.timeWindowMs / 1000).toString() + "s"
-		)}        ${isTriggered ? chalk.bgHex("#8968f7").bold(" ACTIVE ") : ""}\n`;
+		)}        ${isActive ? chalk.bgHex("#8968f7").bold(" ACTIVE ") : ""}\n`;
 	}
 
 	const box = boxen(output, {

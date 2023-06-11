@@ -5,10 +5,6 @@ import { sleep } from "src/utils";
 import { ulid } from "ulidx";
 import { RunningStrategy, Strategy, UnknownStrategy } from "src/types/strategy";
 
-// TODO: check if runner is not going too fast and if so ask user if they want to continue
-
-// TODO: handle errors when something goes wrong multiple time in a row stop the bot or pause for a while
-
 export const StrategyRunner = (bot: PublicBot, maxConcurrent: number) => {
 	const emitter = new EventEmitter();
 
@@ -94,7 +90,8 @@ export const StrategyRunner = (bot: PublicBot, maxConcurrent: number) => {
 			!cancelled &&
 			liveStrategies.value < maxConcurrent &&
 			scheduledStrategies.length > 0 &&
-			bot.limiters.iterationsRate.shouldAllow(performance.now())
+			bot.limiters.iterationsRate.shouldAllow(performance.now()) &&
+			bot.store.getState().limiters.aggregators.errorsRate.active === false
 		);
 	};
 
@@ -315,12 +312,12 @@ export const StrategyRunner = (bot: PublicBot, maxConcurrent: number) => {
 		// 	});
 		// });
 
-		emitter.on("strategy:scheduled", () => {
-			// io.emit("strategy:scheduled", {
-			// 	sentAt: Date.now(),
-			// });
-			launcher();
-		});
+		// emitter.on("strategy:scheduled", () => {
+		// 	// io.emit("strategy:scheduled", {
+		// 	// 	sentAt: Date.now(),
+		// 	// });
+		// 	launcher();
+		// });
 		// emitter.on("strategy:launched", finisher);
 		// emitter.on("message", (message) => {
 		// 	console.log("message", message);

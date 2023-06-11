@@ -65,7 +65,7 @@ export const runWizard = async () => {
 
 	const tokenASymbol = await text({
 		message: "What is the token A?",
-		placeholder: "ARB",
+		placeholder: "USDT",
 		validate: (value) => {
 			if (value.length === 0) return "Please enter a token";
 			const token = jupiterTokens.find(
@@ -197,14 +197,21 @@ export const runWizard = async () => {
 		timeWindowMs: 5000,
 	};
 
+	let aggregatorErrorsRateLimiter = {
+		max: 2,
+		timeWindowMs: 10_000,
+		cooldownMs: 10_000,
+	};
+
 	if (experienceLevel !== "beginner") {
 		features = await multiselect({
-			message: "What features do you want to setup?",
+			message: "What features do you want to setup? [spacebar] to select",
 			options: [
 				{ value: "priorityFeeMicroLamports", label: "Priority fee in µLamports" },
 				{ value: "pendingTransactionsLimiter", label: "Pending transactions limiter" },
 				{ value: "executionRateLimiter", label: "Execution rate limiter" },
 				{ value: "iterationsRateLimiter", label: "Iterations rate" },
+				{ value: "aggregatorErrorsRateLimiter", label: "Aggregator errors rate limiter" },
 			],
 			required: false,
 		});
@@ -302,6 +309,7 @@ export const runWizard = async () => {
 			}
 		}
 
+		// Iterations rate limiter
 		if (features.includes("iterationsRateLimiter")) {
 			const iterationsRateLimiterTimeWindowMs = await text({
 				message: "What is the iterations rate time window (in seconds)?",
@@ -339,6 +347,64 @@ export const runWizard = async () => {
 				iterationsRateLimiter = {
 					max: parseInt(iterationsRateLimiterMax),
 					timeWindowMs: parseInt(iterationsRateLimiterTimeWindowMs) * 1000,
+				};
+			}
+		}
+
+		if (features.includes("aggregatorErrorsRateLimiter")) {
+			const aggregatorErrorsRateLimiterTimeWindowMs = await text({
+				message: "What is the agg errors rate time window (in seconds)?",
+				initialValue: "10",
+				validate: (value) => {
+					if (value.length === 0) return "Please enter a agg errors rate time window";
+					const aggregatorErrorsRateLimiterTimeWindowMs = parseInt(value);
+					if (isNaN(aggregatorErrorsRateLimiterTimeWindowMs)) return "Please enter a valid number";
+					if (aggregatorErrorsRateLimiterTimeWindowMs < 0) return "Please enter a positive number";
+				},
+			});
+
+			const aggregatorErrorsRateLimiterMax = await text({
+				message: `What is the agg errors rate limit (max per ${
+					aggregatorErrorsRateLimiterTimeWindowMs as string
+				} sec)?`,
+				initialValue: "2",
+				validate: (value) => {
+					if (value.length === 0) return "Please enter a agg errors rate limit";
+					const aggregatorErrorsRateLimiterMax = parseInt(value);
+					if (isNaN(aggregatorErrorsRateLimiterMax)) return "Please enter a valid number";
+					if (aggregatorErrorsRateLimiterMax < 0) return "Please enter a positive number";
+				},
+			});
+
+			const aggregatorErrorsRateLimiterCooldownMs = await text({
+				message: `What is the cooldown time (in seconds) after reaching the agg errors rate limit?`,
+				initialValue: "10",
+				validate: (value) => {
+					if (value.length === 0) return "Please enter a cooldown time";
+					const aggregatorErrorsRateLimiterCooldownMs = parseInt(value);
+					if (isNaN(aggregatorErrorsRateLimiterCooldownMs)) return "Please enter a valid number";
+					if (aggregatorErrorsRateLimiterCooldownMs < 0) return "Please enter a positive number";
+				},
+			});
+
+			if (
+				isCancel(aggregatorErrorsRateLimiterTimeWindowMs) ||
+				isCancel(aggregatorErrorsRateLimiterMax) ||
+				isCancel(aggregatorErrorsRateLimiterCooldownMs)
+			) {
+				cancel("Operation cancelled");
+				return process.exit(0);
+			}
+
+			if (
+				typeof aggregatorErrorsRateLimiterTimeWindowMs === "string" &&
+				typeof aggregatorErrorsRateLimiterMax === "string" &&
+				typeof aggregatorErrorsRateLimiterCooldownMs === "string"
+			) {
+				aggregatorErrorsRateLimiter = {
+					max: parseInt(aggregatorErrorsRateLimiterMax),
+					timeWindowMs: parseInt(aggregatorErrorsRateLimiterTimeWindowMs) * 1000,
+					cooldownMs: parseInt(aggregatorErrorsRateLimiterCooldownMs) * 1000,
 				};
 			}
 		}
@@ -442,6 +508,14 @@ export const runWizard = async () => {
 				enabled: true,
 				max: iterationsRateLimiter?.max,
 				timeWindowMs: iterationsRateLimiter?.timeWindowMs,
+			},
+			aggregators: {
+				errorsRate: {
+					enabled: true,
+					max: aggregatorErrorsRateLimiter?.max,
+					timeWindowMs: aggregatorErrorsRateLimiter?.timeWindowMs,
+					cooldownMs: aggregatorErrorsRateLimiter?.cooldownMs,
+				},
 			},
 		},
 	};

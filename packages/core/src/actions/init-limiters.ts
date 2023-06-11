@@ -2,6 +2,7 @@ import { PublicBot } from "src/bot";
 import { parseError } from "src/utils";
 import z from "zod";
 
+// TODO: move this to create-limiters.ts
 export const initLimiters = (bot: PublicBot) => {
 	try {
 		bot.setStatus("limiters:initializing");
@@ -42,24 +43,6 @@ export const initLimiters = (bot: PublicBot) => {
 					state.limiters.transactions.executionRate.timeWindowMs =
 						parsed.timeWindowMs;
 					state.limiters.transactions.executionRate.enabled = parsed.enabled;
-				});
-			}
-
-			if (limitersConfig?.iterationsRate) {
-				const IterationsRateLimiterSchema = z.object({
-					max: z.number().int().positive(),
-					timeWindowMs: z.number().int().positive(),
-					enabled: z.boolean(),
-				});
-
-				const parsed = IterationsRateLimiterSchema.parse(
-					limitersConfig.iterationsRate
-				);
-
-				bot.store.setState((state) => {
-					state.limiters.iterationsRate.max = parsed.max;
-					state.limiters.iterationsRate.timeWindowMs = parsed.timeWindowMs;
-					state.limiters.iterationsRate.enabled = parsed.enabled;
 				});
 			}
 		}
