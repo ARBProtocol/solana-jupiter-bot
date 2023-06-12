@@ -169,6 +169,17 @@ export const runWizard = async () => {
 		return process.exit(0);
 	}
 
+	const enableCompounding = await confirm({
+		message:
+			"Would you like to enable profit compounding?\n·   When enabled, the previous transaction's output will be used as input for the next one.",
+		initialValue: false,
+	});
+
+	if (isCancel(enableCompounding)) {
+		cancel("Operation cancelled");
+		return process.exit(0);
+	}
+
 	const profitThreshold = await text({
 		message: "What is the profit threshold? / Execute tx when expected profit is above {x} %",
 		placeholder: "0.42",
@@ -462,6 +473,7 @@ export const runWizard = async () => {
 		strategy: {
 			id: string;
 			amount: number;
+			enableCompounding: boolean;
 			executeAboveExpectedProfitPercent: number;
 			priorityFeeMicroLamports?: number;
 			slippage: {
@@ -477,6 +489,7 @@ export const runWizard = async () => {
 		strategy: {
 			id: "ping-pong",
 			amount: parseFloat(tradeAmount),
+			enableCompounding: enableCompounding,
 			executeAboveExpectedProfitPercent: parseFloat(profitThreshold),
 			slippage: {
 				bps: parseInt((parseFloat(slippage) * 100).toFixed(0)),

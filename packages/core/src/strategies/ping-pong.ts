@@ -24,6 +24,10 @@ export type PingPongStrategyConfig = {
 	 * tx will not lead to losses though.
 	 */
 	enableAutoSlippage: boolean;
+	/**
+	 * If enabled, the bot will compound the profit of the previous trade
+	 */
+	enableCompounding: boolean;
 	executeAboveExpectedProfitPercent: number;
 	priorityFeeMicroLamports?: number;
 	lock?: boolean;
@@ -40,6 +44,7 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 		executeAboveExpectedProfitPercent: 1,
 		lock: false,
 		enableAutoSlippage: false,
+		enableCompounding: false,
 	},
 	uiHook: {},
 	// dependencies: {
@@ -187,24 +192,33 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 				});
 			}
 
+			// UI Hook
+			this.uiHook.value = this.config.enableCompounding ? "Compounding ON" : "";
+
 			const tradeAmount = thingToMulti.fromUiValue(
 				this.config.inToken.token.address === this.config.tokensInfo[0].address
-					? this.config.amount
+					? this.config.enableCompounding
+						? this.config.inToken.recentOutAmount
+						: this.config.amount
 					: this.config.inToken.recentOutAmount.toNumber(),
 				this.config.inToken.token.decimals
 			);
+
 			const slippage = this.config.slippage;
 
 			if (!tradeAmount) {
 				const msg = "PingPongStrategy:run:error tradeAmount not provided";
 				bot.logger.error(
 					{
-						amount: this.config.amount,
+						amount: this.config.enableCompounding
+							? this.config.inToken.recentOutAmount
+							: this.config.amount,
 						inTokenRecentOutAmount: this.config.inToken.recentOutAmount,
 						typeOfInTokenRecentOutAmount:
 							typeof this.config.inToken.recentOutAmount,
 						inToken: this.config.inToken.token,
 						outToken: this.config.outToken.token,
+						enableCompounding: this.config.enableCompounding,
 					},
 					msg
 				);
@@ -317,16 +331,6 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 				}
 
 				const previousOutAmount = this.config.outToken.recentOutAmount;
-				const amountMulti = thingToMulti.fromUiValue(
-					this.config.amount,
-					this.config.inToken.token.decimals
-				);
-
-				if (!amountMulti) {
-					const msg = "PingPongStrategy:run:error amountMulti is undefined";
-					bot.logger.error(msg);
-					throw new Error(msg);
-				}
 
 				// report priority fee
 				if (this.config.priorityFeeMicroLamports) {

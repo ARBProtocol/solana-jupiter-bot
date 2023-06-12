@@ -66,6 +66,7 @@ export const start = async () => {
 				amount: number;
 				executeAboveExpectedProfitPercent: number;
 				priorityFeeMicroLamports?: number;
+				enableCompounding?: boolean;
 				slippage: {
 					bps: number;
 					enableAutoSlippage: boolean;
@@ -97,6 +98,7 @@ export const start = async () => {
 			executeAboveExpectedProfitPercent: config.strategy.executeAboveExpectedProfitPercent,
 			priorityFeeMicroLamports: config.strategy.priorityFeeMicroLamports,
 			enableAutoSlippage: config.strategy.slippage.enableAutoSlippage,
+			enableCompounding: config.strategy.enableCompounding ?? false,
 		});
 
 		const bot = extendBot(
