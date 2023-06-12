@@ -1,6 +1,6 @@
 > ⚠️ This bot can lead to loss of your funds, use at your own risk.
 
-> WIP - WIP - WIP - WIP -- 2.0.0-alpha.4 -- WIP - WIP - WIP - WIP
+> WIP - WIP - WIP - WIP -- 2.0.0-alpha.5 -- WIP - WIP - WIP - WIP
 
 [![](https://img.shields.io/badge/License-MIT-brightgreen)](#license)
 [![Twitter](https://img.shields.io/twitter/follow/ArbProtocol.svg?style=social&label=ArbProtocol)](https://twitter.com/ArbProtocol)

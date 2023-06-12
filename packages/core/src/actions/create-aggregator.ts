@@ -413,6 +413,9 @@ export const createAggregator = (
 					outAmount.uiValue.decimal
 				);
 
+				// how many hops and on which markets
+				const hops = result.routes[0].hops;
+
 				store.setState((state) => {
 					// set current strategy info
 					state.strategies.current = {
@@ -425,6 +428,7 @@ export const createAggregator = (
 						slippage,
 						price: currentPrice.toNumber(),
 						priceInverted: currentPriceInverted.toNumber(),
+						hops,
 					};
 					// update price chart
 					state.chart.price.values = shiftAndPush(
@@ -620,6 +624,7 @@ export const createAggregator = (
 			if ("error" in result.meta) {
 				// TODO: create SpecificError classes
 
+				// @ts-expect-error FIXME: fix type
 				const historyEntry: TradeHistoryEntry = {
 					uid: result.meta.runtimeId,
 					updatedAt: Date.now(),
@@ -754,6 +759,7 @@ export const createAggregator = (
 					outToken: outTokenInfo,
 				});
 
+				// @ts-expect-error FIXME: fix type
 				const historyEntry: TradeHistoryEntry = {
 					uid: result.meta.runtimeId,
 					updatedAt: Date.now(),

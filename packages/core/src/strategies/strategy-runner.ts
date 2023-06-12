@@ -26,7 +26,7 @@ export const StrategyRunner = (bot: PublicBot, maxConcurrent: number) => {
 			bot.store.setState((state) => {
 				state.strategies.stats.scheduled++;
 			});
-			bot.setStatus("bot:scheduled");
+			bot.setStatus("strategy:scheduled");
 			bot.logger.debug(
 				`strategyRunner:scheduledStrategies:push +1 current:${this.length}`
 			);
@@ -205,7 +205,7 @@ export const StrategyRunner = (bot: PublicBot, maxConcurrent: number) => {
 			 */
 			strategy.run(strategy.runtime.id, bot, finisher);
 
-			bot.setStatus("bot:launched");
+			bot.setStatus("strategy:launched");
 		}
 	}
 
@@ -214,7 +214,7 @@ export const StrategyRunner = (bot: PublicBot, maxConcurrent: number) => {
 			| Strategy<T extends Record<string, unknown> ? T : never>
 			| RunningStrategy
 	) => {
-		bot.setStatus("bot:finished");
+		bot.setStatus("strategy:finished");
 		if ("runtime" in strategy === false) {
 			const msg = "strategyRunner:finisher: strategy.runtime is undefined";
 			console.error(msg);

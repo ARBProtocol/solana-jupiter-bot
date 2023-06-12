@@ -1,7 +1,7 @@
 export type TradeHistoryEntry = {
 	uid: string;
 	txId?: string;
-	createdAt?: number;
+	createdAt: number;
 	updatedAt: number;
 	strategyName?: string;
 	status: "success" | "error" | "fetchingResult" | "pending" | "unknown";

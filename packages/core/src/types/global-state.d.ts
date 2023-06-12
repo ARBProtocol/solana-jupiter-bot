@@ -50,6 +50,7 @@ export type GlobalState = {
 			priorityFeeMicroLamports?: number;
 			desiredProfitPercentPerTx?: number;
 			shouldExecute: boolean;
+			hops?: string[];
 		};
 		// TODO: move this to root.stats.strategies.transactions and add global stats in root.stats.global.transactions
 		stats: {

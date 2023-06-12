@@ -3,7 +3,7 @@ import { writeJsonToTempDir } from "src/utils";
 import { onTxSuccess } from "./on-tx-success";
 
 const handleHistoryUpdate = async (bot: PublicBot) => {
-	bot.logger.info("history:newEntry called!");
+	bot.logger.debug("onHistoryEntry:handleHistoryUpdate:called");
 	const tradeHistory = Object.values(bot.store.getState().tradeHistory);
 
 	// store history in temp TODO: make this configurable

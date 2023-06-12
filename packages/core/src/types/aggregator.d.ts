@@ -16,6 +16,7 @@ export type AggregatorRoute = {
 	readonly amountIn: bigint;
 	readonly amountOut: bigint;
 	readonly slippage: number;
+	readonly hops: string[];
 };
 
 export type AggregatorComputeRoutesMethod<TAgg, TRoutes = void> = ({

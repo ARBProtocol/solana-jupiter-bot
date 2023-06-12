@@ -30,29 +30,53 @@ export const AggregatorBox = (bot: Bot, state: GlobalState) => {
 
 	// arrows animation
 	step === 0 ? (step = 1) : (step = 0);
-	let output = "\n";
+	let output = "";
 
 	// Aggregator status
 	const computedRoutes = aggState?.calls?.computeRoutes?.value ?? 0;
 
-	output += "Computed Routes: " + chalk.hex("#A48BF9")(computedRoutes) + "\n";
-	output += "\n";
+	output +=
+		"Route computation requests: " +
+		chalk.hex("#A48BF9")(computedRoutes) +
+		chalk.dim(" (total)") +
+		"\n\n";
+
+	const hops = state.strategies.current.hops;
+
+	if (hops) {
+		// count duplicates
+		const duplicates = hops.reduce((acc, hop) => {
+			acc[hop] = (acc[hop] || 0) + 1;
+			return acc;
+		}, {} as Record<string, number>);
+		output += chalk.bold("CURRENT HOPS ") + chalk.dim("x" + hops.length) + "\n";
+		output += Object.entries(duplicates).map(([hop, count]) => {
+			return ` ${hop} ` + chalk.dim("x") + chalk.hex("#00c4fd")(count);
+		});
+		output += "\n\n";
+	}
 
 	const errors = aggState?.errors;
 	// Errors
 	output += chalk.bold("ERRORS") + "\n";
 
 	output += errors?.missingData?.value ? chalk.hex("#d52465")("▌") : chalk.hex("#A48BF9")("▌");
-	output += "Missing Data: " + (errors?.missingData?.value ?? 0) + "\n";
+	const missingData = "Missing Data: " + (errors?.missingData?.value ?? 0);
+	output += missingData.padEnd(20, " ");
 
 	output += errors?.rpc429?.value ? chalk.hex("#d52465")("▌") : chalk.hex("#A48BF9")("▌");
-	output += "RPC 429: " + (errors?.rpc429?.value ?? 0) + "\n";
+	const rpc429 = "RPC 429: " + (errors?.rpc429?.value ?? 0);
+	output += rpc429.padEnd(20, " ");
+	output += "\n";
 
 	output += errors?.rpcOther?.value ? chalk.hex("#d52465")("▌") : chalk.hex("#A48BF9")("▌");
-	output += "RPC Other: " + (errors?.rpcOther?.value ?? 0) + "\n";
+	const rpcOther = "RPC Other: " + (errors?.rpcOther?.value ?? 0);
+	output += rpcOther.padEnd(20, " ");
 
 	output += errors?.unknown?.value ? chalk.hex("#d52465")("▌") : chalk.hex("#A48BF9")("▌");
-	output += "Unknown: " + (errors?.unknown?.value ?? 0) + "\n";
+	const unknown = "Unknown: " + (errors?.unknown?.value ?? 0);
+	output += unknown.padEnd(20, " ");
+	output += "\n";
 
 	// Limiters
 	output += "\n";

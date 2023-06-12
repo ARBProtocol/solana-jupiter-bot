@@ -197,8 +197,7 @@ const JupiterAggregator: Aggregator<Jupiter> = {
 
 			RoutesCache.set(runtimeId, result.routesInfos);
 
-			// store the result in a routes.json file
-			// fs.writeFileSync("./routes.json", test);
+			const hops = bestRoute.marketInfos.map((mI) => mI.amm.label);
 
 			return {
 				success: true,
@@ -213,6 +212,7 @@ const JupiterAggregator: Aggregator<Jupiter> = {
 						amountIn,
 						amountOut,
 						slippage: bestRoute.slippageBps,
+						hops,
 					},
 				],
 			};
