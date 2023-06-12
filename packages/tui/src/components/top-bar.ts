@@ -1,5 +1,6 @@
 import { UIScreen } from "../ui-store";
 
 export const TopBar = ({ currentScreen }: { currentScreen: UIScreen }) => {
-	return `${currentScreen} < [W]allet  [M]ain | [ctrl+E]xecute  [ctrl+S]olscan  [ctrl+c] Exit`;
+	const paddedScreen = currentScreen.padEnd(12, " ");
+	return `${paddedScreen} < [W]allet  [M]ain  [I]ncognito | [ctrl+E]xecute  [ctrl+S]olscan  [ctrl+c] Exit`;
 };

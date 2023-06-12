@@ -133,6 +133,13 @@ const startStateSubscription = (bot: Bot, ui: UI, store: GlobalStore, fps: numbe
 
 	keyboard.onKeyPress("l", () => setCurrentScreen({ bot, screenKey: "logs", ui, store }));
 
+	keyboard.onKeyPress("i", () => {
+		//toggle incognito mode
+		uiStore.setState((uiState) => {
+			uiState.enableIncognitoMode = !uiState.enableIncognitoMode;
+		});
+	});
+
 	// table navigation
 	keyboard.onKeyPress("up", () => {
 		uiStore.setState((uiState) => {

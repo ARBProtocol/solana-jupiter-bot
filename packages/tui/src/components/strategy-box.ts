@@ -3,6 +3,7 @@ import boxen from "../lib/boxen";
 import { Bot } from "../core";
 import chalk from "chalk";
 import gradient from "gradient-string";
+import { uiStore } from "src/ui-store";
 
 // arrows animation
 const ARROWS_FRAMES = ["> > >", " > > "];
@@ -23,13 +24,17 @@ const formatTrailingZeros = (string?: string) => {
 };
 
 export const StrategyBox = (bot: Bot, state: GlobalState) => {
+	const uiState = uiStore.getState();
+
 	// arrows animation
 	step === 0 ? (step = 1) : (step = 0);
 	let output = "";
 	if (state.strategies.current.outToken?.symbol && state.strategies.current.inToken?.symbol) {
-		output += `${state.strategies.current.inToken?.symbol} ${gradient(GRADIENT)(
-			ARROWS_FRAMES[step]
-		)} ${state.strategies.current.outToken?.symbol}   `;
+		output +=
+			" " + (uiState.enableIncognitoMode ? "###" : state.strategies.current.inToken?.symbol) + "  ";
+		output += gradient(GRADIENT)(ARROWS_FRAMES[step]);
+		output +=
+			"  " + (uiState.enableIncognitoMode ? "###" : state.strategies.current.outToken?.symbol);
 	}
 
 	const autoSlippage = state.strategies.current.autoSlippageEnabled;
@@ -47,8 +52,9 @@ export const StrategyBox = (bot: Bot, state: GlobalState) => {
 
 	output += `\n\nIN AMOUNT:    ${formatTrailingZeros(
 		state.strategies.current.inAmount?.uiValue.decimal.toFixed(8)
-	)}\n`;
-	output += `EXPECTED OUT: ${formatTrailingZeros(
+	)}`;
+
+	output += `\nEXPECTED OUT: ${formatTrailingZeros(
 		state.strategies.current.outAmount?.uiValue.decimal.toFixed(8)
 	)} ${state.strategies.current.expectedProfitPercent.toFixed(8) || ""} %\n`;
 
@@ -72,8 +78,8 @@ export const StrategyBox = (bot: Bot, state: GlobalState) => {
 	const ppBgColor = pp > 0 ? "bgGreen" : pp < 0 ? "bgRed" : "bgBlack";
 	const ppColor = pp > 0 ? "black" : pp < 0 ? "white" : "white";
 	output += `·Profit %: ${chalk[ppBgColor][ppColor](pp?.toFixed(8))} ${chalk.dim(
-		unrealizedPP.toFixed(8)
-	)}\n\n`;
+		unrealizedPP.toFixed(8) + " | "
+	)}`;
 
 	if (bot.strategies[0]?.uiHook?.value) {
 		output += bot.strategies[0].uiHook.value;

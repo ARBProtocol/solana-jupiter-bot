@@ -6,6 +6,7 @@ interface UIState {
 	isUpdating: boolean;
 	allowClearConsole: boolean;
 	enableScreenRotator: boolean;
+	enableIncognitoMode: boolean;
 	updatesCount: number;
 	maxFps?: number;
 	lastUpdateTimestamp?: number;
@@ -17,13 +18,13 @@ interface UIState {
 			active: boolean;
 		};
 	};
-	lastOutput: string;
 }
 
 const uiState: UIState = {
 	isUpdating: false,
 	allowClearConsole: true,
 	enableScreenRotator: (process.env.TUI_INITIAL_SCREEN as UIScreen) !== "mini",
+	enableIncognitoMode: false,
 	updatesCount: 0,
 	maxFps: 24,
 	lastUpdateTimestamp: 0,
@@ -35,7 +36,6 @@ const uiState: UIState = {
 			active: true,
 		},
 	},
-	lastOutput: "",
 };
 
 export const uiStore = createStore(uiState);

@@ -34,6 +34,9 @@ export const TradeHistoryTable = (state: GlobalState) => {
 			header: "In Token",
 			width: 10,
 			align: "left",
+			formatter: (value) => {
+				return uiState.enableIncognitoMode ? chalk.white.dim("###") : String(value);
+			},
 		},
 		{
 			accessor: "outUiAmount",
@@ -46,6 +49,9 @@ export const TradeHistoryTable = (state: GlobalState) => {
 			header: "Out Token",
 			width: 10,
 			align: "left",
+			formatter: (value) => {
+				return uiState.enableIncognitoMode ? chalk.white.dim("###") : String(value);
+			},
 		},
 		{
 			accessor: "profitPercent",
