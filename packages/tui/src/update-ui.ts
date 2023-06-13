@@ -8,6 +8,9 @@ import { StrategyBox } from "./components/strategy-box";
 import { TradeHistoryTable } from "./components/trade-history-table";
 import stripAnsi from "./lib/strip-ansi";
 import { AggregatorBox } from "./components/aggregator-box";
+import { version as coreVersion } from "@arb-protocol/core";
+
+const CORE_VERSION = chalk.dim(coreVersion);
 
 const isDevMode = process.env.NODE_ENV !== "production";
 
@@ -66,6 +69,15 @@ export const updateUI = (
 	const currentScreen = uiStore.getState().currentScreen;
 	ui.resetOutput();
 
+	const BottomBar = `${chalk.dim("FPS ~ " + fps.toFixed(0).padEnd(3, " "))}${
+		isDevMode ? chalk.red(" DEV MODE") : ""
+	} ${
+		isDevMode
+			? chalk.dim(` USED MEM ~ ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(0)} MB`)
+			: ""
+	} ${chalk.dim("UPTIME: " + getProcessUptime().padEnd(100, " "))} ${CORE_VERSION}`;
+
+	// TODO: refactor this (redundancy)
 	switch (currentScreen) {
 		case "main":
 			ui.div("");
@@ -76,15 +88,7 @@ export const updateUI = (
 			ui.div(priceChart(state));
 			ui.div(expectedProfitChart(state));
 			ui.div(TradeHistoryTable(state));
-			ui.div(
-				`${chalk.dim("FPS ~ " + fps.toFixed(2))} ${isDevMode ? chalk.red(" DEV MODE") : ""} ${
-					isDevMode
-						? chalk.dim(
-								`| USED MEM ~ ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(0)} MB`
-						  )
-						: ""
-				} ${chalk.dim("UPTIME: " + getProcessUptime())}`
-			);
+			ui.div(BottomBar);
 			break;
 		case "main:agg":
 			ui.div("");
@@ -95,17 +99,7 @@ export const updateUI = (
 			ui.div(priceChart(state));
 			ui.div(expectedProfitChart(state));
 			ui.div(TradeHistoryTable(state));
-			ui.div(
-				`${chalk.dim("FPS ~ " + fps.toFixed(2))} ${
-					isDevMode ? chalk.red(" BOT IS RUNNING IN DEV MODE") : ""
-				} ${
-					isDevMode
-						? chalk.dim(
-								`| USED MEM ~ ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(0)} MB\n`
-						  )
-						: ""
-				} ${chalk.dim("UPTIME: " + getProcessUptime())}`
-			);
+			ui.div(BottomBar);
 			break;
 		case "config":
 			ui.div(TopBar({ currentScreen }));

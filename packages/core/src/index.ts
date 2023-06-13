@@ -17,6 +17,8 @@ export type {
 } from "./types/aggregator";
 export type { Config } from "./types/config";
 
+export { version } from "./version";
+
 export { createArray, parseError, NumberToJSBI, JSBItoNumber } from "./utils";
 export { createCache } from "./actions/public/create-cache";
 
