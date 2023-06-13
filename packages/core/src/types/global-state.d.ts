@@ -148,6 +148,11 @@ export type GlobalState = {
 						/** Relative time*/
 						updatedAtRel: number;
 					};
+					timeout: {
+						value: number;
+						/** Relative time*/
+						updatedAtRel: number;
+					};
 					unknown: {
 						value: number;
 						/** Relative time*/

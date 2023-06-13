@@ -8,6 +8,10 @@ const GRADIENT_4 = ["#00c4fd", "#fbc417", "#ff713c", "#d52465"];
 const GRADIENT_3 = ["#00c4fd", "#fbc417", "#ff713c"];
 const GRADIENT_2 = ["#00c4fd", "#fbc417"];
 const GRADIENT_1 = ["#A48BF9", "#00c4fd"];
+const MARKER = {
+	ERROR: chalk.hex("#d52465")("▌"),
+	OK: chalk.hex("#A48BF9")("▌"),
+};
 
 let step = 0;
 
@@ -60,26 +64,30 @@ export const AggregatorBox = (bot: Bot, state: GlobalState) => {
 	// Errors
 	output += chalk.bold("ERRORS") + "\n";
 
-	output += errors?.missingData?.value ? chalk.hex("#d52465")("▌") : chalk.hex("#A48BF9")("▌");
+	output += errors?.missingData?.value ? MARKER.ERROR : MARKER.OK;
 	const missingData = "Missing Data: " + (errors?.missingData?.value ?? 0);
 	output += missingData.padEnd(20, " ");
 
-	output += errors?.rpc429?.value ? chalk.hex("#d52465")("▌") : chalk.hex("#A48BF9")("▌");
+	output += errors?.rpc429?.value ? MARKER.ERROR : MARKER.OK;
 	const rpc429 = "RPC 429: " + (errors?.rpc429?.value ?? 0);
 	output += rpc429.padEnd(20, " ");
 	output += "\n";
 
-	output += errors?.rpcOther?.value ? chalk.hex("#d52465")("▌") : chalk.hex("#A48BF9")("▌");
+	output += errors?.rpcOther?.value ? MARKER.ERROR : MARKER.OK;
 	const rpcOther = "RPC Other: " + (errors?.rpcOther?.value ?? 0);
 	output += rpcOther.padEnd(20, " ");
 
-	output += errors?.unknown?.value ? chalk.hex("#d52465")("▌") : chalk.hex("#A48BF9")("▌");
+	output += errors?.unknown?.value ? MARKER.ERROR : MARKER.OK;
 	const unknown = "Unknown: " + (errors?.unknown?.value ?? 0);
 	output += unknown.padEnd(20, " ");
 	output += "\n";
 
+	output += errors?.timeout?.value ? MARKER.ERROR : MARKER.OK;
+	const timeout = "Timeout: " + (errors?.timeout?.value ?? 0);
+	output += timeout.padEnd(20, " ");
+
 	// Limiters
-	output += "\n";
+	output += "\n\n";
 	output += chalk.bold("LIMITERS") + "\n";
 
 	if (state.limiters.aggregators.errorsRate.enabled) {

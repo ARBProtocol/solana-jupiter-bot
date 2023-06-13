@@ -11,6 +11,10 @@ import {
 import { Logger } from "./public/create-logger";
 import { TradeHistoryEntry } from "src/types/trade-history";
 
+const ROUTE_COMPUTATION_TIMEOUT_MS = parseInt(
+	process.env.ROUTE_COMPUTATION_TIMEOUT_MS || "20000"
+);
+
 export const createAggregator = (
 	aggregatorAdapter: AggregatorWorker,
 	store: GlobalStore,
@@ -162,6 +166,7 @@ export const createAggregator = (
 							missingData: initWithZero,
 							rpc429: initWithZero,
 							rpcOther: initWithZero,
+							timeout: initWithZero,
 							unknown: initWithZero,
 						},
 					};
@@ -236,38 +241,62 @@ export const createAggregator = (
 					state.status.updatedAt = performance.now();
 				});
 
-				// set timeout for checking if the request is taking too long
-				const computeRoutesTimeout = setTimeout(() => {
-					logger.error(
-						{ runtimeId },
-						"internalAggregator:computeRoutes:timeout"
-					);
-					// report status change
-					store.setState((state) => {
-						state.status.value = "aggregator:computingRoutesTimeout";
-						state.status.updatedAt = performance.now();
-					});
+				const ref = this.worker;
+				result = await new Promise((resolve, reject) => {
+					// set timeout for checking if the request is taking too long
+					const computeRoutesTimeout = setTimeout(() => {
+						// report status change
+						store.setState((state) => {
+							if (state.stats.aggregators[this.id]) {
+								// @ts-expect-error FIXME: fix this
+								state.stats.aggregators[this.id].errors.timeout.value++;
+								// @ts-expect-error FIXME: fix this
+								state.stats.aggregators[this.id].errors.timeout.updatedAtRel =
+									performance.now();
+							}
+						});
 
-					// FIXME: handle this better
-					console.error("internalAggregator:computeRoutes:timeout");
-					process.exit(1);
-				}, 20000);
+						const msg =
+							"internalAggregator:computeRoutes:timeout: no response from aggregator for more than 20 seconds";
 
-				result = await this.worker.run({
-					call: "computeRoutes",
-					args: [
-						{
-							// careful, this is not type safe
-							inToken,
-							outToken,
-							amount,
-							slippage,
-							runtimeId,
-						},
-					],
+						store.setState((state) => {
+							state.status.value = "aggregator:computingRoutesError";
+							state.status.updatedAt = performance.now();
+						});
+
+						logger.error(
+							{ runtimeId },
+							"internalAggregator:computeRoutes:timeout"
+						);
+
+						reject(new Error(msg));
+					}, ROUTE_COMPUTATION_TIMEOUT_MS);
+
+					ref
+						.run({
+							call: "computeRoutes",
+							args: [
+								{
+									// careful, this is not type safe
+									inToken,
+									outToken,
+									amount,
+									slippage,
+									runtimeId,
+								},
+							],
+						})
+						.then((result) => {
+							clearTimeout(computeRoutesTimeout);
+
+							resolve(result);
+						})
+						.catch((error) => {
+							clearTimeout(computeRoutesTimeout);
+
+							reject(error);
+						});
 				});
-
-				clearTimeout(computeRoutesTimeout);
 
 				if (!result) {
 					const msg = "internalAggregator: No result returned";
