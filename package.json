@@ -8,6 +8,9 @@
 	},
 	"scripts": {
 		"build": "turbo run build",
+		"build:core": "turbo run build --filter core",
+		"build:tui": "turbo run build --filter tui",
+		"build:wizard": "turbo run build --filter wizard",
 		"build --force": "turbo run build --force",
 		"start": "turbo run build && pnpm -C ./apps/arb-solana-bot start",
 		"start:mini": "turbo run build && cross-env TUI_INITIAL_SCREEN=mini pnpm -C ./apps/arb-solana-bot start",
