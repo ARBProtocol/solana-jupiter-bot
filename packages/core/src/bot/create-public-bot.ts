@@ -1,12 +1,11 @@
 import { CreateBotParams, createBot } from "./create-bot";
 import { createPublicActions } from "../actions/public";
 import { createStarter } from "../actions/public/create-starter";
+import { logger } from "src/logger";
 
 export const createPublicBot = (config: CreateBotParams) => {
 	try {
 		{
-			console.log("createPublicBot:loading");
-
 			const bot = {
 				...createBot(config),
 			};
@@ -22,7 +21,8 @@ export const createPublicBot = (config: CreateBotParams) => {
 			};
 		}
 	} catch (error) {
-		console.log("createPublicBot:error", error);
+		logger.error(`createPublicBot ${error}`);
+		throw error;
 	}
 };
 
