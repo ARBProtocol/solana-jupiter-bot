@@ -96,9 +96,6 @@ importers:
 
   packages/core:
     dependencies:
-      '@jup-ag/core':
-        specifier: 4.0.0-beta.18
-        version: 4.0.0-beta.18(@saberhq/solana-contrib@1.14.11)(@solana/buffer-layout@4.0.1)(@solana/web3.js@1.69.0)
       '@solana/web3.js':
         specifier: 1.69.0
         version: 1.69.0
@@ -6711,7 +6708,7 @@ packages:
         optional: true
     dependencies:
       lilconfig: 2.1.0
-      ts-node: 10.9.1(@types/node@18.15.9)(typescript@5.0.2)
+      ts-node: 10.9.1(@types/node@18.14.6)(typescript@5.0.2)
       yaml: 1.10.2
     dev: true
 

@@ -19,7 +19,6 @@
 		"test": "vitest dev"
 	},
 	"dependencies": {
-		"@jup-ag/core": "4.0.0-beta.18",
 		"@solana/web3.js": "1.69.0",
 		"axios": "1.1.3",
 		"axios-retry": "^3.3.1",
