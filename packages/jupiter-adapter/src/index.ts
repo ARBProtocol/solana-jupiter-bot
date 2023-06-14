@@ -14,6 +14,7 @@ import { isMainThread } from "worker_threads";
 import axios from "axios";
 
 import { Jupiter, SwapResult, TOKEN_LIST_URL, RouteInfo } from "@jup-ag/core";
+import path from "path";
 
 const RoutesCache = createCache<RouteInfo[]>();
 

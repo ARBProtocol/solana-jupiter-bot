@@ -9,10 +9,10 @@ import {
 } from "@arb-protocol/core";
 import { startTUI } from "@arb-protocol/tui";
 import { runWizard } from "@arb-protocol/wizard";
-
 import fs from "fs";
-import path from "path";
 import { validateEnv } from "./validate-env";
+
+const JupiterAggregator = require.resolve("@arb-protocol/jupiter-adapter");
 
 // set process title
 process.title = `ARB v2.0`;
@@ -96,10 +96,7 @@ export const start = async () => {
 			plugins.withGreeter
 		)({
 			strategies: [PingPongStrategy],
-			aggregators: [
-				// TODO: maybe try to auto load all aggregators with absolute paths
-				path.resolve(__dirname, "aggregators/jupiter-aggregator.js"),
-			],
+			aggregators: [JupiterAggregator],
 			dataProviders: [SolscanDataProvider],
 			config: {
 				maxConcurrent: 1,

@@ -12,8 +12,8 @@
 	"types": "dist/index.d.ts",
 	"private": true,
 	"scripts": {
-		"postinstall": "tsup src --format cjs,esm --dts",
-		"build": "tsup src --format cjs,esm --dts",
+		"postinstall": "tsup src/index.ts --format cjs,esm --dts",
+		"build": "tsup src/index.ts --format cjs,esm --dts",
 		"lint": "tsc --noEmit --skipLibCheck",
 		"start": "cross-env NODE_ENV=production LOG_ENABLED=true LOG_LEVEL=error node dist/index.js",
 		"start:debug": "cross-env NODE_ENV=dev LOG_ENABLED=true LOG_LEVEL=debug node dist/index.js",
@@ -22,9 +22,9 @@
 	},
 	"dependencies": {
 		"@arb-protocol/core": "2.0.0-alpha.5",
+		"@arb-protocol/jupiter-adapter": "2.0.0-alpha.5",
 		"@arb-protocol/tui": "2.0.0-alpha.5",
 		"@arb-protocol/wizard": "2.0.0-alpha.5",
-		"@jup-ag/core": "4.0.0-beta.18",
 		"axios": "1.1.3",
 		"chalk": "4.1.0",
 		"cross-env": "^7.0.3",
