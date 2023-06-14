@@ -10,7 +10,9 @@ import {
 	text,
 	multiselect,
 } from "@clack/prompts";
-import { TOKEN_LIST_URL } from "@jup-ag/core";
+
+const TOKEN_LIST_URL = "https://cache.jup.ag/tokens"
+
 import axios from "axios";
 import { Config as BotConfig } from "@arb-protocol/core";
 
@@ -40,7 +42,7 @@ export const runWizard = async () => {
 	loadingTokens.start("Loading tokens...");
 
 	const jupiterTokens = await axios
-		.get(TOKEN_LIST_URL["mainnet-beta"])
+		.get(TOKEN_LIST_URL)
 		.then((res) => res.data as Token[]);
 
 	if (!jupiterTokens || jupiterTokens.length === 0) {

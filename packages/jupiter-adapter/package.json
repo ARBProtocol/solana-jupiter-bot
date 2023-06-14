@@ -20,7 +20,8 @@
 	},
 	"dependencies": {
 		"@arb-protocol/core": "2.0.0-alpha.5",
-		"@jup-ag/core": "4.0.0-beta.18",
+		"@jup-ag/core": "4.0.0-beta.19",
+		"@solana/buffer-layout": "^4.0.1",
 		"axios": "1.1.3"
 	},
 	"devDependencies": {
