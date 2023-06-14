@@ -14,8 +14,6 @@ export interface CreateBotParams {
 }
 
 export const createBot = (params: CreateBotParams) => {
-	console.log("createBot:loading");
-
 	return {
 		config: {
 			initial: params.config as ReadOnly<Config>,
