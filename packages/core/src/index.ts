@@ -38,3 +38,5 @@ export * from "./services/web3";
 export * from "./utils";
 
 export { SolscanDataProvider } from "./blockchain-data-providers/solscan-data-provider";
+
+export { z } from "zod";
