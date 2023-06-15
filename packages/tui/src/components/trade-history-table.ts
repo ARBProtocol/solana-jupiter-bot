@@ -95,7 +95,7 @@ export const TradeHistoryTable = (state: GlobalState) => {
 	});
 
 	// get last 5 trades
-	const entries = Object.entries(state.tradeHistory).slice(-5);
+	const entries = Object.entries(state.tradeHistory).slice(uiState.tradeHistoryTable.maxRows * -1);
 	const rows = entries.map(([_, trade], rowIndex) => {
 		type Status = typeof trade.status;
 

@@ -13,6 +13,7 @@ const EnvSchema = z.object({
 	SOLANA_WALLET_PRIVATE_KEY: z.string(),
 	ROUTE_COMPUTATION_TIMEOUT_MS: z.coerce.number().min(1000).max(120000).optional(),
 	TUI_FPS: z.coerce.number().min(1).max(14).default(5),
+	TUI_TRADE_HISTORY_MAX_ROWS: z.coerce.number().min(1).max(10).default(4),
 });
 
 export const validateEnv = async () => {

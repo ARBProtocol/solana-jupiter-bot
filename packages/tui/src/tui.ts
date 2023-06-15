@@ -191,6 +191,7 @@ const startStateSubscription = (bot: Bot, ui: UI, store: GlobalStore, fps: numbe
 interface Config {
 	allowClearConsole?: boolean;
 	fps?: number;
+	tradeHistoryMaxRows?: number;
 }
 
 const screenRotator = ({ bot, ui, store }: { bot: Bot; ui: UI; store: GlobalStore }) => {
@@ -215,7 +216,10 @@ const screenRotator = ({ bot, ui, store }: { bot: Bot; ui: UI; store: GlobalStor
 	rotateMain();
 };
 
-export const startTUI = (bot: Bot, { allowClearConsole = true, fps = 10 }: Config = {}) => {
+export const startTUI = (
+	bot: Bot,
+	{ allowClearConsole = true, fps = 10, tradeHistoryMaxRows }: Config = {}
+) => {
 	let ui;
 	try {
 		if (fps > 14) {
@@ -227,6 +231,7 @@ export const startTUI = (bot: Bot, { allowClearConsole = true, fps = 10 }: Confi
 
 		uiStore.setState((uiState) => {
 			uiState.allowClearConsole = allowClearConsole;
+			if (tradeHistoryMaxRows) uiState.tradeHistoryTable.maxRows = tradeHistoryMaxRows;
 		});
 
 		ui = cliui({ width: 140 });

@@ -12,6 +12,7 @@ interface UIState {
 	lastUpdateTimestamp?: number;
 	currentScreen: UIScreen;
 	tradeHistoryTable: {
+		maxRows: number;
 		cursor: {
 			x: number;
 			y: number;
@@ -30,6 +31,7 @@ const uiState: UIState = {
 	lastUpdateTimestamp: 0,
 	currentScreen: (process.env.TUI_INITIAL_SCREEN as UIScreen) || "main",
 	tradeHistoryTable: {
+		maxRows: 4,
 		cursor: {
 			x: 0,
 			y: 0,
