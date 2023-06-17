@@ -29,14 +29,22 @@ export const createReporters = (store: GlobalStore, logger: Logger) => {
 
 			logger.info(`expectedProfitPercent:validated: ${validated.data}`);
 
-			store.setState((state) => {
-				state.strategies.current.expectedProfitPercent = expectedProfitPercent;
+			store.setState((s) => {
+				s.strategies.current.expectedProfitPercent.value =
+					expectedProfitPercent;
+				s.strategies.current.expectedProfitPercent.updatedAtRel =
+					performance.now();
+
+				if (expectedProfitPercent > 0) {
+					s.strategies.current.expectedProfitPercent.positiveValueAtRel =
+						performance.now();
+				}
 				// update chart
-				state.chart.expectedProfitPercent.values = shiftAndPush(
-					state.chart.expectedProfitPercent.values,
+				s.chart.expectedProfitPercent.values = shiftAndPush(
+					s.chart.expectedProfitPercent.values,
 					expectedProfitPercent
 				);
-				state.chart.expectedProfitPercent.updatedAtRel = performance.now();
+				s.chart.expectedProfitPercent.updatedAtRel = performance.now();
 			});
 		},
 		reportUnrealizedProfitPercent: (unrealizedProfitPercent: number) => {

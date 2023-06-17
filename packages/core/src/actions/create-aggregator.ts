@@ -207,7 +207,16 @@ export const createAggregator = (
 			if (!inToken || !outToken || !amount || !slippage) {
 				const msg =
 					"internalAggregator: missing required params inToken, outToken, amount, slippage";
-				logger.error(msg);
+				logger.error(
+					{
+						runtimeId,
+						inToken,
+						outToken,
+						amount: Number(amount),
+						slippage,
+					},
+					msg
+				);
 				throw new Error(msg);
 			}
 

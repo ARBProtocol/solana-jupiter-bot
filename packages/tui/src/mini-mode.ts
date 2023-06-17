@@ -53,7 +53,7 @@ export const miniMode = (store: GlobalStore) => {
 
 			if (status === "aggregator:computingRoutesSuccess") {
 				const currentStrategy = state.strategies.current;
-				const expectedProfitPercent = currentStrategy.expectedProfitPercent;
+				const expectedProfitPercent = currentStrategy.expectedProfitPercent.value;
 				const inTokenSymbol = currentStrategy.inToken?.symbol;
 				const outTokenSymbol = currentStrategy.outToken?.symbol;
 				const inAmount = currentStrategy.inAmount?.uiValue.number;
@@ -84,7 +84,7 @@ export const miniMode = (store: GlobalStore) => {
 				const outAmount = currentStrategy.outAmount?.uiValue.number;
 
 				output += eventTitle("Executing...");
-				output += `Expected Profit: ${expectedProfitPercent.toFixed(8)} % | `;
+				output += `Expected Profit: ${expectedProfitPercent.value.toFixed(8)} % | `;
 				output += `${inAmount?.toFixed(8)} ${inTokenSymbol} >>> `;
 				output += `${outAmount?.toFixed(8)} ${outTokenSymbol}`;
 
@@ -102,13 +102,14 @@ export const miniMode = (store: GlobalStore) => {
 				const outTokenSymbol = latestSuccessfulTx?.outTokenSymbol ?? "N/A";
 				const inAmount = latestSuccessfulTx?.inUiAmount?.toFixed(8) ?? "N/A";
 				const outAmount = latestSuccessfulTx?.outUiAmount?.toFixed(8) ?? "N/A";
-				const unrealizedProfitPercent = latestSuccessfulTx?.unrealizedProfitPercent?.toFixed(8);
+				const unrealizedProfitPercent = latestSuccessfulTx?.unrealizedProfitPercent;
 				const profitPercent = latestSuccessfulTx?.profitPercent?.toFixed(8) ?? 0;
 
 				output += eventTitle("Successful transaction");
-				output += unrealizedProfitPercent
-					? `Unrealized Profit: ${unrealizedProfitPercent} % | `
-					: `Profit: ${profitPercent} % | `;
+				output +=
+					unrealizedProfitPercent && unrealizedProfitPercent > 0
+						? `Unrealized Profit: ${unrealizedProfitPercent} % | `
+						: `Profit: ${profitPercent} % | `;
 				output += `${inAmount} ${inTokenSymbol} >>> `;
 				output += `${outAmount} ${outTokenSymbol}`;
 

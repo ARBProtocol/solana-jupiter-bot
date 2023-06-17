@@ -46,7 +46,16 @@ export type GlobalState = {
 				pending: number;
 				total: number;
 			};
-			expectedProfitPercent: number;
+			expectedProfitPercent: {
+				value: number;
+				/** Relative time*/
+				updatedAtRel: number;
+				/**
+				 *  Latest positive value seen at
+				 *  Relative Time
+				 * */
+				positiveValueAtRel: number;
+			};
 			priorityFeeMicroLamports?: number;
 			desiredProfitPercentPerTx?: number;
 			shouldExecute: boolean;

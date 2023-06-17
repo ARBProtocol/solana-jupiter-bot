@@ -31,6 +31,11 @@ export type PingPongStrategyConfig = {
 	executeAboveExpectedProfitPercent: number;
 	priorityFeeMicroLamports?: number;
 	lock?: boolean;
+	shouldReset?: boolean;
+	autoReset?: {
+		enabled: boolean;
+		timeWindowMs: number;
+	};
 };
 
 export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
@@ -150,9 +155,15 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 		bot.desiredProfitPercentPerTx(
 			this.config.executeAboveExpectedProfitPercent
 		);
+
+		// bot set listener for shouldReset event
+		bot.onStatusChange("strategy:shouldReset", () => {
+			this.config.shouldReset = true;
+		});
 	},
 	async run(runtimeId, bot, done) {
 		let isDone = false;
+
 		try {
 			// Checks
 			if (!this.config.tokensInfo) {
@@ -172,6 +183,7 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 				throw new Error("PingPongStrategy:run: tradeAmount not provided");
 			}
 
+			const initialToken = this.config.tokensInfo[0];
 			// check if lock is enabled
 			if (this.config.lock) {
 				bot.logger.info(
@@ -284,6 +296,11 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 				return done(this);
 			}
 
+			if (this.config.shouldReset) {
+				this.config.shouldReset = false;
+				this.config.outToken.recentOutAmount = outAmountMulti.uiValue.decimal;
+			}
+
 			// calculate change
 			const expectedProfitPercent = outAmountMulti.uiValue.decimal
 				.minus(this.config.outToken.recentOutAmount)
@@ -293,6 +310,30 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 						: this.config.outToken.recentOutAmount
 				)
 				.times(100);
+
+			const prevExpectedProfitPercent =
+				bot.store.getState().strategies.current.expectedProfitPercent;
+
+			const isSellSide =
+				this.config.outToken.token.address === initialToken.address;
+
+			if (
+				this.config.autoReset?.enabled &&
+				performance.now() - prevExpectedProfitPercent.positiveValueAtRel >
+					this.config.autoReset?.timeWindowMs &&
+				expectedProfitPercent.toNumber() < 0 &&
+				!isSellSide
+			) {
+				bot.logger.info(
+					{ runtimeId },
+					`PingPongStrategy:run: done - expectedProfitPercent < 0 for more than ${
+						this.config.autoReset.timeWindowMs / 1000
+					}s, resetting`
+				);
+				//reset
+				this.config.outToken.recentOutAmount = outAmountMulti.uiValue.decimal;
+			}
+
 			bot.reportExpectedProfitPercent(expectedProfitPercent.toNumber());
 
 			bot.logger.debug(

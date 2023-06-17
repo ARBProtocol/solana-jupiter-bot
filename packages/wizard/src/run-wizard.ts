@@ -11,7 +11,7 @@ import {
 	multiselect,
 } from "@clack/prompts";
 
-const TOKEN_LIST_URL = "https://cache.jup.ag/tokens"
+const TOKEN_LIST_URL = "https://cache.jup.ag/tokens";
 
 import axios from "axios";
 import { Config as BotConfig } from "@arb-protocol/core";
@@ -41,9 +41,7 @@ export const runWizard = async () => {
 	const loadingTokens = spinner();
 	loadingTokens.start("Loading tokens...");
 
-	const jupiterTokens = await axios
-		.get(TOKEN_LIST_URL)
-		.then((res) => res.data as Token[]);
+	const jupiterTokens = await axios.get(TOKEN_LIST_URL).then((res) => res.data as Token[]);
 
 	if (!jupiterTokens || jupiterTokens.length === 0) {
 		console.log("No tokens found");
@@ -56,7 +54,7 @@ export const runWizard = async () => {
 		message: "What is your experience level?",
 		options: [
 			{ value: "beginner", label: "Beginner" },
-			{ value: "intermediate", label: "Intermediate" },
+			{ value: "intermediate", label: "Intermediate", hint: "I want to setup advanced features" },
 		],
 	});
 
@@ -216,6 +214,11 @@ export const runWizard = async () => {
 		cooldownMs: 10_000,
 	};
 
+	let autoReset = {
+		enabled: false,
+		timeWindowMs: 60_000,
+	};
+
 	if (experienceLevel !== "beginner") {
 		features = await multiselect({
 			message: "What features do you want to setup? [spacebar] to select",
@@ -225,6 +228,7 @@ export const runWizard = async () => {
 				{ value: "executionRateLimiter", label: "Execution rate limiter" },
 				{ value: "iterationsRateLimiter", label: "Iterations rate" },
 				{ value: "aggregatorErrorsRateLimiter", label: "Aggregator errors rate limiter" },
+				{ value: "autoReset", label: "Auto reset" },
 			],
 			required: false,
 		});
@@ -421,6 +425,32 @@ export const runWizard = async () => {
 				};
 			}
 		}
+
+		if (features.includes("autoReset")) {
+			const autoResetTimeWindowMs = await text({
+				message:
+					"What is the auto reset time window (in seconds)?\n If expected profit is negative for x seconds then reset",
+				initialValue: "60",
+				validate: (value) => {
+					if (value.length === 0) return "Please enter a auto reset time window";
+					const autoResetTimeWindowMs = parseInt(value);
+					if (isNaN(autoResetTimeWindowMs)) return "Please enter a valid number";
+					if (autoResetTimeWindowMs < 0) return "Please enter a positive number";
+				},
+			});
+
+			if (isCancel(autoResetTimeWindowMs)) {
+				cancel("Operation cancelled");
+				return process.exit(0);
+			}
+
+			if (typeof autoResetTimeWindowMs === "string") {
+				autoReset = {
+					enabled: true,
+					timeWindowMs: parseInt(autoResetTimeWindowMs) * 1000,
+				};
+			}
+		}
 	}
 
 	// Arb Protocol BuyBack
@@ -483,6 +513,10 @@ export const runWizard = async () => {
 				enableAutoSlippage: boolean;
 			};
 			tokens: string[];
+			autoReset?: {
+				enabled: boolean;
+				timeWindowMs: number;
+			};
 		};
 	};
 
@@ -502,6 +536,7 @@ export const runWizard = async () => {
 				features?.includes("priorityFeeMicroLamports") && priorityFeeMicroLamports
 					? priorityFeeMicroLamports
 					: undefined,
+			autoReset,
 		},
 		maxConcurrent: 1,
 		tui: {

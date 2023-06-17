@@ -172,6 +172,14 @@ const startStateSubscription = (bot: Bot, ui: UI, store: GlobalStore, fps: numbe
 		render(bot, store, ui);
 	});
 
+	// should reset event
+	keyboard.onKeyPress("r", () => {
+		bot.store.setState((s) => {
+			s.status.value = "strategy:shouldReset";
+			s.status.updatedAt = performance.now();
+		});
+	});
+
 	// TODO: refresh UI when users changes focus with keyboard
 
 	// init screen rotator
@@ -266,7 +274,6 @@ export const startTUI = (
 
 		// toggle charts
 		keyboard.onKeyPress("t", () => {
-			bot.logger.info("Toggling charts");
 			uiStore.setState((us) => {
 				if (us.showExpectedProfitChart && us.showPriceChart) {
 					us.showPriceChart = false;

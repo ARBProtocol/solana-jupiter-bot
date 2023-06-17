@@ -56,7 +56,7 @@ export const StrategyBox = (bot: Bot, state: GlobalState) => {
 
 	output += `\nEXPECTED OUT: ${formatTrailingZeros(
 		state.strategies.current.outAmount?.uiValue.decimal.toFixed(8)
-	)} ${state.strategies.current.expectedProfitPercent.toFixed(8) || ""} %\n`;
+	)} ${state.strategies.current.expectedProfitPercent.value.toFixed(8) || ""} %\n`;
 
 	if (state.strategies.current.desiredProfitPercentPerTx) {
 		output += `\nDESIRED PROFIT: ${state.strategies.current.desiredProfitPercentPerTx} % /tx\n`;

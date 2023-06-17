@@ -17,6 +17,8 @@ const JupiterAggregator = require.resolve("@arb-protocol/jupiter-adapter");
 // set process title
 process.title = `ARB v2.0`;
 
+// TODO: validate config.json with zod
+
 // import { io } from "socket.io-client";
 
 export const start = async () => {
@@ -62,6 +64,10 @@ export const start = async () => {
 					enableAutoSlippage: boolean;
 				};
 				tokens: string[];
+				autoReset?: {
+					enabled: boolean;
+					timeWindowMs: number;
+				};
 			};
 		} = JSON.parse(fs.readFileSync("./config.json", "utf8"));
 
@@ -89,6 +95,7 @@ export const start = async () => {
 			priorityFeeMicroLamports: config.strategy.priorityFeeMicroLamports,
 			enableAutoSlippage: config.strategy.slippage.enableAutoSlippage,
 			enableCompounding: config.strategy.enableCompounding ?? false,
+			autoReset: config.strategy.autoReset,
 		});
 
 		const bot = extendBot(
@@ -115,6 +122,7 @@ export const start = async () => {
 			/** Default true */
 			allowClearConsole: config?.tui?.allowClearConsole,
 			fps: ENV.TUI_FPS,
+			tradeHistoryMaxRows: ENV.TUI_TRADE_HISTORY_MAX_ROWS,
 		});
 
 		await bot.start();
