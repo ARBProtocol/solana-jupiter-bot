@@ -19,7 +19,11 @@ export const initialState: GlobalState = {
 			shouldExecute: false,
 			name: "",
 			runtimeId: "",
-			expectedProfitPercent: 0,
+			expectedProfitPercent: {
+				value: 0,
+				updatedAtRel: 0,
+				positiveValueAtRel: 0,
+			},
 			txCount: {
 				failed: 0,
 				success: 0,
