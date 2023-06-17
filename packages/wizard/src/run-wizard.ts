@@ -429,7 +429,7 @@ export const runWizard = async () => {
 		if (features.includes("autoReset")) {
 			const autoResetTimeWindowMs = await text({
 				message:
-					"What is the auto reset time window (in seconds)?\n If expected profit is negative for x seconds then reset",
+					"What is the auto reset time window (in seconds)?\n·   If expected profit is negative for x seconds then reset",
 				initialValue: "60",
 				validate: (value) => {
 					if (value.length === 0) return "Please enter a auto reset time window";
