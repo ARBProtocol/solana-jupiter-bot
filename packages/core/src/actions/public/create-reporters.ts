@@ -6,7 +6,7 @@ import { z } from "zod";
 export const createReporters = (store: GlobalStore, logger: Logger) => {
 	const reporters = {
 		reportExpectedProfitPercent: (expectedProfitPercent: number) => {
-			logger.info(`expectedProfitPercent: ${expectedProfitPercent}`);
+			logger.debug(`expectedProfitPercent: ${expectedProfitPercent}`);
 
 			// validate expectedProfitPercent
 			const validated = z.number().finite().safeParse(expectedProfitPercent);
@@ -27,7 +27,7 @@ export const createReporters = (store: GlobalStore, logger: Logger) => {
 				process.exit(1);
 			}
 
-			logger.info(`expectedProfitPercent:validated: ${validated.data}`);
+			logger.debug(`expectedProfitPercent:validated: ${validated.data}`);
 
 			store.setState((s) => {
 				s.strategies.current.expectedProfitPercent.value =
