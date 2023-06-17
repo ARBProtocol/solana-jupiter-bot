@@ -77,6 +77,8 @@ export const updateUI = (
 			: ""
 	} ${chalk.dim("UPTIME: " + getProcessUptime().padEnd(100, " "))} ${CORE_VERSION}`;
 
+	const uiState = uiStore.getState();
+
 	// TODO: refactor this (redundancy)
 	switch (currentScreen) {
 		case "main":
@@ -85,8 +87,8 @@ export const updateUI = (
 			ui.div("");
 			ui.div(DoubleColumn(StatusBox(state), StrategyBox(bot, state)));
 			ui.div("");
-			ui.div(priceChart(state));
-			ui.div(expectedProfitChart(state));
+			uiState.showPriceChart && ui.div(priceChart(state));
+			uiState.showExpectedProfitChart && ui.div(expectedProfitChart(state));
 			ui.div(TradeHistoryTable(state));
 			ui.div(BottomBar);
 			break;
@@ -96,8 +98,8 @@ export const updateUI = (
 			ui.div("");
 			ui.div(DoubleColumn(StatusBox(state), AggregatorBox(bot, state)));
 			ui.div("");
-			ui.div(priceChart(state));
-			ui.div(expectedProfitChart(state));
+			uiState.showPriceChart && ui.div(priceChart(state));
+			uiState.showExpectedProfitChart && ui.div(expectedProfitChart(state));
 			ui.div(TradeHistoryTable(state));
 			ui.div(BottomBar);
 			break;

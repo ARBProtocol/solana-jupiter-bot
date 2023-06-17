@@ -180,6 +180,18 @@ const startStateSubscription = (bot: Bot, ui: UI, store: GlobalStore, fps: numbe
 	// init subscribers for mini mode
 	miniMode(store);
 
+	// prevent clearing console on shutdown request
+	bot.store.subscribe(
+		(s) => s.status.value,
+		(status) => {
+			if (status === "!shutdown") {
+				uiStore.setState((uiState) => {
+					uiState.allowClearConsole = false;
+				});
+			}
+		}
+	);
+
 	// render loop
 	setInterval(() => {
 		if (uiStore.getState().currentScreen !== "mini") {
@@ -250,6 +262,35 @@ export const startTUI = (
 			bot.setStatus("bot:stop");
 			console.log("Exiting by user request...");
 			process.exit(0); // TODO: improve exit UX
+		});
+
+		// toggle charts
+		keyboard.onKeyPress("t", () => {
+			bot.logger.info("Toggling charts");
+			uiStore.setState((us) => {
+				if (us.showExpectedProfitChart && us.showPriceChart) {
+					us.showPriceChart = false;
+					return;
+				}
+
+				if (us.showExpectedProfitChart && !us.showPriceChart) {
+					us.showExpectedProfitChart = false;
+					us.showPriceChart = true;
+					return;
+				}
+
+				if (!us.showExpectedProfitChart && us.showPriceChart) {
+					us.showExpectedProfitChart = false;
+					us.showPriceChart = false;
+					return;
+				}
+
+				if (!us.showExpectedProfitChart && !us.showPriceChart) {
+					us.showPriceChart = true;
+					us.showExpectedProfitChart = true;
+					return;
+				}
+			});
 		});
 
 		startStateSubscription(bot, ui, bot.store, fps);

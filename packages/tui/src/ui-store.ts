@@ -7,6 +7,8 @@ interface UIState {
 	allowClearConsole: boolean;
 	enableScreenRotator: boolean;
 	enableIncognitoMode: boolean;
+	showPriceChart: boolean;
+	showExpectedProfitChart: boolean;
 	updatesCount: number;
 	maxFps?: number;
 	lastUpdateTimestamp?: number;
@@ -26,6 +28,8 @@ const uiState: UIState = {
 	allowClearConsole: true,
 	enableScreenRotator: (process.env.TUI_INITIAL_SCREEN as UIScreen) !== "mini",
 	enableIncognitoMode: false,
+	showPriceChart: true,
+	showExpectedProfitChart: true,
 	updatesCount: 0,
 	maxFps: 24,
 	lastUpdateTimestamp: 0,
