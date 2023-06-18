@@ -1,0 +1,36 @@
+{
+	"name": "@arb-protocol/telegram-plugin",
+	"version": "2.0.0-alpha.5",
+	"license": "MIT",
+	"description": "Telegram plugin for @arb-protocol/core",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ARBProtocol/solana-jupiter-bot.git"
+	},
+	"main": "dist/index.js",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"dev": "ts-node src/index.ts",
+		"build": "tsup src/index.ts --format cjs,esm --dts",
+		"lint": "tsc --noEmit --skipLibCheck"
+	},
+	"dependencies": {
+		"@arb-protocol/core": "2.0.0-alpha.5",
+		"grammy": "^1.16.2"
+	},
+	"devDependencies": {
+		"@arb-protocol/eslint-config": "2.0.0-alpha.5",
+		"@types/node": "^18.11.10",
+		"@typescript-eslint/eslint-plugin": "^5.45.0",
+		"@typescript-eslint/parser": "^5.45.0",
+		"eslint": "^8.29.0",
+		"ts-node": "^10.9.1",
+		"tsconfig": "2.0.0-alpha.5",
+		"tsup": "^6.7.0",
+		"typescript": "5.0.2"
+	}
+}
