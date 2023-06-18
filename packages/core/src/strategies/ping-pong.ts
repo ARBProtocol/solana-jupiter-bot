@@ -31,6 +31,9 @@ export type PingPongStrategyConfig = {
 	executeAboveExpectedProfitPercent: number;
 	priorityFeeMicroLamports?: number;
 	lock?: boolean;
+	enableExpectedProfitBasedStopLoss?: boolean;
+	profitBasedStopLossPercent?: number;
+	onStopLossAction?: "sell&reset" | "shutdown" | "sell&shutdown";
 	shouldReset?: boolean;
 	autoReset?: {
 		enabled: boolean;
@@ -50,6 +53,7 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 		lock: false,
 		enableAutoSlippage: false,
 		enableCompounding: false,
+		enableExpectedProfitBasedStopLoss: false,
 	},
 	uiHook: {},
 	// dependencies: {
@@ -184,6 +188,7 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 			}
 
 			const initialToken = this.config.tokensInfo[0];
+
 			// check if lock is enabled
 			if (this.config.lock) {
 				bot.logger.info(
@@ -296,6 +301,11 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 				return done(this);
 			}
 
+			// reset recentOutAmount to current outAmount if it's 0
+			if (this.config.outToken.recentOutAmount.equals(0)) {
+				this.config.outToken.recentOutAmount = outAmountMulti.uiValue.decimal;
+			}
+
 			if (this.config.shouldReset) {
 				this.config.shouldReset = false;
 				this.config.outToken.recentOutAmount = outAmountMulti.uiValue.decimal;
@@ -332,9 +342,10 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 				);
 				//reset
 				this.config.outToken.recentOutAmount = outAmountMulti.uiValue.decimal;
+				bot.reportExpectedProfitPercent(0);
+			} else {
+				bot.reportExpectedProfitPercent(expectedProfitPercent.toNumber());
 			}
-
-			bot.reportExpectedProfitPercent(expectedProfitPercent.toNumber());
 
 			bot.logger.debug(
 				{
@@ -354,8 +365,82 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 				throw new Error("PingPongStrategy:run: no routes found");
 			}
 
-			const shouldExecute =
-				bot.store.getState().strategies.current.shouldExecute;
+			let shouldExecute = bot.store.getState().strategies.current.shouldExecute;
+
+			/**
+			 * Profit based stop loss
+			 * If expected profit is lower than stop loss percent
+			 * then execute stop loss action
+			 */
+			if (
+				this.config.enableExpectedProfitBasedStopLoss &&
+				this.config.profitBasedStopLossPercent &&
+				expectedProfitPercent.toNumber() <
+					this.config.profitBasedStopLossPercent * -1 &&
+				isSellSide
+			) {
+				bot.setStatus("strategy:stopLossExceeded");
+
+				if (this.config.onStopLossAction === "shutdown") {
+					const msg = `PingPongStrategy:run: profitBasedStopLossPercent ${this.config.profitBasedStopLossPercent} reached, shutting down bot`;
+					bot.logger.info({ runtimeId }, msg);
+					console.log("\n\n" + msg + "\n\n");
+					bot.setStatus("!shutdown");
+				}
+
+				if (this.config.onStopLossAction === "sell&shutdown") {
+					bot.logger.info(
+						{ runtimeId },
+						"PingPongStrategy:run: profitBasedStopLossPercent reached, selling current out token"
+					);
+					shouldExecute = true;
+
+					bot.store.subscribe(
+						(s) => s.status.value,
+						(status) => {
+							if (status === "history:successfulTx") {
+								bot.logger.info(
+									{ runtimeId },
+									"PingPongStrategy:run: profitBasedStopLossPercent reached, token sold successfully, shutting down bot"
+								);
+								bot.setStatus("!shutdown");
+							}
+						}
+					);
+				}
+
+				if (this.config.onStopLossAction === "sell&reset") {
+					bot.logger.info(
+						{ runtimeId },
+						"PingPongStrategy:run: profitBasedStopLossPercent reached, selling current out token, and resetting inToken recentOutAmount"
+					);
+
+					// reset recent out amount for inToken
+					this.config.inToken.recentOutAmount = new Decimal(0);
+
+					shouldExecute = true;
+
+					const unsubscribe = bot.store.subscribe(
+						(s) => s.status.value,
+						(status) => {
+							if (status === "history:successfulTx") {
+								if (!this.config.outToken || !this.config.inToken) {
+									throw new Error(
+										"PingPongStrategy:run: this.config.outToken undefined"
+									);
+								}
+
+								bot.logger.info(
+									{ runtimeId, outToken: this.config.outToken },
+									"PingPongStrategy:run: profitBasedStopLossPercent reached, token sold successfully"
+								);
+								unsubscribe();
+							}
+						}
+					);
+				}
+			}
+
 			if (
 				expectedProfitPercent.toNumber() >
 					this.config.executeAboveExpectedProfitPercent ||
@@ -379,8 +464,6 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 						this.config.priorityFeeMicroLamports
 					);
 				}
-
-				const initialToken = this.config.tokensInfo[0];
 
 				// auto slippage
 				let customSlippageThreshold: bigint | undefined;
