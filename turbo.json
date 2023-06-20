@@ -18,5 +18,5 @@
 			"cache": false
 		}
 	},
-	"globalEnv": ["NODE_ENV", "TUI_INITIAL_SCREEN", "TUI_FPS"]
+	"globalEnv": ["NODE_ENV", "TUI_INITIAL_SCREEN", "TUI_FPS", "TELEGRAM_BOT_TOKEN"]
 }

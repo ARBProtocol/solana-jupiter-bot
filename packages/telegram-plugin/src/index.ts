@@ -2,8 +2,9 @@ import { Bot } from "@arb-protocol/core";
 import { Bot as T } from "grammy";
 
 const MARKER_CHAR = "▌";
-const TELEGRAM_BOT_TOKEN = "GET THIS FROM ENV";
-// TODO: get this from env
+const TELEGRAM_BOT_TOKEN = "6041735757:AAEyxGeCag5dzqQGYEwrQgrUeH9f5ANJWQM";
+const CHAT_ID = 12345;
+
 const eventTitle = (title: string) => {
 	return title.padEnd(26, " ");
 };
@@ -66,7 +67,7 @@ export const TelegramPlugin = <T extends Bot>(bot: T) => ({
 				}
 
 				output &&
-					t.api.sendMessage(1234567890, output).catch((err) => {
+					t.api.sendMessage(CHAT_ID, output).catch((err) => {
 						console.error("TelegramPlugin: error sending message: ", err);
 					});
 			}
