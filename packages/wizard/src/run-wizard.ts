@@ -219,6 +219,11 @@ export const runWizard = async () => {
 		timeWindowMs: 60_000,
 	};
 
+	let expectedProfitBasedStopLoss = {
+		enabled: false,
+		percent: 0,
+	}
+
 	if (experienceLevel !== "beginner") {
 		features = await multiselect({
 			message: "What features do you want to setup? [spacebar] to select",
@@ -228,7 +233,8 @@ export const runWizard = async () => {
 				{ value: "executionRateLimiter", label: "Execution rate limiter" },
 				{ value: "iterationsRateLimiter", label: "Iterations rate" },
 				{ value: "aggregatorErrorsRateLimiter", label: "Aggregator errors rate limiter" },
-				{ value: "autoReset", label: "Auto reset" },
+				{ value: "autoReset", label: "Auto reset", hint: "experimental" },
+				{ value: "expectedProfitBasedStopLoss", label: "Stop Loss", hint: "experimental" },
 			],
 			required: false,
 		});
@@ -451,6 +457,32 @@ export const runWizard = async () => {
 				};
 			}
 		}
+
+		if (features.includes("expectedProfitBasedStopLoss")) {
+			const expectedProfitBasedStopLossPercent = await text({
+				message:
+					"What is the expected profit based stop loss percent?\n·   If expected profit reaches this percent then swap back to the initial token & reset.\n·   The provided number will always be negative (e.g. 0.5 = -0.5)",
+				initialValue: "0",
+				validate: (value) => {
+					if (value.length === 0) return "Please enter a expected profit based stop loss percent";
+					const expectedProfitBasedStopLossPercent = Math.abs(parseFloat(value));
+					if (isNaN(expectedProfitBasedStopLossPercent)) return "Please enter a valid number";
+					if (expectedProfitBasedStopLossPercent === 0) return "Please enter a non-zero number";
+				},
+			});
+
+			if (isCancel(expectedProfitBasedStopLossPercent)) {
+				cancel("Operation cancelled");
+				return process.exit(0);
+			}
+
+			if (typeof expectedProfitBasedStopLossPercent === "string") {
+				expectedProfitBasedStopLoss = {
+					enabled: true,
+					percent: Math.abs(parseFloat(expectedProfitBasedStopLossPercent)),
+				};
+			}
+		}
 	}
 
 	// Arb Protocol BuyBack
@@ -517,6 +549,10 @@ export const runWizard = async () => {
 				enabled: boolean;
 				timeWindowMs: number;
 			};
+			expectedProfitBasedStopLoss?: {
+				enabled: boolean;
+				percent: number;
+			}
 		};
 	};
 
@@ -537,6 +573,7 @@ export const runWizard = async () => {
 					? priorityFeeMicroLamports
 					: undefined,
 			autoReset,
+			expectedProfitBasedStopLoss
 		},
 		maxConcurrent: 1,
 		tui: {

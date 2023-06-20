@@ -67,7 +67,11 @@ export const start = async () => {
 				autoReset?: {
 					enabled: boolean;
 					timeWindowMs: number;
-				};
+				},
+				expectedProfitBasedStopLoss?: {
+					enabled: boolean;
+					percent: number;
+				}
 			};
 		} = JSON.parse(fs.readFileSync("./config.json", "utf8"));
 
@@ -96,6 +100,9 @@ export const start = async () => {
 			enableAutoSlippage: config.strategy.slippage.enableAutoSlippage,
 			enableCompounding: config.strategy.enableCompounding ?? false,
 			autoReset: config.strategy.autoReset,
+			expectedProfitBasedStopLoss: config.strategy.expectedProfitBasedStopLoss,
+			onStopLossAction: "sell&reset"
+			
 		});
 
 		const bot = extendBot(

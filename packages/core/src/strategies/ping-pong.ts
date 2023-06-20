@@ -31,8 +31,10 @@ export type PingPongStrategyConfig = {
 	executeAboveExpectedProfitPercent: number;
 	priorityFeeMicroLamports?: number;
 	lock?: boolean;
-	enableExpectedProfitBasedStopLoss?: boolean;
-	profitBasedStopLossPercent?: number;
+	expectedProfitBasedStopLoss?: {
+		enabled: boolean;
+		percent: number;
+	}
 	onStopLossAction?: "sell&reset" | "shutdown" | "sell&shutdown";
 	shouldReset?: boolean;
 	autoReset?: {
@@ -53,7 +55,6 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 		lock: false,
 		enableAutoSlippage: false,
 		enableCompounding: false,
-		enableExpectedProfitBasedStopLoss: false,
 	},
 	uiHook: {},
 	// dependencies: {
@@ -373,16 +374,16 @@ export const PingPongStrategy: Strategy<PingPongStrategyConfig> = {
 			 * then execute stop loss action
 			 */
 			if (
-				this.config.enableExpectedProfitBasedStopLoss &&
-				this.config.profitBasedStopLossPercent &&
+				this.config.expectedProfitBasedStopLoss?.enabled &&
+				this.config.expectedProfitBasedStopLoss.percent &&
 				expectedProfitPercent.toNumber() <
-					this.config.profitBasedStopLossPercent * -1 &&
+					Math.abs(this.config.expectedProfitBasedStopLoss.percent) * -1 &&
 				isSellSide
 			) {
 				bot.setStatus("strategy:stopLossExceeded");
 
 				if (this.config.onStopLossAction === "shutdown") {
-					const msg = `PingPongStrategy:run: profitBasedStopLossPercent ${this.config.profitBasedStopLossPercent} reached, shutting down bot`;
+					const msg = `PingPongStrategy:run: profitBasedStopLossPercent ${this.config.expectedProfitBasedStopLoss?.percent} reached, shutting down bot`;
 					bot.logger.info({ runtimeId }, msg);
 					console.log("\n\n" + msg + "\n\n");
 					bot.setStatus("!shutdown");
