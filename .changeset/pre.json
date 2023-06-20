@@ -2,13 +2,13 @@
 	"mode": "pre",
 	"tag": "alpha",
 	"initialVersions": {
-		"@arb-protocol/arb-solana-bot": "2.0.0-alpha.5",
-		"@arb-protocol/arb-solana-bot-dev": "2.0.0-alpha.5",
-		"@arb-protocol/core": "2.0.0-alpha.5",
-		"@arb-protocol/eslint-config": "2.0.0-alpha.5",
-		"tsconfig": "2.0.0-alpha.5",
-		"@arb-protocol/tui": "2.0.0-alpha.5",
-		"@arb-protocol/wizard": "2.0.0-alpha.5"
+		"@arb-protocol/arb-solana-bot": "2.0.0-alpha.6",
+		"@arb-protocol/arb-solana-bot-dev": "2.0.0-alpha.6",
+		"@arb-protocol/core": "2.0.0-alpha.6",
+		"@arb-protocol/eslint-config": "2.0.0-alpha.6",
+		"tsconfig": "2.0.0-alpha.6",
+		"@arb-protocol/tui": "2.0.0-alpha.6",
+		"@arb-protocol/wizard": "2.0.0-alpha.6"
 	},
 	"changesets": []
 }

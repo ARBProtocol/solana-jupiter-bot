@@ -1,6 +1,6 @@
 {
 	"name": "@arb-protocol/core",
-	"version": "2.0.0-alpha.5",
+	"version": "2.0.0-alpha.6",
 	"license": "MIT",
 	"description": "Core for @arb-protocol/arb-solana-bot",
 	"repository": {
@@ -39,7 +39,7 @@
 		"zustand": "4.1.4"
 	},
 	"devDependencies": {
-		"@arb-protocol/eslint-config": "2.0.0-alpha.5",
+		"@arb-protocol/eslint-config": "2.0.0-alpha.6",
 		"@types/node": "^18.11.10",
 		"@types/uuid": "^9.0.0",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
@@ -54,7 +54,7 @@
 		"nodemon": "^2.0.22",
 		"prettier": "^2.8.4",
 		"ts-node": "^10.9.1",
-		"tsconfig": "2.0.0-alpha.5",
+		"tsconfig": "2.0.0-alpha.6",
 		"tsup": "^6.7.0",
 		"typescript": "5.0.2",
 		"vitest": "^0.31.1"
