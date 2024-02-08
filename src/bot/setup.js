@@ -124,45 +124,43 @@ const setup = async () => {
 			shouldLoadSerumOpenOrders: false,
 			wrapUnwrapSOL: cache.wrapUnwrapSOL,
 			ammsToExclude: {
-                        'Aldrin': false,
-                        'Crema': false,
-                        'Cropper': true,
-                        'Cykura': true,
-                        'DeltaFi': false,
-                        'GooseFX': true,
-                        'Invariant': false,
-                        'Lifinity': false,
-                        'Lifinity V2': false,
-                        'Marinade': false,
-                        'Mercurial': false,
-                        'Meteora': false,
-                        'Raydium': false,
-                        'Raydium CLMM': false,
-                        'Saber': false,
-                        'Serum': true,
-                        'Orca': false,
-                        'Step': false, 
-                        'Penguin': false,
-                        'Saros': false,
-                        'Stepn': true,
-                        'Orca (Whirlpools)': false,   
-                        'Sencha': false,
-                        'Saber (Decimals)': false,
-                        'Dradex': true,
-                        'Balansol': true,
-                        'Openbook': false,
-                        'Marco Polo': false,
-                        'Oasis': false,
-                        'BonkSwap': false,
-                        'Phoenix': false,
-                        'Symmetry': true,
-                        'Unknown': true			
-					}
+				'Aldrin': false,
+				'Crema': false,
+				'Cropper': true,
+				'Cykura': true,
+				'DeltaFi': false,
+				'GooseFX': true,
+				'Invariant': false,
+				'Lifinity': false,
+				'Lifinity V2': false,
+				'Marinade': false,
+				'Mercurial': false,
+				'Meteora': false,
+				'Raydium': false,
+				'Raydium CLMM': false,
+				'Saber': false,
+				'Serum': true,
+				'Orca': false,
+				'Step': false, 
+				'Penguin': false,
+				'Saros': false,
+				'Stepn': true,
+				'Orca (Whirlpools)': false,   
+				'Sencha': false,
+				'Saber (Decimals)': false,
+				'Dradex': true,
+				'Balansol': true,
+				'Openbook': false,
+				'Marco Polo': false,
+				'Oasis': false,
+				'BonkSwap': false,
+				'Phoenix': false,
+				'Symmetry': true,
+				'Unknown': true			
+			}
 		});
-
 		cache.isSetupDone = true;
 		spinner.succeed("Setup done!");
-
 		return { jupiter, tokenA, tokenB, wallet };
 	} catch (error) {
 		if (spinner)
@@ -185,13 +183,11 @@ const getInitialotherAmountThreshold = async (
 
         const tokdecimals = cache.sideBuy ? inputToken.decimals : outputToken.decimals;
         const multiplythisbb = JSBI.BigInt(10 ** (tokdecimals));
-
-		console.log('tokdecimals:'+String(tokdecimals));
-		console.log('multiplythisbb:'+String(multiplythisbb));
-		console.log('amountToTrade:'+String(amountToTrade));
-
+		//console.log('tokdecimals:'+String(tokdecimals));
+		//console.log('multiplythisbb:'+String(multiplythisbb));
+		//console.log('amountToTrade:'+String(amountToTrade));
 		spinner = ora({
-			text: "Computing routesfor token with amountToTrade "+String(amountToTrade)+" with decimals "+tokdecimals+" and multiply is "+String(multiplythisbb),
+			text: "Computing routes for token with amountToTrade "+String(amountToTrade)+" with decimals "+tokdecimals+" and multiply is "+String(multiplythisbb),
 			discardStdin: false,
 			color: "magenta",
 		}).start();
@@ -206,14 +202,14 @@ const getInitialotherAmountThreshold = async (
 			outputMint: new PublicKey(outputToken.address),
 			amount: amountInJSBI,
 			slippageBps: 0,
-			forceFetch: false,
+			forceFetch: true,
 			onlyDirectRoutes: false,
 			onlyDirectRoutes: false,
 			filterTopNResult: 1,
 		});
 
 		if (routes?.routesInfos?.length > 0) spinner.succeed("Routes computed!");
-		else spinner.fail("No routes found. Something is wrong! Tokens:"+inputToken.address+" "+outputToken.address);
+		else spinner.fail("No routes found. Something is wrong! Check tokens:"+inputToken.address+" "+outputToken.address);
 
 		return routes.routesInfos[0].otherAmountThreshold;
 	} catch (error) {
