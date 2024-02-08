@@ -186,7 +186,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 							simulatedProfit,
 						});
 					}
-				}, 25);
+				}, 50);
 
 				[tx, performanceOfTx] = await swap(jupiter, route);
 
@@ -496,7 +496,6 @@ const run = async () => {
 
 			// Check the balance
 			var realbalanceTokenA = await balanceCheck( tokenA )
-			//console.log('Bal is:'+realbalanceTokenA);
 			
 			if (realbalanceTokenA<cache.initialBalance.tokenA){
 				console.log('Balance Lookup is too low for token: '+realbalanceTokenA+' < '+cache.initialBalance.tokenA);
@@ -512,7 +511,6 @@ const run = async () => {
 			);
 			cache.lastBalance.tokenB = cache.initialBalance.tokenB;
 		} else if (cache.config.tradingStrategy === "arbitrage") {
-			console.log('Running NEW ARB Watcher');
 			// set initial & current & last balance for tokenA
 			console.log('Trade Size is:'+cache.config.tradeSize.value+' decimals:'+tokenA.decimals);
 
@@ -528,7 +526,6 @@ const run = async () => {
 
 			// Check the balance
 			var realbalanceTokenA = await balanceCheck( tokenA )
-			//console.log('Bal is:'+realbalanceTokenA);
 			
 			if (realbalanceTokenA<cache.initialBalance.tokenA){
 				console.log('Balance Lookup is too low for token: '+realbalanceTokenA+' < '+cache.initialBalance.tokenA);

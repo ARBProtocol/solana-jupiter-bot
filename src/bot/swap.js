@@ -5,7 +5,6 @@ const { balanceCheck } = require("./setup");
 const { checktrans } = require("../utils/transaction.js");
 const promiseRetry = require("promise-retry");
 
-
 const waitabit = async (ms) => {
 	const mySecondPromise = new Promise(function(resolve,reject){
 		console.log('construct a promise...')
@@ -146,8 +145,6 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 			try {
 				// BETA LOOKUP FOR RESULT
 				//try catch error handling
-				// Only run if we have a result
-
 				var txresult = [];
 				var err2 = -1;
 				var rcount = 0;

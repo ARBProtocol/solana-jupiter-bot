@@ -20,12 +20,8 @@ const cache = require("./cache");
 
 // Account balance code
 const balanceCheck = async (checkToken) => {
-
-	///console.log('a');
 	var checkBalance = Number(0);
 	const connection = new Connection(cache.config.rpc[0]);
-
-	//console.log('b');
 	wallet = Keypair.fromSecretKey(bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY));
 
 	let atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {mint: new PublicKey(checkToken.address)})
@@ -33,8 +29,6 @@ const balanceCheck = async (checkToken) => {
 	for (var ata of atas.value){
 		t+=parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount) 
 	}
-
-	//console.log('c');
 
 	var checkBalance = t;
 	console.log('Real balance is '+checkBalance);
@@ -51,8 +45,6 @@ const balanceCheck = async (checkToken) => {
 			return(Number(0));
 	}
 };
-
-
 
 const setup = async () => {
 	let spinner, tokens, tokenA, tokenB, wallet;
@@ -111,7 +103,6 @@ const setup = async () => {
 		}
 
 		spinner.text = "Setting up connection ...";
-		// connect to RPC
 		const connection = new Connection(cache.config.rpc[0]);
 
 		spinner.text = "Loading Jupiter SDK...";
@@ -180,7 +171,6 @@ const getInitialotherAmountThreshold = async (
 ) => {
 	let spinner;
 	try {
-
         const tokdecimals = cache.sideBuy ? inputToken.decimals : outputToken.decimals;
         const multiplythisbb = JSBI.BigInt(10 ** (tokdecimals));
 		//console.log('tokdecimals:'+String(tokdecimals));
@@ -192,8 +182,7 @@ const getInitialotherAmountThreshold = async (
 			color: "magenta",
 		}).start();
 
-
-		//BNI AMT to TRADE
+		//JSBI AMT to TRADE
 		const amountInJSBI = JSBI.BigInt(amountToTrade);
 
 		// compute routes for the first time
