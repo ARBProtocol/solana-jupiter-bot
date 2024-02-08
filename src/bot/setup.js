@@ -5,10 +5,54 @@ const bs58 = require("bs58");
 const { Jupiter } = require("@jup-ag/core");
 const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
 
+var JSBI = (require('jsbi'));
+var invariant = (require('tiny-invariant'));
+var _Decimal = (require('decimal.js'));
+var _Big = (require('big.js'));
+var toFormat = (require('toformat'));
+var anchor = require('@project-serum/anchor');
+
 const { logExit } = require("./exit");
-const { loadConfigFile } = require("../utils");
+const { loadConfigFile, toNumber } = require("../utils");
 const { intro, listenHotkeys } = require("./ui");
+const { setTimeout } = require("timers/promises");
 const cache = require("./cache");
+
+// Account balance code
+const balanceCheck = async (checkToken) => {
+
+	///console.log('a');
+	var checkBalance = Number(0);
+	const connection = new Connection(cache.config.rpc[0]);
+
+	//console.log('b');
+	wallet = Keypair.fromSecretKey(bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY));
+
+	let atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {mint: new PublicKey(checkToken.address)})
+	let t = 0
+	for (var ata of atas.value){
+		t+=parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount) 
+	}
+
+	//console.log('c');
+
+	var checkBalance = t;
+	console.log('Real balance is '+checkBalance);
+	
+	// Pass back the BN version to match
+	var checkBalancebn = toNumber(
+		checkBalance,
+		checkToken.decimals
+	);
+
+	if (Number(checkBalance)>Number(0)){
+			return checkBalancebn;
+	} else {
+			return(Number(0));
+	}
+};
+
+
 
 const setup = async () => {
 	let spinner, tokens, tokenA, tokenB, wallet;
@@ -76,14 +120,50 @@ const setup = async () => {
 			connection,
 			cluster: cache.config.network,
 			user: wallet,
-			restrictIntermediateTokens: true,
+			restrictIntermediateTokens: false,
+			shouldLoadSerumOpenOrders: false,
 			wrapUnwrapSOL: cache.wrapUnwrapSOL,
+			ammsToExclude: {
+                        'Aldrin': false,
+                        'Crema': false,
+                        'Cropper': true,
+                        'Cykura': true,
+                        'DeltaFi': false,
+                        'GooseFX': true,
+                        'Invariant': false,
+                        'Lifinity': false,
+                        'Lifinity V2': false,
+                        'Marinade': false,
+                        'Mercurial': false,
+                        'Meteora': false,
+                        'Raydium': false,
+                        'Raydium CLMM': false,
+                        'Saber': false,
+                        'Serum': true,
+                        'Orca': false,
+                        'Step': false, 
+                        'Penguin': false,
+                        'Saros': false,
+                        'Stepn': true,
+                        'Orca (Whirlpools)': false,   
+                        'Sencha': false,
+                        'Saber (Decimals)': false,
+                        'Dradex': true,
+                        'Balansol': true,
+                        'Openbook': false,
+                        'Marco Polo': false,
+                        'Oasis': false,
+                        'BonkSwap': false,
+                        'Phoenix': false,
+                        'Symmetry': true,
+                        'Unknown': true			
+					}
 		});
 
 		cache.isSetupDone = true;
 		spinner.succeed("Setup done!");
 
-		return { jupiter, tokenA, tokenB };
+		return { jupiter, tokenA, tokenB, wallet };
 	} catch (error) {
 		if (spinner)
 			spinner.fail(
@@ -94,7 +174,7 @@ const setup = async () => {
 	}
 };
 
-const getInitialOutAmountWithSlippage = async (
+const getInitialotherAmountThreshold = async (
 	jupiter,
 	inputToken,
 	outputToken,
@@ -102,25 +182,40 @@ const getInitialOutAmountWithSlippage = async (
 ) => {
 	let spinner;
 	try {
+
+        const tokdecimals = cache.sideBuy ? inputToken.decimals : outputToken.decimals;
+        const multiplythisbb = JSBI.BigInt(10 ** (tokdecimals));
+
+		console.log('tokdecimals:'+String(tokdecimals));
+		console.log('multiplythisbb:'+String(multiplythisbb));
+		console.log('amountToTrade:'+String(amountToTrade));
+
 		spinner = ora({
-			text: "Computing routes...",
+			text: "Computing routesfor token with amountToTrade "+String(amountToTrade)+" with decimals "+tokdecimals+" and multiply is "+String(multiplythisbb),
 			discardStdin: false,
 			color: "magenta",
 		}).start();
+
+
+		//BNI AMT to TRADE
+		const amountInJSBI = JSBI.BigInt(amountToTrade);
 
 		// compute routes for the first time
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
 			outputMint: new PublicKey(outputToken.address),
-			inputAmount: amountToTrade,
-			slippage: 0,
-			forceFeech: true,
+			amount: amountInJSBI,
+			slippageBps: 0,
+			forceFetch: false,
+			onlyDirectRoutes: false,
+			onlyDirectRoutes: false,
+			filterTopNResult: 1,
 		});
 
 		if (routes?.routesInfos?.length > 0) spinner.succeed("Routes computed!");
-		else spinner.fail("No routes found. Something is wrong!");
+		else spinner.fail("No routes found. Something is wrong! Tokens:"+inputToken.address+" "+outputToken.address);
 
-		return routes.routesInfos[0].outAmountWithSlippage;
+		return routes.routesInfos[0].otherAmountThreshold;
 	} catch (error) {
 		if (spinner)
 			spinner.fail(chalk.bold.redBright("Computing routes failed!\n"));
@@ -131,5 +226,6 @@ const getInitialOutAmountWithSlippage = async (
 
 module.exports = {
 	setup,
-	getInitialOutAmountWithSlippage,
+	getInitialotherAmountThreshold,
+	balanceCheck,
 };

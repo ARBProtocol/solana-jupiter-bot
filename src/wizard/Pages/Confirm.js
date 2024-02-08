@@ -17,6 +17,7 @@ const Confirm = () => {
 			"trading size": { value: tradingSize },
 			profit: { value: profit },
 			slippage: { value: slippage },
+			priority: { value: priority },
 			advanced: { value: advanced },
 		},
 		config,
@@ -48,6 +49,7 @@ const Confirm = () => {
 				</Text>
 				<Text>Profit: {chalk.bold.greenBright(profit)}</Text>
 				<Text>Slippage: {chalk.bold.greenBright(slippage)}</Text>
+				<Text>Priority: {chalk.bold.greenBright(priority)}</Text>
 				<Text color="gray"></Text>
 				<Text>
 					Min Interval: {chalk.bold.greenBright(advanced.minInterval)}

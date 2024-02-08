@@ -2,17 +2,36 @@ const chalk = require("chalk");
 const fs = require("fs");
 const ora = require("ora-classic");
 const { logExit } = require("../bot/exit");
+const JSBI = require('jsbi');
 
 const createTempDir = () => !fs.existsSync("./temp") && fs.mkdirSync("./temp");
 
+const getCircularReplacer = () => {
+  const seen = new WeakSet();
+  return (key, value) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
+      }
+      seen.add(value);
+    } else if (typeof value === "bigint") {
+        value = value.toString();
+    }
+    return value;
+  };
+};
+
 const storeItInTempAsJSON = (filename, data) =>
-	fs.writeFileSync(`./temp/${filename}.json`, JSON.stringify(data, null, 2));
+        fs.writeFileSync(`./temp/${filename}.json`, JSON.stringify(data, getCircularReplacer(), 2));
 
 const createConfigFile = (config) => {
 	const configSpinner = ora({
 		text: "Creating config...",
 		discardStdin: false,
 	}).start();
+	
+	// Set the adaptive slippage setting based on initial configuration
+	const adaptiveslippage = config?.adaptiveslippage?.value ?? 0;
 
 	const configValues = {
 		network: config.network.value,
@@ -21,6 +40,8 @@ const createConfigFile = (config) => {
 		tokenA: config.tokens.value.tokenA,
 		tokenB: config.tokens.value.tokenB,
 		slippage: config.slippage.value,
+		adaptiveSlippage: adaptiveslippage,
+		priority: config.priority.value,
 		minPercProfit: config.profit.value,
 		minInterval: parseInt(config.advanced.value.minInterval),
 		tradeSize: {
@@ -79,12 +100,14 @@ const loadConfigFile = ({ showSpinner = false }) => {
 	throw new Error("\nNo config.json file found!\n");
 };
 
-const calculateProfit = (oldVal, newVal) => ((newVal - oldVal) / oldVal) * 100;
+const calculateProfit = ((oldVal, newVal) => ((newVal - oldVal) / oldVal) * 100);
 
 const toDecimal = (number, decimals) =>
-	parseFloat(number / 10 ** decimals).toFixed(decimals);
+	parseFloat(String(number) / 10 ** decimals).toFixed(decimals);
 
-const toNumber = (number, decimals) => number * 10 ** decimals;
+
+const toNumber = (number, decimals) => 
+	Math.floor(String(number) * 10 ** decimals);
 
 /**
  * It calculates the number of iterations per minute and updates the cache.
@@ -105,12 +128,14 @@ const updateIterationsPerMin = (cache) => {
 const checkRoutesResponse = (routes) => {
 	if (Object.hasOwn(routes, "routesInfos")) {
 		if (routes.routesInfos.length === 0) {
+			console.log(routes);
 			logExit(1, {
 				message: "No routes found or something is wrong with RPC / Jupiter! ",
 			});
 			process.exit(1);
 		}
 	} else {
+		console.log(routes);
 		logExit(1, {
 			message: "Something is wrong with RPC / Jupiter! ",
 		});

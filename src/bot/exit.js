@@ -1,8 +1,6 @@
 const fs = require("fs");
 const chalk = require("chalk");
-
 const cache = require("./cache");
-
 const logExit = (code = 0, error) => {
 	code === 0 && console.log(chalk.black.bgMagentaBright.bold(error.message));
 
