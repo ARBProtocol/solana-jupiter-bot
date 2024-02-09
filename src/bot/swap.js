@@ -143,21 +143,21 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 			 */
 
 			try {
-				// BETA LOOKUP FOR RESULT
+				// BETA LOOKUP FOR RESULT VIA RPC
 				//try catch error handling
 				var txresult = [];
 				var err2 = -1;
 				var rcount = 0;
-				var retries = 25;
+				var retries = 30;
 
 				const fetcher = async (retry) => {
 
-					console.log('In fetcher');
+					console.log('Looking for result via RPC.');
 					rcount++;
 
 					if (rcount>=retries){
 						// Exit max retries
-						console.log(`Max Retries. Giving Up ${rcount}`);
+						console.log(`Max attempts to fetch transaction. Assuming it did not complete.`);
 						return -1;
 					}
 
@@ -196,17 +196,17 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 							tempHistory.push(tradeEntry);
 							cache.tradeHistory = tempHistory;
 
-							console.log(`Tx result with output token, returning..`);
+						    //console.log(`Tx result with output token, returning..`);
 							return txresult;
 						} else {
-							retry(new Error("Transaction was not confirmed yet..."));
+							retry(new Error("Transaction was not posted yet... Retrying..."));
 						}
 					} else if(err2==2){
 						// Transaction failed. Kill it and retry
 						err.message = JSON.stringify(txresult);
 						return -1;
 					} else{
-						retry(new Error("Transaction was not confirmed yet..."));
+						retry(new Error("Transaction was not posted yet. Retrying..."));
 					}
 				};
 
@@ -218,15 +218,14 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 					});
 
 				if (lookresult==-1){
-					console.log('Lookup Shows Failed Transaction.');
+					//console.log('Lookup Shows Failed Transaction.');
 					outputamt = 0;
 					err.status=true;
 				} else {
-
 					// Track the output amount
 					inputamt = txresult[tokenA.address].start;
 					outputamt = txresult[tokenA.address].end;
-					console.log(`Succss Lookup ${inputamt} to ${outputamt}`);
+					//console.log(`Succss Lookup ${inputamt} to ${outputamt}`);
 
 					cache.currentProfit.tokenA = calculateProfit(
 							cache.initialBalance.tokenA,

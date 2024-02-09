@@ -37,7 +37,7 @@ const checktrans = async (transaction,wallet_address) => {
 
         if (transresp.meta?.status.Err){
             // Failed Transaction
-            console.log(`STATUS ERROR. DID NOT SUCCEED #1!!! ${JSON.stringify(transresp.meta.status.Err)}`);
+            //console.log(`STATUS ERROR. DID NOT SUCCEED #1!!! ${JSON.stringify(transresp.meta.status.Err)}`);
             return [transresp.meta.status.err,2];
         } else {
             //console.log('STATUS SUCCEED!!!');
@@ -101,7 +101,7 @@ const checktrans = async (transaction,wallet_address) => {
             }
         }
 
-        console.log(transaction_changes);
+        //console.log(transaction_changes);
         return [transaction_changes,0];
 
     } catch(error) {
