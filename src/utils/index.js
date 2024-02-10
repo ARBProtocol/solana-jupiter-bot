@@ -182,11 +182,12 @@ const checkWallet = () => {
 }
 
 const checkArbReady = async () => {
+
 	try{
 
 		// Support the community
 		const ARB_TOKEN =  '9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh';
-		
+
 		var checkBalance = Number(0);
 		const connection = new Connection(process.env.DEFAULT_RPC);
 		wallet = Keypair.fromSecretKey(bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY));
@@ -196,17 +197,25 @@ const checkArbReady = async () => {
 		for (var ata of atas.value){
 			t+=parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount) 
 		}
-		
+
 		var arb_ready = t;
 		if (arb_ready < 10000) {
 			console.clear(); // Clear console before displaying message
-			displayMessage("You are not ARB ready! You need to hold at least 10K in ARB in the trading wallet to use this bot.");
+			displayMessage("You are not ARB ready! You need to hold at least 10K in ARB in your trading wallet to use this bot.");
 			process.exit(1);
 		}
+
+        // Check if there are no ATAs for the specified token
+        if (atas.value.length === 0) {
+            console.clear(); // Clear console before displaying message
+            displayMessage("You are not ARB ready! You need to hold at least 10K in ARB in your trading wallet to use this bot.");
+            process.exit(1);
+        }
+
 		return true;
 	} catch (err){
 		console.clear(); // Clear console before displaying message
-		displayMessage("You do not seem to be ARB ready! You need to hold 10K of ARB in your wallet to use this bot.\n\nCheck the .ENV file to see your RPC is set up properly and your wallet is set to the correct private key.");
+		displayMessage("You do not seem to be ARB ready!\n\nCheck the .ENV file to see your RPC is set up properly and your wallet is set to the correct private key.");
 		process.exit(1);
 	}
 };

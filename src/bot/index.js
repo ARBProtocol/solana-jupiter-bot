@@ -474,7 +474,7 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 const run = async () => {
 	try {
 		// Are they ARB ready and part of the community?
-		checkArbReady();
+		await checkArbReady();
 
 		// set everything up
         const { jupiter, tokenA, tokenB, wallet } = await setup();
