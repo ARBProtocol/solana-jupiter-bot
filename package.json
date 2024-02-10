@@ -12,8 +12,8 @@
 	},
 	"scripts": {
 		"wizard": "node ./src/index.js",
-		"start": "node ./src/index.js && node ./src/bot/index.js",
-		"trade": "node ./src/bot/index.js",
+		"start": "node --no-deprecation ./src/index.js && node --no-deprecation ./src/bot/index.js",
+		"trade": "node --no-deprecation ./src/bot/index.js",
 		"test": "xo && ava",
 		"transaction": "node ./src/utils/transaction.js"
 	},

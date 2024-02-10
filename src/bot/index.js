@@ -97,7 +97,6 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 		const route = await routes.routesInfos[0];
 
 		// calculate profitability
-		//let simulatedProfit = calculateProfit(baseAmount, await route.outAmount);
 		const simulatedProfit = calculateProfit(String(baseAmount), await JSBI.toNumber(route.outAmount));
 
 		// Alter slippage to be larger based on the profit if enabled in the config
@@ -512,14 +511,14 @@ const run = async () => {
 			cache.lastBalance.tokenB = cache.initialBalance.tokenB;
 		} else if (cache.config.tradingStrategy === "arbitrage") {
 			// set initial & current & last balance for tokenA
-			console.log('Trade Size is:'+cache.config.tradeSize.value+' decimals:'+tokenA.decimals);
+			//console.log('Trade Size is:'+cache.config.tradeSize.value+' decimals:'+tokenA.decimals);
 
 			cache.initialBalance.tokenA = toNumber(
 				cache.config.tradeSize.value,
 				tokenA.decimals
 			);
 
-			console.log('cache.initialBalance.tokenA:'+cache.initialBalance.tokenA);
+			//console.log('cache.initialBalance.tokenA:'+cache.initialBalance.tokenA);
 
 			cache.currentBalance.tokenA = cache.initialBalance.tokenA;
 			cache.lastBalance.tokenA = cache.initialBalance.tokenA;

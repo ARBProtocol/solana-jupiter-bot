@@ -21,7 +21,7 @@ const cache = require("./cache");
 // Account balance code
 const balanceCheck = async (checkToken) => {
 	var checkBalance = Number(0);
-	const connection = new Connection(cache.config.rpc[0]);
+	const connection = new Connection(process.env.DEFAULT_RPC);
 	wallet = Keypair.fromSecretKey(bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY));
 
 	let atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {mint: new PublicKey(checkToken.address)})
@@ -54,7 +54,7 @@ const setup = async () => {
 		await intro();
 
 		// load config file and store it in cache
-		cache.config = loadConfigFile({ showSpinner: true });
+		cache.config = loadConfigFile({ showSpinner: false });
 
 		spinner = ora({
 			text: "Loading tokens...",
@@ -79,7 +79,7 @@ const setup = async () => {
 			throw error;
 		}
 
-		// check wallet private key
+		// check wallet private key again
 		try {
 			spinner.text = "Checking wallet...";
 			if (
@@ -99,6 +99,8 @@ const setup = async () => {
 					"SOLANA_WALLET_PRIVATE_KEY "
 				)}\n	inside ${chalk.bold(".env")} file is correct \n`
 			);
+			logExit(1, error);
+			process.exitCode = 1;
 			throw error;
 		}
 
@@ -173,9 +175,6 @@ const getInitialotherAmountThreshold = async (
 	try {
         const tokdecimals = cache.sideBuy ? inputToken.decimals : outputToken.decimals;
         const multiplythisbb = JSBI.BigInt(10 ** (tokdecimals));
-		//console.log('tokdecimals:'+String(tokdecimals));
-		//console.log('multiplythisbb:'+String(multiplythisbb));
-		//console.log('amountToTrade:'+String(amountToTrade));
 		spinner = ora({
 			text: "Computing routes for token with amountToTrade "+String(amountToTrade)+" with decimals "+tokdecimals+" and multiply is "+String(multiplythisbb),
 			discardStdin: false,
@@ -192,7 +191,6 @@ const getInitialotherAmountThreshold = async (
 			amount: amountInJSBI,
 			slippageBps: 0,
 			forceFetch: true,
-			onlyDirectRoutes: false,
 			onlyDirectRoutes: false,
 			filterTopNResult: 1,
 		});
