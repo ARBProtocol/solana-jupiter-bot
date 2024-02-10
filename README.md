@@ -78,16 +78,15 @@ $ yarn
 Set your wallet private key in the `.env` file
 
 ```js
-SOLANA_WALLET_PRIVATE_KEY =
-	hgq847chjjjJUPITERiiiISaaaAWESOMEaaANDiiiIwwWANNAbbbBErrrRICHh;
+SOLANA_WALLET_PRIVATE_KEY=hgq847chjjjJUPITERiiiISaaaAWESOMEaaANDiiiIwwWANNAbbbBErrrRICHh
 ```
 
 Set the default RPC
 **_ARB Protocol RPC is used by default_**
 
 ```js
-SOLANA_WALLET_PRIVATE_KEY=hgq847chjjjJUPITERiiiISaaaAWESOMEaaANDiiiIwwWANNAbbbBErrrRICHh
 DEFAULT_RPC=https://my-super-lazy-rpc.gov
+ALT_RPC_LIST=https://change-this-url-in-env.gov,https://change-alt-urls-in-env.com
 ```
 
 · [back to top](#nav) ·
