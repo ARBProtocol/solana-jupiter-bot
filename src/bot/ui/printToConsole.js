@@ -353,7 +353,11 @@ function printToConsole({
 						cache.maxProfitSpotted.sell.toFixed(2)
 					)} %`,
 				},
-				{ text: " " }
+				{
+					text: `ADAPTIVE SLIPPAGE: ${chalk[cache.ui.defaultColor](
+						(cache.config.adaptiveSlippage==1) ? 'ON' : 'OFF'
+					)}`,
+				},
 			);
 
 			ui.div("");
