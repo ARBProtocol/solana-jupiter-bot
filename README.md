@@ -158,9 +158,9 @@ While the bot is running, you can use some hotkeys that will change the behaviou
 
 · [back to top](#nav) ·
 
-# Balanace management and error handling
+# Balance management and error handling
 
-Balances are checked when the bot loads and also as it is running to avoid the bot running when there is insufficient balance to prevent spamming NSF transactions. There is also a setting in the bot that will end the running when too many errors have stacked up. This acts as a fail safe. It is set to 100 errors at the moment. If you want to adjust this setting it is located currently in the /src/bot/swap.js file likne 78.
+Balances are checked when the bot loads and also as it is running to avoid it running when there is insufficient balance (to help prevent spamming NSF transactions). There is also a setting in the bot that will end the process when too many errors have stacked up. This acts as a fail-safe. It is set to 100 errors at the moment. If you want to adjust this setting it is located currently in the /src/bot/swap.js file line 78.
 
 	if (cache.tradeCounter.errorcount>100){
 		console.log('Error Count is too high for swaps: '+cache.tradeCounter.errorcount);
