@@ -12,6 +12,7 @@ const {
 	toNumber,
 	updateIterationsPerMin,
 	checkRoutesResponse,
+	checkArbReady,
 } = require("../utils");
 const { handleExit, logExit } = require("./exit");
 const cache = require("./cache");
@@ -472,6 +473,9 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 
 const run = async () => {
 	try {
+		// Are they ARB ready and part of the community?
+		checkArbReady();
+
 		// set everything up
         const { jupiter, tokenA, tokenB, wallet } = await setup();
 
