@@ -7,17 +7,17 @@ const WizardContext = require("../WizardContext");
 const { default: TextInput } = require("ink-text-input");
 const chalk = require("chalk");
 
-const SLIPPAGE_STRATEGIES = [
-	{ label: "1 BPS", value: 1 },
-	{ label: "10 BPS", value: 10 },
-	{ label: "30 BPS", value: 30 },
-	{ label: "Custom BPS", value: "custom" },
+const priority_STRATEGIES = [
+	{ label: "1000 micro Lamports", value: 1000 },
+	{ label: "10000 micro Lamports", value: 10000 },
+	{ label: "50000 micro Lamports", value: 50000 },
+	{ label: "Custom setting", value: "custom" },
 ];
 
 const Indicator = ({ label, value }) => {
 	const {
 		config: {
-			slippage: { value: selectedValue },
+			priority: { value: selectedValue },
 		},
 	} = useContext(WizardContext);
 
@@ -26,37 +26,37 @@ const Indicator = ({ label, value }) => {
 	return <Text>{chalk[isSelected ? "greenBright" : "white"](`${label}`)}</Text>;
 };
 
-function Slippage() {
+function priority() {
 	const { configSetValue } = useContext(WizardContext);
 	let isMountedRef = useRef(false);
 
-	const [tempSlippageStrategy, setTempSlippageStrategy] = useState(
-		SLIPPAGE_STRATEGIES[0]
+	const [temppriorityStrategy, setTemppriorityStrategy] = useState(
+		priority_STRATEGIES[0]
 	);
-	const [customSlippage, setCustomSlippage] = useState("1");
+	const [custompriority, setCustompriority] = useState("1");
 	const [inputBorderColor, setInputBorderColor] = useState("gray");
 
-	const handleSlippageStrategySelect = (slippage) => {
-		const value = slippage.value;
-		setTempSlippageStrategy(value);
+	const handlepriorityStrategySelect = (priority) => {
+		const value = priority.value;
+		setTemppriorityStrategy(value);
 		if (value !== "custom")
 			configSetValue(
-				"slippage", Number(value)
+				"priority", Number(value)
 			);
 	};
 
-	const handleCustomSlippageChange = (value) => {
+	const handleCustompriorityChange = (value) => {
 		const badChars = /[^0-9.]/g;
 		badChars.test(value)
 			? setInputBorderColor("red")
 			: setInputBorderColor("gray");
 		const sanitizedValue = value.replace(badChars, "");
-		setCustomSlippage(sanitizedValue);
+		setCustompriority(sanitizedValue);
 		setTimeout(() => isMountedRef.current && setInputBorderColor("gray"), 100);
 	};
 
-	const handleCustomSlippageSubmit = () => {
-		configSetValue("slippage", Number(customSlippage));
+	const handleCustomprioritySubmit = () => {
+		configSetValue("priority", Number(custompriority));
 	};
 
 	useEffect(() => {
@@ -67,27 +67,27 @@ function Slippage() {
 	return (
 		<Box flexDirection="column">
 			<Text>
-				Set <Text color="#cdadff">slippage</Text> strategy
+				Set <Text color="#cdadff">priority</Text> strategy
 			</Text>
 			<Box margin={1}>
 				<SelectInput
-					items={SLIPPAGE_STRATEGIES}
+					items={priority_STRATEGIES}
 					itemComponent={Indicator}
-					onSelect={handleSlippageStrategySelect}
+					onSelect={handlepriorityStrategySelect}
 				/>
 			</Box>
-			{tempSlippageStrategy === "custom" && (
+			{temppriorityStrategy === "custom" && (
 				<Box flexDirection="row" alignItems="center">
-					<Text>Custom slippage:</Text>
+					<Text>Custom priority:</Text>
 					<Box
 						borderStyle="round"
 						borderColor={inputBorderColor}
 						marginLeft={1}
 					>
 						<TextInput
-							value={customSlippage}
-							onChange={handleCustomSlippageChange}
-							onSubmit={handleCustomSlippageSubmit}
+							value={custompriority}
+							onChange={handleCustompriorityChange}
+							onSubmit={handleCustomprioritySubmit}
 						/>
 					</Box>
 					<Text>BPS</Text>
@@ -96,4 +96,4 @@ function Slippage() {
 		</Box>
 	);
 }
-module.exports = Slippage;
+module.exports = priority;

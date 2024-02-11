@@ -5,6 +5,8 @@ const cache = {
 	queueThrottle: 1,
 	sideBuy: true,
 	iteration: 0,
+	walletpubkey: '',
+	walletpubkeyfull: '',
 	iterationPerMinute: {
 		start: performance.now(),
 		value: 0,
@@ -38,14 +40,16 @@ const cache = {
 	tradeCounter: {
 		buy: { success: 0, fail: 0 },
 		sell: { success: 0, fail: 0 },
+		failedbalancecheck: 0,
+		errorcount: 0,
 	},
 	ui: {
 		defaultColor: process.env.UI_COLOR ?? "cyan",
 		showPerformanceOfRouteCompChart: false,
-		showProfitChart: true,
-		showTradeHistory: true,
+		showProfitChart: false,
+		showTradeHistory: false,
 		hideRpc: false,
-		showHelp: true,
+		showHelp: false,
 		allowClear: true,
 	},
 	chart: {

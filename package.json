@@ -1,6 +1,6 @@
 {
 	"name": "solana-jupiter-bot",
-	"version": "0.0.11-beta",
+	"version": "0.1.69-beta-jupv4",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -12,21 +12,24 @@
 	},
 	"scripts": {
 		"wizard": "node ./src/index.js",
-		"start": "node ./src/index.js && node ./src/bot/index.js",
-		"trade": "node ./src/bot/index.js",
-		"test": "xo && ava"
+		"start": "node --no-deprecation ./src/index.js && node --no-deprecation ./src/bot/index.js",
+		"trade": "node --no-deprecation ./src/bot/index.js",
+		"test": "xo && ava",
+		"transaction": "node ./src/utils/transaction.js"
 	},
 	"files": [
 		"./src/index.js",
 		"./src/generator.js"
 	],
 	"dependencies": {
-		"@jup-ag/core": "1.0.0-beta.28",
-		"@solana/web3.js": "^1.44.0",
+		"@coral-xyz/anchor": "^0",
+		"@jup-ag/core": "^4.0.0-beta.21",
+		"@solana/web3.js": "^1.66.1",
 		"asciichart": "^1.5.25",
 		"axios": "^0.27.2",
 		"bs58": "^5.0.0",
 		"cliui": "^7.0.4",
+		"express": "4.17.1",
 		"gradient-string": "^2.0.1",
 		"import-jsx": "^4.0.1",
 		"ink": "^3.2.0",
@@ -36,6 +39,7 @@
 		"ink-select-input": "^4.2.1",
 		"ink-spinner": "^4.0.3",
 		"ink-text-input": "^4.0.3",
+		"jsbi": "^4.3.0",
 		"keypress": "^0.2.1",
 		"meow": "^9.0.0",
 		"moment": "^2.29.3",
@@ -75,6 +79,10 @@
 		"eslint-plugin-react": "^7.30.1",
 		"eslint-plugin-react-hooks": "^4.5.0",
 		"ink-testing-library": "^2.1.0",
-		"prettier": "2.7.1"
+		"prettier": "2.7.1",
+		"typescript": "^4.6.4"
+	},
+	"resolutions": {
+		"@solana/buffer-layout": "4.0.0"
 	}
 }

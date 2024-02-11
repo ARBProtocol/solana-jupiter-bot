@@ -2,6 +2,7 @@ const ui = require("cliui")({ width: 140 });
 const chalk = require("chalk");
 const moment = require("moment");
 const chart = require("asciichart");
+const JSBI = require('jsbi');
 
 const { toDecimal } = require("../../utils");
 const cache = require("../cache");
@@ -112,7 +113,7 @@ function printToConsole({
 							  )}...${cache.config.rpc[0].slice(-5)}`
 							: cache.config.rpc[0]
 					)}`,
-				}
+				},
 			);
 
 			const performanceOfRouteCompColor =
@@ -156,7 +157,10 @@ function printToConsole({
 					})
 				);
 
-			ui.div("");
+			// Show pubkey for identification of bot instance
+			const pubkey = cache.ui.hideRpc ? 'hidden' : cache.walletpubkey;
+
+			ui.div("ARB PROTOCOL V1.5 - ("+pubkey+")");
 			ui.div(chalk.gray("-".repeat(140)));
 
 			ui.div(
@@ -216,7 +220,7 @@ function printToConsole({
 			ui.div(
 				{
 					text: `IN:  ${chalk.yellowBright(
-						toDecimal(route.inAmount, inputToken.decimals)
+						toDecimal(String(route.inAmount), inputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](inputToken.symbol)}`,
 				},
 				{
@@ -225,9 +229,7 @@ function printToConsole({
 				{
 					text: `SLIPPAGE: ${chalk.magentaBright(
 						`${
-							cache.config.slippage === "profitOrKill"
-								? "ProfitOrKill"
-								: cache.config.slippage + " %"
+							cache.config.slippage + " BPS"
 						}`
 					)}`,
 				},
@@ -242,7 +244,7 @@ function printToConsole({
 			ui.div(
 				{
 					text: `OUT: ${chalk[simulatedProfit > 0 ? "greenBright" : "red"](
-						toDecimal(route.outAmount, outputToken.decimals)
+						toDecimal(String(route.outAmount), outputToken.decimals)
 					)} ${chalk[cache.ui.defaultColor](outputToken.symbol)}`,
 				},
 				{
@@ -250,7 +252,7 @@ function printToConsole({
 				},
 				{
 					text: `MIN. OUT: ${chalk.magentaBright(
-						toDecimal(route.outAmountWithSlippage, outputToken.decimals)
+						toDecimal(String(route.otherAmountThreshold), outputToken.decimals)
 					)}`,
 				},
 				{
@@ -288,38 +290,38 @@ function printToConsole({
 			ui.div("CURRENT BALANCE", "LAST BALANCE", "INIT BALANCE", "PROFIT", " ");
 
 			ui.div(
-				`${chalk[cache.currentBalance.tokenA > 0 ? "yellowBright" : "gray"](
+				`${chalk[JSBI.GT(cache.currentBalance.tokenA, 0) ? "yellowBright" : "gray"](
 					toDecimal(cache.currentBalance.tokenA, tokenA.decimals)
 				)} ${chalk[cache.ui.defaultColor](tokenA.symbol)}`,
 
-				`${chalk[cache.lastBalance.tokenA > 0 ? "yellowBright" : "gray"](
+				`${chalk[JSBI.GT(cache.lastBalance.tokenA, 0) ? "yellowBright" : "gray"](
 					toDecimal(cache.lastBalance.tokenA, tokenA.decimals)
 				)} ${chalk[cache.ui.defaultColor](tokenA.symbol)}`,
 
-				`${chalk[cache.initialBalance.tokenA > 0 ? "yellowBright" : "gray"](
+				`${chalk[JSBI.GT(cache.initialBalance.tokenA,0) ? "yellowBright" : "gray"](
 					toDecimal(cache.initialBalance.tokenA, tokenA.decimals)
 				)} ${chalk[cache.ui.defaultColor](tokenA.symbol)}`,
 
-				`${chalk[cache.currentProfit.tokenA > 0 ? "greenBright" : "redBright"](
+				`${chalk[JSBI.GT(cache.currentProfit.tokenA,0) ? "greenBright" : "redBright"](
 					cache.currentProfit.tokenA.toFixed(2)
 				)} %`,
 				" "
 			);
 
 			ui.div(
-				`${chalk[cache.currentBalance.tokenB > 0 ? "yellowBright" : "gray"](
-					toDecimal(cache.currentBalance.tokenB, tokenB.decimals)
+				`${chalk[JSBI.GT(cache.currentBalance.tokenB,0) ? "yellowBright" : "gray"](
+					toDecimal(String(cache.currentBalance.tokenB), tokenB.decimals)
 				)} ${chalk[cache.ui.defaultColor](tokenB.symbol)}`,
 
-				`${chalk[cache.lastBalance.tokenB > 0 ? "yellowBright" : "gray"](
-					toDecimal(cache.lastBalance.tokenB, tokenB.decimals)
+				`${chalk[JSBI.GT(cache.lastBalance.tokenB,0) ? "yellowBright" : "gray"](
+					toDecimal(String(cache.lastBalance.tokenB), tokenB.decimals)
 				)} ${chalk[cache.ui.defaultColor](tokenB.symbol)}`,
 
-				`${chalk[cache.initialBalance.tokenB > 0 ? "yellowBright" : "gray"](
-					toDecimal(cache.initialBalance.tokenB, tokenB.decimals)
+				`${chalk[JSBI.GT(cache.initialBalance.tokenB,0) ? "yellowBright" : "gray"](
+					toDecimal(String(cache.initialBalance.tokenB), tokenB.decimals)
 				)} ${chalk[cache.ui.defaultColor](tokenB.symbol)}`,
 
-				`${chalk[cache.currentProfit.tokenB > 0 ? "greenBright" : "redBright"](
+				`${chalk[JSBI.GT(cache.currentProfit.tokenB,0) ? "greenBright" : "redBright"](
 					cache.currentProfit.tokenB.toFixed(2)
 				)} %`,
 				" "
@@ -351,7 +353,11 @@ function printToConsole({
 						cache.maxProfitSpotted.sell.toFixed(2)
 					)} %`,
 				},
-				{ text: " " }
+				{
+					text: `ADAPTIVE SLIPPAGE: ${chalk[cache.ui.defaultColor](
+						(cache.config.adaptiveSlippage==1) ? 'ON' : 'OFF'
+					)}`,
+				},
 			);
 
 			ui.div("");
@@ -397,7 +403,7 @@ function printToConsole({
 								border: true,
 							},
 							{
-								text: `${entry.expectedProfit.toFixed(2)} %`,
+								text: `${entry.expectedProfit.toFixed(2)} % ${entry.slippage}`,
 								border: true,
 							},
 							{

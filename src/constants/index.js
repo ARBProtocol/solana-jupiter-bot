@@ -10,6 +10,7 @@ const CONFIG_INITIAL_STATE = {
 			"trading size",
 			"profit",
 			"slippage",
+			"priority",
 			"advanced",
 			"confirm",
 		],
@@ -71,9 +72,13 @@ const CONFIG_INITIAL_STATE = {
 			value: 0,
 			isSet: false,
 		},
+		priority: {
+			value: 0,
+			isSet: false,
+		},
 		advanced: {
 			value: {
-				minInterval: 30,
+				minInterval: 100,
 			},
 			isSet: {
 				minInterval: false,
@@ -83,6 +88,6 @@ const CONFIG_INITIAL_STATE = {
 };
 
 module.exports = {
-	DISCORD_INVITE_URL: "https://discord.gg/wcxYzfKNaE",
+	DISCORD_INVITE_URL: "https://discord.gg/Z8JJCuq4",
 	CONFIG_INITIAL_STATE,
 };
