@@ -175,7 +175,7 @@ function printToConsole({
 				}`,
 				`ROUTES: ${chalk.bold.yellowBright(
 					cache.availableRoutes[cache.sideBuy ? "buy" : "sell"]
-				)} (${chalk.bold.yellowBright('Juicy Juice')})`, //PAV
+				)}`,
 				`STRATEGY: ${chalk.bold[cache.ui.defaultColor](
 					cache.config.tradingStrategy
 				)}`,

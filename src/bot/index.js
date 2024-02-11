@@ -273,8 +273,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 
         //BNI AMT to TRADE
         const amountInJSBI = JSBI.BigInt(amountToTrade);
-        
-		console.log('Amount to trade:'+amountToTrade);
+        //console.log('Amount to trade:'+amountToTrade);
 
 		// default slippage
 		const slippage = typeof cache.config.slippage === "number" ? cache.config.slippage : 4; // 100 is 0.1%
@@ -501,7 +500,7 @@ const run = async () => {
 			var realbalanceTokenA = await balanceCheck( tokenA )
 			
 			if (realbalanceTokenA<cache.initialBalance.tokenA){
-				console.log('Balance Lookup is too low for token: '+realbalanceTokenA+' < '+cache.initialBalance.tokenA);
+				console.error('You do not have enough of the token in your wallet: '+realbalanceTokenA+' < '+cache.initialBalance.tokenA);
 				process.exit();
 			}
 

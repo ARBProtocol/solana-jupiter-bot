@@ -3,7 +3,7 @@ const chalk = require("chalk");
 const ora = require("ora-classic");
 const bs58 = require("bs58");
 const { Jupiter } = require("@jup-ag/core");
-const { Connection, Keypair, PublicKey } = require("@solana/web3.js");
+const { Connection, Keypair, PublicKey, LAMPORTS_PER_SOL } = require("@solana/web3.js");
 
 var JSBI = (require('jsbi'));
 var invariant = (require('tiny-invariant'));
@@ -17,21 +17,39 @@ const { loadConfigFile, toNumber } = require("../utils");
 const { intro, listenHotkeys } = require("./ui");
 const { setTimeout } = require("timers/promises");
 const cache = require("./cache");
+const wrapUnwrapSOL = cache.wrapUnwrapSOL;
 
 // Account balance code
 const balanceCheck = async (checkToken) => {
-	var checkBalance = Number(0);
+	let checkBalance = Number(0);
+	let t = Number(0);
+
 	const connection = new Connection(process.env.DEFAULT_RPC);
 	wallet = Keypair.fromSecretKey(bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY));
 
-	let atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {mint: new PublicKey(checkToken.address)})
-	let t = 0
-	for (var ata of atas.value){
-		t+=parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount) 
+	if (wrapUnwrapSOL && checkToken.address === 'So11111111111111111111111111111111111111112') {
+		// This is where Native balance is needing to be checked and not the Wrapped SOL ATA
+		try {
+			const balance = await connection.getBalance(wallet.publicKey);
+			checkBalance = balance / LAMPORTS_PER_SOL;
+		} catch (error) {
+			console.error('Error fetching native balance:', error);
+		}
+	} else {
+		// Normal token so look up the ATA balance(s)
+		let totalTokenBalance = 0;
+		try {
+			const atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {mint: new PublicKey(checkToken.address)});
+			for (const ata of atas.value) {
+				totalTokenBalance += parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount);
+			}
+			checkBalance = totalTokenBalance;
+		} catch (error) {
+			console.error('Error fetching token balance:', error);
+		}
 	}
-
-	var checkBalance = t;
-	console.log('Real balance is '+checkBalance);
+	
+	console.log('Wallet balance for tokenA is '+checkBalance);
 	
 	// Pass back the BN version to match
 	var checkBalancebn = toNumber(
@@ -107,7 +125,7 @@ const setup = async () => {
 		spinner.text = "Setting up connection ...";
 		const connection = new Connection(cache.config.rpc[0]);
 
-		spinner.text = "Loading Jupiter SDK...";
+		spinner.text = "Loading Jupiter V4 SDK...";
 
 		const jupiter = await Jupiter.load({
 			connection,
