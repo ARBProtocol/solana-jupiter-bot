@@ -31,44 +31,42 @@ const balanceCheck = async (checkToken) => {
 		// This is where Native balance is needing to be checked and not the Wrapped SOL ATA
 		try {
 			const balance = await connection.getBalance(wallet.publicKey);
-			checkBalance = balance / LAMPORTS_PER_SOL;
+			checkBalance = Number(balance);
 		} catch (error) {
-			console.error('Error fetching native balance:', error);
+			console.error('Error fetching native SOL balance:', error);
 		}
 	} else {
 		// Normal token so look up the ATA balance(s)
-		let totalTokenBalance = BigInt(0);
 		try {
- 			const atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
+			let totalTokenBalance = BigInt(0);
+			const tokenAccounts = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
 				mint: new PublicKey(checkToken.address)
 			});
 		
-			// Took a recipe from the cookbook for this one...
-			atas.value.forEach((accountInfo) => {
-				console.log(`pubkey: ${accountInfo.pubkey.toBase58()}`);
-				console.log(`mint: ${accountInfo.account.data["parsed"]["info"]["mint"]}`);
-				console.log(`owner: ${accountInfo.account.data["parsed"]["info"]["owner"]}`);
-				console.log(`decimals: ${accountInfo.account.data["parsed"]["info"]["tokenAmount"]["decimals"]}`);
-				console.log(`amount: ${accountInfo.account.data["parsed"]["info"]["tokenAmount"]["amount"]}`);
-				totalTokenBalance += BigInt(accountInfo.account.data["parsed"]["info"]["tokenAmount"]["amount"]);
-				console.log("====================");
-			  });
-			  
-			  // As easy as pie...
-			  checkBalance = Number(totalTokenBalance);
-
-			} catch (error) {
+			tokenAccounts.value.forEach((accountInfo) => {
+				const parsedInfo = accountInfo.account.data.parsed.info;
+				//console.log(`Pubkey: ${accountInfo.pubkey.toBase58()}`);
+				//console.log(`Mint: ${parsedInfo.mint}`);
+				//console.log(`Owner: ${parsedInfo.owner}`);
+				//console.log(`Decimals: ${parsedInfo.tokenAmount.decimals}`);
+				//console.log(`Amount: ${parsedInfo.tokenAmount.amount}`);
+				totalTokenBalance += BigInt(parsedInfo.tokenAmount.amount);
+				//console.log("====================");
+			});
+		
+			// Convert totalTokenBalance to a regular number
+			checkBalance = Number(totalTokenBalance);
+			//console.log("Total Token Balance:", checkBalance);
+		
+		} catch (error) {
 			console.error('Error fetching token balance:', error);
 		}
 	}
 
 	try {
 		// Pass back the BN version to match
-		var checkBalanceUi = toDecimal(
-			checkBalance,
-			checkToken.decimals
-		);
-		console.log(`Wallet balance for tokenA is ${checkBalanceUi} (${checkBalance})`);
+		let checkBalanceUi = toDecimal(checkBalance,checkToken.decimals);
+		console.log(`Wallet balance for ${checkToken.symbol} is ${checkBalanceUi} (${checkBalance})`);
 	} catch (error) {
 		console.error('Silence is golden.. Or not...:', error);
 	}
@@ -79,6 +77,32 @@ const balanceCheck = async (checkToken) => {
 			return(Number(0));
 	}
 };
+
+// Handle Balance Errors Messaging
+const checkTokenABalance = async (tokenA, initialTradingBalance) => {
+	try {
+		// Check the balance of TokenA to make sure there is enough to trade
+		var realbalanceTokenA = await balanceCheck(tokenA);
+
+		// Make the numebers user friendly
+		bal1 = toDecimal(realbalanceTokenA,tokenA.decimals);
+		bal2 = toDecimal(initialTradingBalance,tokenA.decimals);
+
+		if (realbalanceTokenA < initialTradingBalance) {
+			throw new Error(`\x1b[93mThere is insufficient balance in your wallet of ${tokenA.symbol}\x1b[0m
+			\nYou currently only have \x1b[93m${bal1}\x1b[0m ${tokenA.symbol}.
+			\nTo run the bot you need \x1b[93m${bal2}\x1b[0m ${tokenA.symbol}.
+			\nEither add more ${tokenA.symbol} to your wallet or lower the amount below ${bal1}.\n`);
+		}
+		// We are gucci
+		return realbalanceTokenA;
+	} catch (error) {
+		// Handle errors gracefully
+		console.error(`\n====================\n\n${error.message}\n====================\n`);
+		// Return an appropriate error code or rethrow the error if necessary
+		process.exit(1); // Exiting with a non-zero code to indicate failure
+	}
+}
 
 const setup = async () => {
 	let spinner, tokens, tokenA, tokenB, wallet;
@@ -141,7 +165,7 @@ const setup = async () => {
 		spinner.text = "Setting up connection ...";
 		const connection = new Connection(cache.config.rpc[0]);
 
-		spinner.text = "Loading Jupiter V4 SDK...";
+		spinner.text = "Loading the Jupiter V4 SDK and getting ready to trade...";
 
 		const jupiter = await Jupiter.load({
 			connection,
@@ -187,7 +211,7 @@ const setup = async () => {
 			}
 		});
 		cache.isSetupDone = true;
-		spinner.succeed("Setup done!");
+		spinner.succeed("Checking to ensure you are ARB ready...\n====================\n");
 		return { jupiter, tokenA, tokenB, wallet };
 	} catch (error) {
 		if (spinner)
@@ -245,4 +269,5 @@ module.exports = {
 	setup,
 	getInitialotherAmountThreshold,
 	balanceCheck,
+	checkTokenABalance,
 };

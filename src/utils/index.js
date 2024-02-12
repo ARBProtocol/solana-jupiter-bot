@@ -182,36 +182,38 @@ const checkWallet = () => {
 }
 
 const checkArbReady = async () => {
-
 	try{
-
 		// Support the community
 		const ARB_TOKEN =  '9tzZzEHsKnwFL1A3DyFJwj36KnZj3gZ7g4srWp9YTEoh';
 
 		var checkBalance = Number(0);
 		const connection = new Connection(process.env.DEFAULT_RPC);
 		wallet = Keypair.fromSecretKey(bs58.decode(process.env.SOLANA_WALLET_PRIVATE_KEY));
-			
-		let atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {mint: new PublicKey(ARB_TOKEN)})
-		let t = 0
-		for (var ata of atas.value){
-			t+=parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount) 
-		}
 
-		var arb_ready = t;
-		if (arb_ready < 10000) {
+		const tokenAccounts = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
+			mint: new PublicKey(ARB_TOKEN)
+		});
+
+		let totalTokenBalance = BigInt(0);
+		tokenAccounts.value.forEach((accountInfo) => {
+			const parsedInfo = accountInfo.account.data.parsed.info;
+			totalTokenBalance += BigInt(parsedInfo.tokenAmount.amount);
+		});
+
+		// Do you support the project and the hard work of the developers?
+		var arb_ready = Number(totalTokenBalance);
+		if (arb_ready < 10000000000) {
 			console.clear(); // Clear console before displaying message
 			displayMessage("You are not ARB ready! You need to hold at least 10K in ARB in your trading wallet to use this bot.");
 			process.exit(1);
 		}
 
         // Check if there are no ATAs for the specified token
-        if (atas.value.length === 0) {
+        if (tokenAccounts.value.length === 0) {
             console.clear(); // Clear console before displaying message
             displayMessage("You are not ARB ready! You need to hold at least 10K in ARB in your trading wallet to use this bot.");
             process.exit(1);
         }
-
 		return true;
 	} catch (err){
 		console.clear(); // Clear console before displaying message

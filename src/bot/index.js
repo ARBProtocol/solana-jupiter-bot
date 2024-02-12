@@ -5,7 +5,6 @@ const { clearInterval } = require("timers");
 const { PublicKey } = require("@solana/web3.js");
 const JSBI = require('jsbi');
 const { setTimeout } = require("timers/promises");
-
 const {
 	calculateProfit,
 	toDecimal,
@@ -16,7 +15,7 @@ const {
 } = require("../utils");
 const { handleExit, logExit } = require("./exit");
 const cache = require("./cache");
-const { setup, getInitialotherAmountThreshold, balanceCheck } = require("./setup");
+const { setup, getInitialotherAmountThreshold, checkTokenABalance } = require("./setup");
 const { printToConsole } = require("./ui/");
 const { swap, failedSwapHandler, successSwapHandler } = require("./swap");
 
@@ -27,7 +26,7 @@ const waitabit = async (ms) => {
 			reject(console.log('Error in promise'));
 		},ms)
 	})
-  }
+}
 
 function getRandomAmt(runtime) {
 	const min = Math.ceil((runtime*10000)*0.99);
@@ -480,10 +479,10 @@ const run = async () => {
 
 		// Set pubkey display
 		const walpubkeyfull = wallet.publicKey.toString();
-		console.log(walpubkeyfull);
+		console.log(`Wallet Enabled: ${walpubkeyfull}`);
 		cache.walletpubkeyfull = walpubkeyfull;
 		cache.walletpubkey = walpubkeyfull.slice(0,5) + '...' + walpubkeyfull.slice(walpubkeyfull.length-3);
-		console.log(cache.walletpubkey);
+		//console.log(cache.walletpubkey);
 
 		if (cache.config.tradingStrategy === "pingpong") {
 			// set initial & current & last balance for tokenA
@@ -496,13 +495,8 @@ const run = async () => {
 			cache.currentBalance.tokenA = cache.initialBalance.tokenA;
 			cache.lastBalance.tokenA = cache.initialBalance.tokenA;
 
-			// Check the balance
-			var realbalanceTokenA = await balanceCheck( tokenA )
-			
-			if (realbalanceTokenA<cache.initialBalance.tokenA){
-				console.error('You do not have enough of the token in your wallet: '+realbalanceTokenA+' < '+cache.initialBalance.tokenA);
-				process.exit();
-			}
+			// Double check the wallet has sufficient amount of tokenA
+			var realbalanceTokenA = await checkTokenABalance(tokenA,cache.initialBalance.tokenA);
 
 			// set initial & last balance for tokenB
 			cache.initialBalance.tokenB = await getInitialotherAmountThreshold(
@@ -521,13 +515,11 @@ const run = async () => {
 				tokenA.decimals
 			);
 
-			//console.log('cache.initialBalance.tokenA:'+cache.initialBalance.tokenA);
-
 			cache.currentBalance.tokenA = cache.initialBalance.tokenA;
 			cache.lastBalance.tokenA = cache.initialBalance.tokenA;
 
-			// Check the balance
-			var realbalanceTokenA = await balanceCheck( tokenA )
+			// Double check the wallet has sufficient amount of tokenA
+			var realbalanceTokenA = await checkTokenABalance(tokenA,cache.initialBalance.tokenA);
 			
 			if (realbalanceTokenA<cache.initialBalance.tokenA){
 				console.log('Balance Lookup is too low for token: '+realbalanceTokenA+' < '+cache.initialBalance.tokenA);
