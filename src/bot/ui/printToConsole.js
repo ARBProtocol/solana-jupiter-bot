@@ -403,7 +403,7 @@ function printToConsole({
 								border: true,
 							},
 							{
-								text: `${entry.expectedProfit.toFixed(2)} % ${entry.slippage}`,
+								text: `${entry.expectedProfit.toFixed(2)}% ${entry.slippage} BPS`,
 								border: true,
 							},
 							{

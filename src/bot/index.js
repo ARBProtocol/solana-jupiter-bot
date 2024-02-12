@@ -61,7 +61,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 		const outputToken = cache.sideBuy ? tokenB : tokenA;
 
 		const tokdecimals = cache.sideBuy ? inputToken.decimals : outputToken.decimals;
-				
+
 		//console.log('amountToTrade '+amountToTrade);
 		//console.log('slippageBps '+slippage);
 		//console.log('inputToken.address '+inputToken.address);
@@ -69,7 +69,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		//BNI AMT to TRADE
 		const amountInJSBI = JSBI.BigInt(amountToTrade);
-				
+
 		// check current routes
 		const performanceOfRouteCompStart = performance.now();
 		const routes = await jupiter.computeRoutes({
@@ -101,7 +101,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 		// Alter slippage to be larger based on the profit if enabled in the config
 		// set cache.config.adaptiveSlippage=1 to enable
-		// Profit minus minimum profit	
+		// Profit minus minimum profit
 		// default to the set slippage
 		var slippagerevised = slippage;
 
@@ -117,7 +117,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 
 				//console.log("Setting slippage to "+slippagerevised);
 				route.slippageBps = slippagerevised;
-		} 
+		}
 
 		// store max profit spotted
 		if (
@@ -136,7 +136,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 			tokenB,
 			route,
 			simulatedProfit,
-		});	
+		});
 
 		// check profitability and execute tx
 		let tx, performanceOfTx;
@@ -318,15 +318,15 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 
 		var slippagerevised = slippage;
 
-		if ((simulatedProfit > cache.config.minPercProfit) && cache.config.adaptiveSlippage == 1){
-				var slippagerevised = (100*(simulatedProfit-minPercProfitRnd+(slippage/100))).toFixed(3)
+		if ((simulatedProfit > cache.config.minPercProfit) && cache.config.adaptiveSlippage === 1){
+				slippagerevised = (100*(simulatedProfit-minPercProfitRnd+(slippage/100))).toFixed(3)
 
 				// Set adaptive slippage
 				if (slippagerevised>500) {
 						// Make sure on really big numbers it is only 30% of the total if > 50%
-						var slippagerevised = (0.30*slippagerevised).toFixed(3);
+						slippagerevised = (0.30*slippagerevised).toFixed(3);
 				} else {
-						var slippagerevised = (0.80*slippagerevised).toFixed(3);
+						slippagerevised = (0.80*slippagerevised).toFixed(3);
 				}
 				//console.log("Setting slippage to "+slippagerevised);
 				route.slippageBps = slippagerevised;
@@ -402,7 +402,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 
 				// stop refreshing status
 				clearInterval(printTxStatus);
-              
+
 				//console.log('Calculate trade profit Out');
 				const profit = calculateProfit(tradeEntry.inAmount, tx.outputAmount);
 
@@ -411,13 +411,13 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 					outAmount: tx.outputAmount || 0,
 					profit,
 					performanceOfTx,
-					error: tx.error?.message || null,
+					error: tx.error?.code === 6001 ? "Slippage Tolerance Exceeded" : tx.error?.message || null,
+					slippage: slippagerevised,
 				};
 
 				// handle TX results
-				if (tx.error) { 			
+				if (tx.error) {
 					// Slippage tolerance exceeded
-					console.log('Swap Error Failed Handler: '+tx.error);
 					await failedSwapHandler(tradeEntry, inputToken, amountToTrade);
 				} else {
 					if (cache.hotkeys.r) {
@@ -495,8 +495,10 @@ const run = async () => {
 			cache.currentBalance.tokenA = cache.initialBalance.tokenA;
 			cache.lastBalance.tokenA = cache.initialBalance.tokenA;
 
+
 			// Double check the wallet has sufficient amount of tokenA
 			var realbalanceTokenA = await checkTokenABalance(tokenA,cache.initialBalance.tokenA);
+
 
 			// set initial & last balance for tokenB
 			cache.initialBalance.tokenB = await getInitialotherAmountThreshold(
@@ -517,6 +519,7 @@ const run = async () => {
 
 			cache.currentBalance.tokenA = cache.initialBalance.tokenA;
 			cache.lastBalance.tokenA = cache.initialBalance.tokenA;
+
 
 			// Double check the wallet has sufficient amount of tokenA
 			var realbalanceTokenA = await checkTokenABalance(tokenA,cache.initialBalance.tokenA);
