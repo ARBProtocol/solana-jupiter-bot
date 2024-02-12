@@ -13,7 +13,7 @@ var toFormat = (require('toformat'));
 var anchor = require('@project-serum/anchor');
 
 const { logExit } = require("./exit");
-const { loadConfigFile, toNumber } = require("../utils");
+const { loadConfigFile, toDecimal } = require("../utils");
 const { intro, listenHotkeys } = require("./ui");
 const { setTimeout } = require("timers/promises");
 const cache = require("./cache");
@@ -31,38 +31,78 @@ const balanceCheck = async (checkToken) => {
 		// This is where Native balance is needing to be checked and not the Wrapped SOL ATA
 		try {
 			const balance = await connection.getBalance(wallet.publicKey);
-			checkBalance = balance / LAMPORTS_PER_SOL;
+			checkBalance = Number(balance);
 		} catch (error) {
-			console.error('Error fetching native balance:', error);
+			console.error('Error fetching native SOL balance:', error);
 		}
 	} else {
 		// Normal token so look up the ATA balance(s)
-		let totalTokenBalance = 0;
 		try {
-			const atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {mint: new PublicKey(checkToken.address)});
-			for (const ata of atas.value) {
-				totalTokenBalance += parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount);
-			}
-			checkBalance = totalTokenBalance;
+			let totalTokenBalance = BigInt(0);
+			const tokenAccounts = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
+				mint: new PublicKey(checkToken.address)
+			});
+		
+			tokenAccounts.value.forEach((accountInfo) => {
+				const parsedInfo = accountInfo.account.data.parsed.info;
+				//console.log(`Pubkey: ${accountInfo.pubkey.toBase58()}`);
+				//console.log(`Mint: ${parsedInfo.mint}`);
+				//console.log(`Owner: ${parsedInfo.owner}`);
+				//console.log(`Decimals: ${parsedInfo.tokenAmount.decimals}`);
+				//console.log(`Amount: ${parsedInfo.tokenAmount.amount}`);
+				totalTokenBalance += BigInt(parsedInfo.tokenAmount.amount);
+				//console.log("====================");
+			});
+		
+			// Convert totalTokenBalance to a regular number
+			checkBalance = Number(totalTokenBalance);
+			//console.log("Total Token Balance:", checkBalance);
+		
 		} catch (error) {
 			console.error('Error fetching token balance:', error);
 		}
 	}
-	
-	console.log('Wallet balance for tokenA is '+checkBalance);
-	
-	// Pass back the BN version to match
-	var checkBalancebn = toNumber(
-		checkBalance,
-		checkToken.decimals
-	);
 
-	if (Number(checkBalance)>Number(0)){
-			return checkBalancebn;
+	try {
+		// Pass back the BN version to match
+		let checkBalanceUi = toDecimal(checkBalance,checkToken.decimals);
+		console.log(`Wallet balance for ${checkToken.symbol} is ${checkBalanceUi} (${checkBalance})`);
+	} catch (error) {
+		console.error('Silence is golden.. Or not...:', error);
+	}
+
+	if (checkBalance>Number(0)){
+			return checkBalance;
 	} else {
 			return(Number(0));
 	}
 };
+
+// Handle Balance Errors Messaging
+const checkTokenABalance = async (tokenA, initialTradingBalance) => {
+	try {
+		// Check the balance of TokenA to make sure there is enough to trade
+		var realbalanceTokenA = await balanceCheck(tokenA);
+
+		// Make the numebers user friendly
+		bal1 = toDecimal(realbalanceTokenA,tokenA.decimals);
+		bal2 = toDecimal(initialTradingBalance,tokenA.decimals);
+
+		if (realbalanceTokenA < initialTradingBalance) {
+			throw new Error(`\x1b[93mThere is insufficient balance in your wallet of ${tokenA.symbol}\x1b[0m
+			\nYou currently only have \x1b[93m${bal1}\x1b[0m ${tokenA.symbol}.
+			\nTo run the bot you need \x1b[93m${bal2}\x1b[0m ${tokenA.symbol}.
+			\nEither add more ${tokenA.symbol} to your wallet or lower the amount below ${bal1}.\n`);
+		}
+		// We are gucci
+		return realbalanceTokenA;
+	} catch (error) {
+		// Handle errors gracefully
+		console.error(`\n====================\n\n${error.message}\n====================\n`);
+		// Return an appropriate error code or rethrow the error if necessary
+		process.exit(1); // Exiting with a non-zero code to indicate failure
+	}
+}
 
 const setup = async () => {
 	let spinner, tokens, tokenA, tokenB, wallet;
@@ -125,7 +165,7 @@ const setup = async () => {
 		spinner.text = "Setting up connection ...";
 		const connection = new Connection(cache.config.rpc[0]);
 
-		spinner.text = "Loading Jupiter V4 SDK...";
+		spinner.text = "Loading the Jupiter V4 SDK and getting ready to trade...";
 
 		const jupiter = await Jupiter.load({
 			connection,
@@ -171,7 +211,7 @@ const setup = async () => {
 			}
 		});
 		cache.isSetupDone = true;
-		spinner.succeed("Setup done!");
+		spinner.succeed("Checking to ensure you are ARB ready...\n====================\n");
 		return { jupiter, tokenA, tokenB, wallet };
 	} catch (error) {
 		if (spinner)
@@ -229,4 +269,5 @@ module.exports = {
 	setup,
 	getInitialotherAmountThreshold,
 	balanceCheck,
+	checkTokenABalance,
 };
