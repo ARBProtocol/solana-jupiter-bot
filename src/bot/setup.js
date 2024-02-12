@@ -13,7 +13,7 @@ var toFormat = (require('toformat'));
 var anchor = require('@project-serum/anchor');
 
 const { logExit } = require("./exit");
-const { loadConfigFile, toNumber } = require("../utils");
+const { loadConfigFile, toDecimal } = require("../utils");
 const { intro, listenHotkeys } = require("./ui");
 const { setTimeout } = require("timers/promises");
 const cache = require("./cache");
@@ -37,28 +37,44 @@ const balanceCheck = async (checkToken) => {
 		}
 	} else {
 		// Normal token so look up the ATA balance(s)
-		let totalTokenBalance = 0;
+		let totalTokenBalance = BigInt(0);
 		try {
-			const atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {mint: new PublicKey(checkToken.address)});
-			for (const ata of atas.value) {
-				totalTokenBalance += parseFloat(ata.account.data.parsed.info.tokenAmount.uiAmount);
-			}
-			checkBalance = totalTokenBalance;
-		} catch (error) {
+ 			const atas = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
+				mint: new PublicKey(checkToken.address)
+			});
+		
+			// Took a recipe from the cookbook for this one...
+			atas.value.forEach((accountInfo) => {
+				console.log(`pubkey: ${accountInfo.pubkey.toBase58()}`);
+				console.log(`mint: ${accountInfo.account.data["parsed"]["info"]["mint"]}`);
+				console.log(`owner: ${accountInfo.account.data["parsed"]["info"]["owner"]}`);
+				console.log(`decimals: ${accountInfo.account.data["parsed"]["info"]["tokenAmount"]["decimals"]}`);
+				console.log(`amount: ${accountInfo.account.data["parsed"]["info"]["tokenAmount"]["amount"]}`);
+				totalTokenBalance += BigInt(accountInfo.account.data["parsed"]["info"]["tokenAmount"]["amount"]);
+				console.log("====================");
+			  });
+			  
+			  // As easy as pie...
+			  checkBalance = Number(totalTokenBalance);
+
+			} catch (error) {
 			console.error('Error fetching token balance:', error);
 		}
 	}
-	
-	console.log('Wallet balance for tokenA is '+checkBalance);
-	
-	// Pass back the BN version to match
-	var checkBalancebn = toNumber(
-		checkBalance,
-		checkToken.decimals
-	);
 
-	if (Number(checkBalance)>Number(0)){
-			return checkBalancebn;
+	try {
+		// Pass back the BN version to match
+		var checkBalanceUi = toDecimal(
+			checkBalance,
+			checkToken.decimals
+		);
+		console.log(`Wallet balance for tokenA is ${checkBalanceUi} (${checkBalance})`);
+	} catch (error) {
+		console.error('Silence is golden.. Or not...:', error);
+	}
+
+	if (checkBalance>Number(0)){
+			return checkBalance;
 	} else {
 			return(Number(0));
 	}
