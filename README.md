@@ -235,11 +235,11 @@ To turn one **off**, set the value to **true**
 
 ## Pro ARB trading configurations
 
-In some circumstances -- when speed is a key element to the success of ARB trading, enabling the setting `onlyDirectRoutes: true` may be an option to test. This feature limits the available routes supplied via the JUP4 SDK to a subset of what is available by only returning direct routes.
+In some circumstances -- when speed is a key element to the success of ARB trading, enabling the setting `onlyDirectRoutes: true` may be an option to explore. This feature limits the available routes supplied via the JUP4 SDK to a subset of what is available by only returning direct routes.
 
-It is possible this can help make things route faster and cnvert more trades. It definitely does not guarantee the best route.  You need to ensure the routes and pools are sufficient for the amount you are trading. So **always test** with a very small amount and **use at your own risk**. Setting it on the wrong pair can cause you to lose tokens. 
+It is possible this can help make things route faster and convert more trades. It definitely does not guarantee the best route.  You need to ensure the routes and pools are sufficient for the amount you are trading. So **always test** with a very small amount and **use at your own risk**. Setting it on the wrong pair can cause you to lose tokens. 
 
-This setitng van be found in the ./src/bot/index.js file as shown below:
+This setting can be found in the ./src/bot/index.js file as shown below:
 
 	const routes = await jupiter.computeRoutes({
 		inputMint: new PublicKey(inputToken.address),
