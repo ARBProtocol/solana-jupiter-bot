@@ -8,7 +8,8 @@ cache.config = loadConfigFile({ showSpinner: true });
 
 // Adding a backup option for the transaction lookup
 // This is only needed for some RPCS that are not 
-// working up to speed.
+// working or are behind at the time of lookup.
+const rpc_main = cache.config.rpc[0];
 const rpc_backup = 'https://api.mainnet-beta.solana.com';
 
 // Key variables
@@ -31,7 +32,7 @@ const waitabit = async (ms) => {
 };
 
 // Main RPC
-const connection = new Connection(cache.config.rpc[0], {
+const connection = new Connection(rpc_main, {
     disableRetryOnRateLimit: true,
     commitment: 'confirmed',
 });
