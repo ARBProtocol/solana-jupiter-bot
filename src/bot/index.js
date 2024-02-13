@@ -202,7 +202,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 					outAmount: tx.outputAmount || 0,
 					profit,
 					performanceOfTx,
-					error: tx.error?.message || null,
+					error: tx.error?.code === 6001 ? "Slippage Tolerance Exceeded" : tx.error?.message || null,
 				};
 
 				var waittime = await waitabit(100);
@@ -523,7 +523,7 @@ const run = async () => {
 
 			// Double check the wallet has sufficient amount of tokenA
 			var realbalanceTokenA = await checkTokenABalance(tokenA,cache.initialBalance.tokenA);
-			
+
 			if (realbalanceTokenA<cache.initialBalance.tokenA){
 				console.log('Balance Lookup is too low for token: '+realbalanceTokenA+' < '+cache.initialBalance.tokenA);
 				process.exit();
