@@ -161,7 +161,7 @@ function printToConsole({
 			// Show pubkey for identification of bot instance
 			const pubkey = cache.ui.hideRpc ? 'hidden' : cache.walletpubkey;
 
-			ui.div(`ARB PROTOCOL ${package.version} - ${pubkey}`);
+			ui.div(`ARB PROTOCOL ${package.version} - (${pubkey})`);
 			ui.div(chalk.gray("-".repeat(140)));
 
 			ui.div(

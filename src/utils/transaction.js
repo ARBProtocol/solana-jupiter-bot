@@ -84,6 +84,11 @@ const checktrans = async (txid,wallet_address) => {
                 transstatus = 1;
             }
 
+            // Check if postTokenBalances is null or empty
+            if (!transresp.meta.postTokenBalances || transresp.meta.postTokenBalances.length === 0) {
+                return [null, WAIT_ERROR_CODE];
+            }
+
             var tokenamt=0;
             var tokendec=0;
 
