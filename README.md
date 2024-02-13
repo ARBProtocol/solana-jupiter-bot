@@ -168,7 +168,7 @@ Balances are checked when the bot loads and also as it is running to avoid it ru
 	}
 
 
-# slippage management
+# Slippage management
 
 Advanced slippage handling has been added to the code. USE AT YOUR OWN RISK! To enable it you need to set adaptiveSlippage: 1 in the config.json to enable this feature. This will adjust the slippage for the route to be a percentage of the total less the required profit. It takes the simulated profit and removes the percentage required profit to create an adaptive slippage with some handling for the size of the profit detected. Related code area is shown below anv can be edited as needed.
 	
@@ -230,6 +230,28 @@ To turn one **off**, set the value to **true**
                         'Symmetry': true,
                         'Unknown': true			
 			}
+
+## Pro ARB trading configurations
+
+In some circumstances -- when speed is a key element to the success of ARB trading specifically, enabling the setting `onlyDirectRoutes: true` may be an option to try. It is possible this can help make things route faster. It definitely does not guarantee the best route so always test with a very small amount and use at your own risk. Setting it on the wrong pair can cause you to lose tokens. 
+
+This feature limits the available routes supplied via the JUP4 SDK to a subset of what is available and only returning direct routes. Again, this should only be enabled with proper testing to ensure the routes and pools are sufficient for the amount you are trading. 
+
+This setitng van be found in the ./src/bot/index.js file as shown below:
+
+	const routes = await jupiter.computeRoutes({
+		inputMint: new PublicKey(inputToken.address),
+		outputMint: new PublicKey(outputToken.address),
+		amount: amountInJSBI,
+		slippageBps: slippage,
+		feeBps: 0,
+		forceFetch: true,
+		**onlyDirectRoutes: false,**
+            	filterTopNResult: 2,
+		enforceSingleTx: false,
+		swapMode: 'ExactIn',
+	});
+
 
 · [back to top](#nav) ·
 
