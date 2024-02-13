@@ -5,6 +5,7 @@ const chart = require("asciichart");
 const JSBI = require('jsbi');
 
 const { toDecimal } = require("../../utils");
+const package = require("../../../package.json");
 const cache = require("../cache");
 
 function printToConsole({
@@ -160,7 +161,7 @@ function printToConsole({
 			// Show pubkey for identification of bot instance
 			const pubkey = cache.ui.hideRpc ? 'hidden' : cache.walletpubkey;
 
-			ui.div("ARB PROTOCOL V1.5 - ("+pubkey+")");
+			ui.div(`ARB PROTOCOL ${package.version} - ${pubkey}`);
 			ui.div(chalk.gray("-".repeat(140)));
 
 			ui.div(
