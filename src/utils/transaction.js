@@ -122,7 +122,7 @@ const checktrans = async (txid,wallet_address) => {
             // Post Token Handling
             for (token of transresp.meta.postTokenBalances){
                 if (token.owner==wallet_address){
-                    if (transaction_changes[token.mint].start) {
+                    if (transaction_changes[token.mint]?.start) {
                         // Case where token account existed already
                         diff = Number(token.uiTokenAmount.amount)-Number(transaction_changes[token.mint].start);
                         diffdec = toDecimal(diff,transaction_changes[token.mint].decimals);
