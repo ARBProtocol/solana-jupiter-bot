@@ -168,7 +168,7 @@ Balances are checked when the bot loads and also as it is running to avoid it ru
 	}
 
 
-# slippage management
+# Slippage management
 
 Advanced slippage handling has been added to the code. USE AT YOUR OWN RISK! To enable it you need to set adaptiveSlippage: 1 in the config.json to enable this feature. This will adjust the slippage for the route to be a percentage of the total less the required profit. It takes the simulated profit and removes the percentage required profit to create an adaptive slippage with some handling for the size of the profit detected. Related code area is shown below anv can be edited as needed.
 	
@@ -185,6 +185,7 @@ Advanced slippage handling has been added to the code. USE AT YOUR OWN RISK! To 
 ## BPS slippage
 
 Simple BPS slippage. The slippage is set in the Jupiter SDK. Make sure your percentage profit is a few points above the slippage. For instance 0.1% profit would need to have a slippage BPS below 10 to break even. Best to leave a little wiggle rooom for safety as low liquidity can cause your result to be a new netagive. Always test and check to make sure you are trading in a pair that can support the size you are swapping.
+
 
 
 ## Speed of Lookups
@@ -230,6 +231,29 @@ To turn one **off**, set the value to **true**
                         'Symmetry': true,
                         'Unknown': true			
 			}
+
+
+## Pro ARB trading configurations
+
+In some circumstances -- when speed is a key element to the success of ARB trading, enabling the setting `onlyDirectRoutes: true` may be an option to explore. This feature limits the available routes supplied via the JUP4 SDK to a subset of what is available by only returning direct routes.
+
+It is possible this can help make things route faster and convert more trades. It definitely does not guarantee the best route.  You need to ensure the routes and pools are sufficient for the amount you are trading. So **always test** with a very small amount and **use at your own risk**. Setting it on the wrong pair can cause you to lose tokens. 
+
+This setting can be found in the ./src/bot/index.js file as shown below:
+
+	const routes = await jupiter.computeRoutes({
+		inputMint: new PublicKey(inputToken.address),
+		outputMint: new PublicKey(outputToken.address),
+		amount: amountInJSBI,
+		slippageBps: slippage,
+		feeBps: 0,
+		forceFetch: true,
+		**onlyDirectRoutes: false,**
+            	filterTopNResult: 2,
+		enforceSingleTx: false,
+		swapMode: 'ExactIn',
+	});
+
 
 · [back to top](#nav) ·
 
