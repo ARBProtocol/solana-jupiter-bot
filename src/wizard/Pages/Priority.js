@@ -90,7 +90,7 @@ function priority() {
 							onSubmit={handleCustomprioritySubmit}
 						/>
 					</Box>
-					<Text>BPS</Text>
+					<Text>micro Lamports</Text>
 				</Box>
 			)}
 		</Box>
