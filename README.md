@@ -187,6 +187,7 @@ Advanced slippage handling has been added to the code. USE AT YOUR OWN RISK! To 
 Simple BPS slippage. The slippage is set in the Jupiter SDK. Make sure your percentage profit is a few points above the slippage. For instance 0.1% profit would need to have a slippage BPS below 10 to break even. Best to leave a little wiggle rooom for safety as low liquidity can cause your result to be a new netagive. Always test and check to make sure you are trading in a pair that can support the size you are swapping.
 
 
+
 ## Speed of Lookups
 
 One way you can speed up the lookup of the bot is to disable unused routes or ones that are too slow to be meaningful. Be careful here as you do not want to turn off the wrong ones. You can check with Birdeye and Jupiter front end to see the main pools and then do an analysis of the key ones for the pair you are swapping. Others can be turned off to gain some speed. Always test with a small amount and expect you will LOSE to begin with if you turn off so many you access only low liquidity pools. Edit at your own RISK.
@@ -231,11 +232,12 @@ To turn one **off**, set the value to **true**
                         'Unknown': true			
 			}
 
+
 ## Pro ARB trading configurations
 
-In some circumstances -- when speed is a key element to the success of ARB trading specifically, enabling the setting `onlyDirectRoutes: true` may be an option to try. It is possible this can help make things route faster. It definitely does not guarantee the best route so always test with a very small amount and use at your own risk. Setting it on the wrong pair can cause you to lose tokens. 
+In some circumstances -- when speed is a key element to the success of ARB trading, enabling the setting `onlyDirectRoutes: true` may be an option to test. This feature limits the available routes supplied via the JUP4 SDK to a subset of what is available by only returning direct routes.
 
-This feature limits the available routes supplied via the JUP4 SDK to a subset of what is available and only returning direct routes. Again, this should only be enabled with proper testing to ensure the routes and pools are sufficient for the amount you are trading. 
+It is possible this can help make things route faster and cnvert more trades. It definitely does not guarantee the best route.  You need to ensure the routes and pools are sufficient for the amount you are trading. So **always test** with a very small amount and **use at your own risk**. Setting it on the wrong pair can cause you to lose tokens. 
 
 This setitng van be found in the ./src/bot/index.js file as shown below:
 
