@@ -34,7 +34,7 @@ const swap = async (jupiter, route) => {
 		if (process.env.DEBUG) storeItInTempAsJSON("result", result);
 
 		// Reset counter on success
-		cache.tradeCounter.Failedbalancecheck = 0;
+		cache.tradeCounter.failedbalancecheck = 0;
 		cache.tradeCounter.errorcount = 0;
 
 		const performanceOfTx = performance.now() - performanceOfTxStart;
@@ -62,12 +62,12 @@ const failedSwapHandler = async(tradeEntry, inputToken, tradeAmount) => {
 	var realbalanceToken = await balanceCheck( inputToken );
 
 	if (realbalanceToken<tradeAmount){
-		cache.tradeCounter.Failedbalancecheck++;
+		cache.tradeCounter.failedbalancecheck++;
 
-		if (cache.tradeCounter.Failedbalancecheck>3){
+		if (cache.tradeCounter.failedbalancecheck>3){
 			// Has to fail for 3 times before it ends the script. This is to cover cases where there is a delay in account updating pull
 			console.log('Balance Lookup is too low for token: '+realbalanceToken+' < '+tradeAmount);
-			console.log('Failed For: '+cache.tradeCounter.Failedbalancecheck+' times');
+			console.log('Failed For: '+cache.tradeCounter.failedbalancecheck+' times');
 			process.exit();
 		}
 	}
