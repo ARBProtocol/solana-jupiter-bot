@@ -205,7 +205,7 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 					error: tx.error?.message || null,
 				};
 
-				var waittime = await waitabit(250);
+				var waittime = await waitabit(100);
 
 				// handle TX results
 				if (tx.error) {
@@ -403,7 +403,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
 				// stop refreshing status
 				clearInterval(printTxStatus);
 
-				//console.log('Calculate trade profit Out');
+				// Calculate the profit of the trade
 				const profit = calculateProfit(tradeEntry.inAmount, tx.outputAmount);
 
 				tradeEntry = {

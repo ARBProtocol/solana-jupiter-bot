@@ -139,12 +139,11 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 		}
 		if (cache.config.tradingStrategy === "arbitrage") {
 			/** check real amounts because Jupiter SDK returns wrong amounts
-			 *  when we trading TokenA <> TokenA (arbitrage)
+			 *  when trading ARB TokenA <> TokenA (arbitrage)
 			 */
 
 			try {
 				// BETA LOOKUP FOR RESULT VIA RPC
-				//try catch error handling
 				var txresult = [];
 				var err2 = -1;
 				var rcount = 0;
@@ -152,19 +151,18 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 
 				const fetcher = async (retry) => {
 
-					console.log('Looking for result via RPC.');
+					console.log('Looking for ARB trade result via RPC.');
 					rcount++;
 
 					if (rcount>=retries){
 						// Exit max retries
-						console.log(`Max attempts to fetch transaction. Assuming it did not complete.`);
+						console.log(`Reached max attempts to fetch transaction. Assuming it did not complete.`);
 						return -1;
 					}
 
+					// Get the results of the transaction from the RPC
+					// Sometimes this takes time for it to post so retry logic is implemented
 					[txresult, err2] = await checktrans(tx?.txid,cache.walletpubkeyfull);
-					//console.log(`After txresult ERR:${err2}`);
-					//console.log(txresult);
-					//console.log(tokenA.address);
 					
 					if (err2==0 && txresult) {
 						if (txresult?.[tokenA.address]?.change>0) {
@@ -225,7 +223,6 @@ const successSwapHandler = async (tx, tradeEntry, tokenA, tokenB) => {
 					// Track the output amount
 					inputamt = txresult[tokenA.address].start;
 					outputamt = txresult[tokenA.address].end;
-					//console.log(`Succss Lookup ${inputamt} to ${outputamt}`);
 
 					cache.currentProfit.tokenA = calculateProfit(
 							cache.initialBalance.tokenA,
