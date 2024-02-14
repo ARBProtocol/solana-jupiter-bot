@@ -45,19 +45,12 @@ const balanceCheck = async (checkToken) => {
 		
 			tokenAccounts.value.forEach((accountInfo) => {
 				const parsedInfo = accountInfo.account.data.parsed.info;
-				//console.log(`Pubkey: ${accountInfo.pubkey.toBase58()}`);
-				//console.log(`Mint: ${parsedInfo.mint}`);
-				//console.log(`Owner: ${parsedInfo.owner}`);
-				//console.log(`Decimals: ${parsedInfo.tokenAmount.decimals}`);
-				//console.log(`Amount: ${parsedInfo.tokenAmount.amount}`);
 				totalTokenBalance += BigInt(parsedInfo.tokenAmount.amount);
-				//console.log("====================");
 			});
 		
 			// Convert totalTokenBalance to a regular number
 			checkBalance = Number(totalTokenBalance);
-			//console.log("Total Token Balance:", checkBalance);
-		
+	
 		} catch (error) {
 			console.error('Error fetching token balance:', error);
 		}
@@ -81,10 +74,8 @@ const balanceCheck = async (checkToken) => {
 // Handle Balance Errors Messaging
 const checkTokenABalance = async (tokenA, initialTradingBalance) => {
 	try {
-		// Check the balance of TokenA to make sure there is enough to trade
+		// Check the balance of TokenA to make sure there is enough to trade with
 		var realbalanceTokenA = await balanceCheck(tokenA);
-
-		// Make the numebers user friendly
 		bal1 = toDecimal(realbalanceTokenA,tokenA.decimals);
 		bal2 = toDecimal(initialTradingBalance,tokenA.decimals);
 
@@ -94,7 +85,6 @@ const checkTokenABalance = async (tokenA, initialTradingBalance) => {
 			\nTo run the bot you need \x1b[93m${bal2}\x1b[0m ${tokenA.symbol}.
 			\nEither add more ${tokenA.symbol} to your wallet or lower the amount below ${bal1}.\n`);
 		}
-		// We are gucci
 		return realbalanceTokenA;
 	} catch (error) {
 		// Handle errors gracefully
@@ -120,24 +110,21 @@ const setup = async () => {
 			color: "magenta",
 		}).start();
 
-		// read tokens.json file
 		try {
 			tokens = JSON.parse(fs.readFileSync("./temp/tokens.json"));
-			// find tokens full Object
 			tokenA = tokens.find((t) => t.address === cache.config.tokenA.address);
 
 			if (cache.config.tradingStrategy !== "arbitrage")
 				tokenB = tokens.find((t) => t.address === cache.config.tokenB.address);
 		} catch (error) {
 			spinner.text = chalk.black.bgRedBright(
-				`\n	Loading tokens failed!\n	Please try to run the Wizard first using ${chalk.bold(
+				`\n	Loading tokens failed!\n	Please run the Wizard to generate it using ${chalk.bold(
 					"`yarn start`"
 				)}\n`
 			);
 			throw error;
 		}
 
-		// check wallet private key again
 		try {
 			spinner.text = "Checking wallet...";
 			if (
@@ -162,7 +149,7 @@ const setup = async () => {
 			throw error;
 		}
 
-		spinner.text = "Setting up connection ...";
+		// Set up the RPC connection
 		const connection = new Connection(cache.config.rpc[0]);
 
 		spinner.text = "Loading the Jupiter V4 SDK and getting ready to trade...";
@@ -231,10 +218,11 @@ const getInitialotherAmountThreshold = async (
 ) => {
 	let spinner;
 	try {
-        const tokdecimals = cache.sideBuy ? inputToken.decimals : outputToken.decimals;
-        const multiplythisbb = JSBI.BigInt(10 ** (tokdecimals));
+		const tokenDecimals = cache.sideBuy ? inputToken.decimals : outputToken.decimals;
+		const spinnerText = `Computing routes for the token with amountToTrade ${amountToTrade} with decimals ${tokenDecimals}`;
+
 		spinner = ora({
-			text: "Computing routes for token with amountToTrade "+String(amountToTrade)+" with decimals "+tokdecimals+" and multiply is "+String(multiplythisbb),
+			text: spinnerText,
 			discardStdin: false,
 			color: "magenta",
 		}).start();

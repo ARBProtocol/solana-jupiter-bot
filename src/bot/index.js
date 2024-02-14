@@ -50,27 +50,16 @@ const pingpongStrategy = async (jupiter, tokenA, tokenB) => {
 				? cache.currentBalance[cache.sideBuy ? "tokenA" : "tokenB"]
 				: cache.initialBalance[cache.sideBuy ? "tokenA" : "tokenB"];
 
-		// PAV BNS SUPPORT
 		const baseAmount = cache.lastBalance[cache.sideBuy ? "tokenB" : "tokenA"];
-
-		// default slippage
-		const slippage = typeof cache.config.slippage === "number" ? cache.config.slippage : 5; // 5BPS is 0.05%
+		const slippage = typeof cache.config.slippage === "number" ? cache.config.slippage : 1; // 1BPS is 0.01%
 
 		// set input / output token
 		const inputToken = cache.sideBuy ? tokenA : tokenB;
 		const outputToken = cache.sideBuy ? tokenB : tokenA;
-
 		const tokdecimals = cache.sideBuy ? inputToken.decimals : outputToken.decimals;
-
-		//console.log('amountToTrade '+amountToTrade);
-		//console.log('slippageBps '+slippage);
-		//console.log('inputToken.address '+inputToken.address);
-		//console.log('outputToken.address '+outputToken.address);
-
-		//BNI AMT to TRADE
 		const amountInJSBI = JSBI.BigInt(amountToTrade);
 
-		// check current routes
+		// check current routes via JUP4 SDK
 		const performanceOfRouteCompStart = performance.now();
 		const routes = await jupiter.computeRoutes({
 			inputMint: new PublicKey(inputToken.address),
@@ -275,7 +264,7 @@ const arbitrageStrategy = async (jupiter, tokenA) => {
         //console.log('Amount to trade:'+amountToTrade);
 
 		// default slippage
-		const slippage = typeof cache.config.slippage === "number" ? cache.config.slippage : 4; // 100 is 0.1%
+		const slippage = typeof cache.config.slippage === "number" ? cache.config.slippage : 1; // 100 is 0.1%
 
 		// set input / output token
 		const inputToken = tokenA;
@@ -463,7 +452,6 @@ const watcher = async (jupiter, tokenA, tokenB) => {
 			await pingpongStrategy(jupiter, tokenA, tokenB);
 		}
 		if (cache.config.tradingStrategy === "arbitrage") {
-			console.log('Starting ARB Watcher');
 			await arbitrageStrategy(jupiter, tokenA);
 		}
 	}
@@ -495,10 +483,8 @@ const run = async () => {
 			cache.currentBalance.tokenA = cache.initialBalance.tokenA;
 			cache.lastBalance.tokenA = cache.initialBalance.tokenA;
 
-
 			// Double check the wallet has sufficient amount of tokenA
 			var realbalanceTokenA = await checkTokenABalance(tokenA,cache.initialBalance.tokenA);
-
 
 			// set initial & last balance for tokenB
 			cache.initialBalance.tokenB = await getInitialotherAmountThreshold(
@@ -519,7 +505,6 @@ const run = async () => {
 
 			cache.currentBalance.tokenA = cache.initialBalance.tokenA;
 			cache.lastBalance.tokenA = cache.initialBalance.tokenA;
-
 
 			// Double check the wallet has sufficient amount of tokenA
 			var realbalanceTokenA = await checkTokenABalance(tokenA,cache.initialBalance.tokenA);
